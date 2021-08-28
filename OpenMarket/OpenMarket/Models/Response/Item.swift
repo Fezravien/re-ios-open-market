@@ -10,13 +10,13 @@ import Foundation
 struct Item: Decodable, Equatable {
     let id: UInt32
     let title: String
-    let descriptions: String
+    let descriptions: String?
     let price: UInt
     let currency: String
     let stock: UInt
     let discountPrice: UInt?
     let thumbnails: [String]
-    let images: [String]
+    let images: [String]?
     let registrationDate: Double
     
     enum CodingKeys: String, CodingKey {

@@ -21,7 +21,7 @@
 		6D846D4F26D78D0300349480 /* ItemListTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D4E26D78D0300349480 /* ItemListTest.swift */; };
 		6D846D5126D78D1A00349480 /* ItemTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5026D78D1A00349480 /* ItemTest.swift */; };
 		6D846D5926D7A3BE00349480 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5826D7A3BE00349480 /* NetworkManager.swift */; };
-		6D846D5D26D7A3FF00349480 /* OpenMarketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5C26D7A3FF00349480 /* OpenMarketViewModel.swift */; };
+		6D846D5D26D7A3FF00349480 /* MarketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5C26D7A3FF00349480 /* MarketViewModel.swift */; };
 		6D846D5F26D7A59300349480 /* NetworkConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5E26D7A59300349480 /* NetworkConstant.swift */; };
 		6D846D6126D7A60500349480 /* MarketNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6026D7A60500349480 /* MarketNetwork.swift */; };
 		6D846D6526D88A1800349480 /* OpenMarketNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6426D88A1800349480 /* OpenMarketNetwork.swift */; };
@@ -58,7 +58,7 @@
 		6D846D4E26D78D0300349480 /* ItemListTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListTest.swift; sourceTree = "<group>"; };
 		6D846D5026D78D1A00349480 /* ItemTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTest.swift; sourceTree = "<group>"; };
 		6D846D5826D7A3BE00349480 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		6D846D5C26D7A3FF00349480 /* OpenMarketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMarketViewModel.swift; sourceTree = "<group>"; };
+		6D846D5C26D7A3FF00349480 /* MarketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketViewModel.swift; sourceTree = "<group>"; };
 		6D846D5E26D7A59300349480 /* NetworkConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConstant.swift; sourceTree = "<group>"; };
 		6D846D6026D7A60500349480 /* MarketNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketNetwork.swift; sourceTree = "<group>"; };
 		6D846D6426D88A1800349480 /* OpenMarketNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMarketNetwork.swift; sourceTree = "<group>"; };
@@ -169,7 +169,7 @@
 		6D846D5626D7A16E00349480 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				6D846D5C26D7A3FF00349480 /* OpenMarketViewModel.swift */,
+				6D846D5C26D7A3FF00349480 /* MarketViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -318,7 +318,7 @@
 				6D846D1426D75C8200349480 /* ViewController.swift in Sources */,
 				6D846D6126D7A60500349480 /* MarketNetwork.swift in Sources */,
 				6D846D5F26D7A59300349480 /* NetworkConstant.swift in Sources */,
-				6D846D5D26D7A3FF00349480 /* OpenMarketViewModel.swift in Sources */,
+				6D846D5D26D7A3FF00349480 /* MarketViewModel.swift in Sources */,
 				6D846D6526D88A1800349480 /* OpenMarketNetwork.swift in Sources */,
 				6D846D4726D75F0500349480 /* ItemRegistration.swift in Sources */,
 				6D846D1026D75C8200349480 /* AppDelegate.swift in Sources */,
