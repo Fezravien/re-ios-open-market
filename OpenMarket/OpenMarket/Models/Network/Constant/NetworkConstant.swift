@@ -8,7 +8,7 @@
 import Foundation
 
 enum NetworkConstant {
-    static let baseURL = "https://camp-open-market-2.herokuapp.com/"
+    static let baseURL = "https://camp-open-market-2.herokuapp.com"
     case itemList(page: Int)
     case item(id: Int)
     case registrate
