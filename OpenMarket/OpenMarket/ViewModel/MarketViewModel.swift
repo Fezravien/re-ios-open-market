@@ -16,7 +16,15 @@ final class MarketViewModel {
         }
     }
     
-    func fetch(request: URLRequest, decodeType: Decodable, completion: @escaping (Result<Bool, Error>) -> Void) {
+    var marketItemsCount: Int {
+        return marketItems.count
+    }
+    
+    func marketItem(index: Int) -> Item {
+        return marketItems[index]
+    }
+    
+    func fetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<Bool, Error>) -> Void) where T: Decodable {
         self.networkManager.excuteDecode(request: request, decodeType: ItemList.self) { result in
             switch result {
             case .success(let data):
