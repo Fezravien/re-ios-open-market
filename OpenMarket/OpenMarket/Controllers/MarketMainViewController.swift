@@ -79,6 +79,9 @@ final class MarketMainViewController: UIViewController {
     
     private func setMarketCollectionViewConstraint() {
         self.view.addSubview(self.marketCollectionView)
+        let configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+        let layout = UICollectionViewCompositionalLayout.list(using: configuration)
+        self.marketCollectionView.collectionViewLayout = layout
         
         NSLayoutConstraint.activate([
             self.marketCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
