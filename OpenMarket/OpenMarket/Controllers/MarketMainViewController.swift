@@ -8,7 +8,7 @@
 import UIKit
 
 final class MarketMainViewController: UIViewController {
-    
+
     private enum segmentStyle: String, CaseIterable {
         case list = "List"
         case grid = "Grid"
@@ -36,6 +36,7 @@ final class MarketMainViewController: UIViewController {
         return collectionView
     }()
     private let marketViewModel = MarketViewModel()
+    private var page = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +58,7 @@ final class MarketMainViewController: UIViewController {
     
     private func setDataSource() {
         self.marketCollectionView.dataSource = self
+        self.marketCollectionView.prefetchDataSource = self
     }
     
     private func setDelegate() {
@@ -96,9 +98,9 @@ final class MarketMainViewController: UIViewController {
         ])
     }
     
-    private func fetchMarketData() {
+    private func fetchMarketData(page: Int = 1) {
         self.marketindicater.startAnimating()
-        guard let fetchURL = NetworkConstant.itemList(page: 1).url else { return }
+        guard let fetchURL = NetworkConstant.itemList(page: page).url else { return }
         let request = URLRequest(url: fetchURL)
         self.marketViewModel.fetch(request: request, decodeType: ItemList.self) { [weak self] result in
             DispatchQueue.main.async {
@@ -127,5 +129,17 @@ extension MarketMainViewController: UICollectionViewDelegate {
 extension MarketMainViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.width, height: self.view.frame.height * 1/6)
+    }
+}
+
+extension MarketMainViewController: UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+
+        for indexPath in indexPaths {
+            if marketViewModel.marketItemsCount == indexPath.row + 2 {
+                self.page += 1
+                fetchMarketData(page: page)
+            }
+        }
     }
 }
