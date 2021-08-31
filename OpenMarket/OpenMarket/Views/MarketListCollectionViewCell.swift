@@ -37,8 +37,7 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    
+
     func listCellConfiguration(data: Item) {
         setConstraints()
         self.itemImageView.image = UIImage(data: downloadImage(data.thumbnails.first!))
@@ -78,10 +77,9 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             self.itemImageView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 10),
-            self.itemImageView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10),
-            self.itemImageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10),
+            self.itemImageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             self.itemImageView.widthAnchor.constraint(equalTo: self.contentView.widthAnchor, multiplier: 3/10),
-            self.itemImageView.heightAnchor.constraint(equalTo: self.itemImageView.widthAnchor),
+            self.itemImageView.heightAnchor.constraint(equalTo: self.contentView.widthAnchor, multiplier: 3/10),
         ])
     }
     
@@ -101,7 +99,7 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             self.itemStock.leadingAnchor.constraint(equalTo: self.itemTitle.leadingAnchor),
             self.itemStock.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -10),
-            self.itemStock.bottomAnchor.constraint(equalTo: self.itemImageView.bottomAnchor, constant: -30)
+            self.itemStock.bottomAnchor.constraint(equalTo: self.itemImageView.bottomAnchor, constant: -20)
         ])
     }
     
