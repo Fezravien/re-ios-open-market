@@ -54,6 +54,28 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         self.itemTitle.text = data.title
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        resetItemPrice()
+        resetItemDiscountPrice()
+        resetItemStock()
+    }
+    
+    private func resetItemPrice() {
+        self.itemPrice.text = nil
+        self.itemPrice.attributedText = nil
+        self.itemPrice.textColor = .systemGray
+    }
+    
+    private func resetItemDiscountPrice() {
+        self.itemDiscountPrice.isHidden = true
+    }
+    
+    private func resetItemStock() {
+        self.itemStock.text = nil
+        self.itemStock.textColor = .systemGray
+    }
+    
     private func downloadImage(_ imageURL: String) -> Data {
         guard let url = URL(string: imageURL),
               let image = try? Data(contentsOf: url) else {
