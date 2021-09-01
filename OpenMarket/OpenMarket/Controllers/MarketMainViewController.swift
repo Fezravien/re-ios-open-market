@@ -30,6 +30,7 @@ final class MarketMainViewController: UIViewController {
     private let marketCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.register(MarketListCollectionViewCell.self, forCellWithReuseIdentifier: MarketListCollectionViewCell.identifier)
+        collectionView.register(MarketGridCollectionViewCell.self, forCellWithReuseIdentifier: MarketGridCollectionViewCell.identifier)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .white
@@ -69,8 +70,19 @@ final class MarketMainViewController: UIViewController {
         for index in 0..<segmentStyle.allCases.count {
             self.marketSegmentController.setWidth(self.view.frame.width * 1/5, forSegmentAt: index)
         }
-        
+        self.marketSegmentController.addTarget(self, action: #selector(changedSegmentController), for: .valueChanged)
         self.navigationItem.titleView = self.marketSegmentController
+    }
+    
+    @objc private func changedSegmentController() {
+        switch self.marketSegmentController.selectedSegmentIndex {
+        case 0:
+            self.marketCollectionView.reloadData()
+        case 1:
+            self.marketCollectionView.reloadData()
+        default:
+            return
+        }
     }
     
     private func setConstraint() {
@@ -116,25 +128,51 @@ extension MarketMainViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketListCollectionViewCell.identifier, for: indexPath) as? MarketListCollectionViewCell else { return UICollectionViewCell() }
-        cell.listCellConfiguration(data: marketViewModel.marketItem(index: indexPath.row))
-        return cell
+        
+        switch self.marketSegmentController.selectedSegmentIndex {
+        case 0:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketListCollectionViewCell.identifier, for: indexPath) as? MarketListCollectionViewCell else { return UICollectionViewCell() }
+            
+            cell.listCellConfiguration(data: marketViewModel.marketItem(index: indexPath.row))
+            return cell
+        case 1:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketGridCollectionViewCell.identifier, for: indexPath) as? MarketGridCollectionViewCell else { return UICollectionViewCell() }
+            
+            cell.gridCellConfiguration(data: marketViewModel.marketItem(index: indexPath.row))
+            return cell
+        default:
+            return UICollectionViewCell()
+        }
     }
 }
 
 extension MarketMainViewController: UICollectionViewDelegate {
-    
+        
 }
 
 extension MarketMainViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.view.frame.width, height: self.view.frame.height * 1/6)
+        switch self.marketSegmentController.selectedSegmentIndex {
+        case 0:
+            return CGSize(width: self.view.frame.width, height: self.view.frame.height * 1/6)
+        case 1:
+            return CGSize(width: (self.view.frame.width / 2) - 15, height: self.view.frame.height * 1/3)
+        default:
+            return .zero
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if self.marketSegmentController.selectedSegmentIndex == 1 {
+            return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        } else {
+            return UIEdgeInsets()
+        }
     }
 }
 
 extension MarketMainViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-
         for indexPath in indexPaths {
             if marketViewModel.marketItemsCount == indexPath.row + 2 {
                 self.page += 1
