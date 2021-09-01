@@ -37,13 +37,21 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    private let itemDiscountPrice: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.preferredFont(forTextStyle: .footnote)
+        label.textColor = .systemGray
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
 
     func listCellConfiguration(data: Item) {
         setConstraints()
+        convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
         self.itemImageView.image = UIImage(data: downloadImage(data.thumbnails.first!))
         self.itemTitle.text = data.title
         self.itemStock.text = convertStockFormat(stock: data.stock)
-        self.itemPrice.text = convertPriceFormat(currency: data.currency, price: data.price)
     }
     
     private func downloadImage(_ imageURL: String) -> Data {
@@ -61,8 +69,17 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         return "잔여수량 : \(stock)"
     }
     
-    private func convertPriceFormat(currency: String, price: UInt) -> String {
-        return "\(currency) \(price)"
+    private func convertPriceFormat(currency: String, price: UInt, discountPrice: UInt?) {
+        if let discountPrice = discountPrice {
+            let attributeString: NSMutableAttributedString = NSMutableAttributedString(string: "\(currency) \(price)")
+            attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSMakeRange(0, attributeString.length))
+            self.itemPrice.textColor = .systemRed
+            self.itemPrice.attributedText = attributeString
+            self.itemDiscountPrice.isHidden = false
+            self.itemDiscountPrice.text = "\(currency) " + String(discountPrice)
+        } else {
+            self.itemPrice.text = "\(currency) \(price)"
+        }
     }
     
     private func setConstraints() {
@@ -70,6 +87,7 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         setItemTitleConstraint()
         setItemStockConstraint()
         setItemPriceConstraint()
+        setItemDiscountPriceConstraint()
     }
     
     private func setItemImageViewConstraint() {
@@ -109,7 +127,16 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             self.itemPrice.leadingAnchor.constraint(equalTo: self.itemTitle.leadingAnchor),
             self.itemPrice.bottomAnchor.constraint(equalTo: self.itemStock.topAnchor, constant: -10),
-            self.itemPrice.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -10),
+        ])
+    }
+    
+    private func setItemDiscountPriceConstraint() {
+        self.contentView.addSubview(self.itemDiscountPrice)
+        
+        NSLayoutConstraint.activate([
+            self.itemDiscountPrice.leadingAnchor.constraint(equalTo: self.itemPrice.trailingAnchor, constant: 10),
+            self.itemDiscountPrice.bottomAnchor.constraint(equalTo: self.itemPrice.bottomAnchor),
+            self.itemDiscountPrice.trailingAnchor.constraint(lessThanOrEqualTo: self.contentView.trailingAnchor, constant: -10)
         ])
     }
 }
