@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MarketListCollectionViewCell: UICollectionViewCell {
+final class MarketListCollectionViewCell: UICollectionViewCell {
     static let identifier = "MarketListCell"
     
     private enum Style {
