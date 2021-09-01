@@ -62,7 +62,6 @@ class MarketListCollectionViewCell: UICollectionViewCell {
     }
     
     private func resetItemPrice() {
-        self.itemPrice.text = nil
         self.itemPrice.attributedText = nil
         self.itemPrice.textColor = .systemGray
     }
