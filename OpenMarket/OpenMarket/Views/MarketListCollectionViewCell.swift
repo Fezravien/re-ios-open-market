@@ -49,9 +49,9 @@ class MarketListCollectionViewCell: UICollectionViewCell {
     func listCellConfiguration(data: Item) {
         setConstraints()
         convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
+        convertStockFormat(stock: data.stock)
         self.itemImageView.image = UIImage(data: downloadImage(data.thumbnails.first!))
         self.itemTitle.text = data.title
-        self.itemStock.text = convertStockFormat(stock: data.stock)
     }
     
     private func downloadImage(_ imageURL: String) -> Data {
@@ -65,8 +65,14 @@ class MarketListCollectionViewCell: UICollectionViewCell {
         return image
     }
     
-    private func convertStockFormat(stock: UInt) -> String {
-        return "잔여수량 : \(stock)"
+    private func convertStockFormat(stock: UInt) {
+        if stock == 0 {
+            self.itemStock.textColor = .systemOrange
+            self.itemStock.text = "품절"
+        } else {
+            self.itemStock.textColor = .systemGray
+            self.itemStock.text = "잔여수량 : \(stock)"
+        }
     }
     
     private func convertPriceFormat(currency: String, price: UInt, discountPrice: UInt?) {
