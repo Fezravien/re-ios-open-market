@@ -27,6 +27,7 @@
 		6D846D6B26D8ED8500349480 /* MarketModelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6A26D8ED8500349480 /* MarketModelError.swift */; };
 		6D846D6E26DA048400349480 /* MarketMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6D26DA048400349480 /* MarketMainViewController.swift */; };
 		6D846D7126DA6F8300349480 /* MarketListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D7026DA6F8300349480 /* MarketListCollectionViewCell.swift */; };
+		6D846D7326DFB17000349480 /* MarketGridCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D7226DFB17000349480 /* MarketGridCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		6D846D6A26D8ED8500349480 /* MarketModelError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketModelError.swift; sourceTree = "<group>"; };
 		6D846D6D26DA048400349480 /* MarketMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketMainViewController.swift; sourceTree = "<group>"; };
 		6D846D7026DA6F8300349480 /* MarketListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketListCollectionViewCell.swift; sourceTree = "<group>"; };
+		6D846D7226DFB17000349480 /* MarketGridCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketGridCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +224,7 @@
 			isa = PBXGroup;
 			children = (
 				6D846D7026DA6F8300349480 /* MarketListCollectionViewCell.swift */,
+				6D846D7226DFB17000349480 /* MarketGridCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				6D846D7126DA6F8300349480 /* MarketListCollectionViewCell.swift in Sources */,
 				6D846D4226D75E5D00349480 /* ItemList.swift in Sources */,
 				6D846D6126D7A60500349480 /* MarketNetwork.swift in Sources */,
+				6D846D7326DFB17000349480 /* MarketGridCollectionViewCell.swift in Sources */,
 				6D846D5F26D7A59300349480 /* NetworkConstant.swift in Sources */,
 				6D846D5D26D7A3FF00349480 /* MarketViewModel.swift in Sources */,
 				6D846D6526D88A1800349480 /* OpenMarketNetwork.swift in Sources */,
