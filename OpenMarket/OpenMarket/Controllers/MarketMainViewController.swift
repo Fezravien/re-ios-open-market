@@ -41,6 +41,7 @@ final class MarketMainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setNavigationItem()
         bindData()
         fetchMarketData()
         setSegment()
@@ -83,6 +84,14 @@ final class MarketMainViewController: UIViewController {
         default:
             return
         }
+    }
+    
+    private func setNavigationItem() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tappedButtonDetailItem))
+    }
+    
+    @objc private func tappedButtonDetailItem() {
+        print("tapped add button")
     }
     
     private func setConstraint() {
