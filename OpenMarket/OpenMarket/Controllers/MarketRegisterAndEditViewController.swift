@@ -9,7 +9,7 @@ import UIKit
 import PhotosUI
 
 final class MarketRegisterAndEditViewController: UIViewController {
-    
+
     private enum State {
         static let registration = "상품등록"
         static let edit = "상품수정"
@@ -26,16 +26,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
-    private let imageAddButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = .systemOrange
-        button.setImage(.add, for: .normal)
-        button.tintColor = .white
-        button.layer.cornerRadius = 10
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    private let itemPickerView: PHPickerViewController = {
+    private let itemPickerViewController: PHPickerViewController = {
         var configuration = PHPickerConfiguration()
         configuration.selectionLimit = 5
         configuration.filter = .any(of: [.images, .livePhotos])
@@ -72,7 +63,6 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     private func setConstraint() {
         setImageCollectionView()
-        setImageAddButtonConstraint()
     }
     
     private func setImageCollectionView() {
@@ -84,10 +74,6 @@ final class MarketRegisterAndEditViewController: UIViewController {
             self.imageCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
             self.imageCollectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 1/10)
         ])
-    }
-    
-    private func setImageAddButtonConstraint() {
-        
     }
 }
 
