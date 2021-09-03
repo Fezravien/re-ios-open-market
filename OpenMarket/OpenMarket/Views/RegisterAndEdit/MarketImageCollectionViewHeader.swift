@@ -13,7 +13,7 @@ final class MarketImageCollectionViewHeader: UICollectionReusableView {
     private let imageAddButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .systemOrange
-        button.setTitle("➕", for: .normal)
+        button.setImage(UIImage(systemName: "camera"), for: .normal)
         button.tintColor = .white
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
