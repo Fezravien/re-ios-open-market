@@ -74,7 +74,7 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
-    func gridCellConfiguration(data: Item) {
+    func configurateGridCell(data: Item) {
         self.contentView.layer.borderWidth = 2
         self.contentView.layer.cornerRadius = 15
         setConstraints()
@@ -195,7 +195,6 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
             self.itemPrice.leadingAnchor.constraint(equalTo: self.itemTitle.leadingAnchor),
             self.itemPrice.trailingAnchor.constraint(equalTo: self.itemTitle.trailingAnchor),
             self.itemPrice.bottomAnchor.constraint(equalTo: self.itemDiscountPrice.topAnchor, constant: Style.ItemPrice.margin.bottom),
-//            self.itemPrice.topAnchor.constraint(equalTo: self.itemTitle.bottomAnchor, constant: Style.ItemPrice.margin.top)
         ])
     }
     

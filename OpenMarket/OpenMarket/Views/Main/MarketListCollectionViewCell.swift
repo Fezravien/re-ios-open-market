@@ -70,7 +70,7 @@ final class MarketListCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
-    func listCellConfiguration(data: Item) {
+    func configurateListCell(data: Item) {
         setConstraints()
         convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
         convertStockFormat(stock: data.stock)
