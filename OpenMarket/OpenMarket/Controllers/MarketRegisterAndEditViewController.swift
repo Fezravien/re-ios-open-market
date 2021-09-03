@@ -7,6 +7,7 @@
 
 import UIKit
 import PhotosUI
+import Photos
 
 final class MarketRegisterAndEditViewController: UIViewController {
 
@@ -31,9 +32,15 @@ final class MarketRegisterAndEditViewController: UIViewController {
         configuration.selectionLimit = 5
         configuration.filter = .any(of: [.images, .livePhotos])
         let pickerView = PHPickerViewController(configuration: configuration)
+        pickerView.modalPresentationStyle = .fullScreen
         return pickerView
     }()
     private let marketImageCollectionViewHeader = MarketImageCollectionViewHeader()
+    private var itemImage: [UIImage?] = [] {
+        didSet {
+            self.imageCollectionView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +56,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     @objc private func tappedAddButton() {
-        print("눌리니니니니니?")
+        self.present(self.itemPickerViewController, animated: true, completion: nil)
     }
     
     private func setDataSource() {
@@ -69,9 +76,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.addSubview(self.imageCollectionView)
         
         NSLayoutConstraint.activate([
-            self.imageCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 15),
+            self.imageCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
             self.imageCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            self.imageCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -15),
+            self.imageCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
             self.imageCollectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 1/10)
         ])
     }
@@ -79,7 +86,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
 
 extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 15
+        return itemImage.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -87,7 +94,7 @@ extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.configurateImageCell()
+        cell.configurateImageCell(image: self.itemImage[indexPath.row] ?? UIImage())
         return cell
     }
     
@@ -120,6 +127,19 @@ extension MarketRegisterAndEditViewController: UICollectionViewDelegateFlowLayou
 
 extension MarketRegisterAndEditViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-
+        picker.dismiss(animated: true, completion: nil)
+        self.itemImage = []
+        
+        for result in results {
+            if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
+                result.itemProvider.loadObject(ofClass: UIImage.self, completionHandler: { [weak self] image, error in
+                    DispatchQueue.main.async {
+                        self?.itemImage.append(image as? UIImage)
+                    }
+                })
+            } else {
+                picker.dismiss(animated: true, completion: nil)
+            }
+        }
     }
 }
