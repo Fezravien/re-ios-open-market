@@ -42,6 +42,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         let pickerView = PHPickerViewController(configuration: configuration)
         return pickerView
     }()
+    private let marketImageCollectionViewHeader = MarketImageCollectionViewHeader()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +50,15 @@ final class MarketRegisterAndEditViewController: UIViewController {
         setDataSource()
         setDelegate()
         setConstraint()
+        setNotificationCenter()
+    }
+    
+    private func setNotificationCenter() {
+        NotificationCenter.default.addObserver(self, selector: #selector(tappedAddButton), name: NSNotification.Name("TapAddButton"), object: nil)
+    }
+    
+    @objc private func tappedAddButton() {
+        print("눌리니니니니니?")
     }
     
     private func setDataSource() {
@@ -57,7 +67,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     private func setDelegate() {
         self.imageCollectionView.delegate = self
-        self.itemPickerView.delegate = self
+        self.itemPickerViewController.delegate = self
     }
     
     private func setConstraint() {
