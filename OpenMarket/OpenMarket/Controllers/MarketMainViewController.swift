@@ -87,11 +87,12 @@ final class MarketMainViewController: UIViewController {
     }
     
     private func setNavigationItem() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tappedButtonDetailItem))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tappedRegisterAndEditItemButton))
     }
     
-    @objc private func tappedButtonDetailItem() {
-        print("tapped add button")
+    @objc private func tappedRegisterAndEditItemButton() {
+        let viewController = MarketRegisterAndEditViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func setConstraint() {
@@ -142,12 +143,12 @@ extension MarketMainViewController: UICollectionViewDataSource {
         case 0:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketListCollectionViewCell.identifier, for: indexPath) as? MarketListCollectionViewCell else { return UICollectionViewCell() }
             
-            cell.listCellConfiguration(data: marketViewModel.marketItem(index: indexPath.row))
+            cell.configurateListCell(data: marketViewModel.marketItem(index: indexPath.row))
             return cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketGridCollectionViewCell.identifier, for: indexPath) as? MarketGridCollectionViewCell else { return UICollectionViewCell() }
             
-            cell.gridCellConfiguration(data: marketViewModel.marketItem(index: indexPath.row))
+            cell.configurateGridCell(data: marketViewModel.marketItem(index: indexPath.row))
             return cell
         default:
             return UICollectionViewCell()
