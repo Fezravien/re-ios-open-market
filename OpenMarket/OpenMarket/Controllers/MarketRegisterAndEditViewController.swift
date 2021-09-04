@@ -35,19 +35,24 @@ final class MarketRegisterAndEditViewController: UIViewController {
         pickerView.modalPresentationStyle = .fullScreen
         return pickerView
     }()
-    private let marketImageCollectionViewHeader = MarketImageCollectionViewHeader()
-    private var itemImage: [UIImage?] = [] {
-        didSet {
-            self.imageCollectionView.reloadData()
-        }
-    }
+    private let marketRegisterAndEditViewModel = MarketRegisterAndEditViewModel()
+    private var itemImageCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setBindData()
         setDataSource()
         setDelegate()
         setConstraint()
         setNotificationCenter()
+    }
+    
+    private func setBindData() {
+        self.marketRegisterAndEditViewModel.imageChanged = {
+            if self.itemImageCount == self.marketRegisterAndEditViewModel.itemImageCount {
+                self.imageCollectionView.reloadData()
+            }
+        }
     }
     
     private func setNotificationCenter() {
@@ -95,7 +100,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
 
 extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return itemImage.count
+        return self.marketRegisterAndEditViewModel.itemImageCount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -103,7 +108,7 @@ extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.configurateImageCell(image: self.itemImage[indexPath.row] ?? UIImage())
+        cell.configurateImageCell(image: self.marketRegisterAndEditViewModel.getItemImage(index: indexPath.row))
         return cell
     }
     
@@ -137,13 +142,15 @@ extension MarketRegisterAndEditViewController: UICollectionViewDelegateFlowLayou
 extension MarketRegisterAndEditViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
-        self.itemImage = []
+        self.itemImageCount = 0
         
         for result in results {
+            self.itemImageCount += 1
             if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
                 result.itemProvider.loadObject(ofClass: UIImage.self, completionHandler: { [weak self] image, error in
+                    guard let image = image as? UIImage else { return }
                     DispatchQueue.main.async {
-                        self?.itemImage.append(image as? UIImage)
+                        self?.marketRegisterAndEditViewModel.appendItemImage(image)
                     }
                 })
             } else {
