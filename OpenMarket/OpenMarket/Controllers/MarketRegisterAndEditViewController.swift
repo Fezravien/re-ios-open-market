@@ -36,6 +36,58 @@ final class MarketRegisterAndEditViewController: UIViewController {
         pickerView.modalPresentationStyle = .fullScreen
         return pickerView
     }()
+    private let itemTitle: UITextField = {
+        let textField = UITextField()
+        textField.font = .preferredFont(forTextStyle: .headline)
+        textField.autocorrectionType = .no
+        textField.placeholder = "글 제목을 입력해주세요"
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    private let itemCurrency: UITextField = {
+        let textField = UITextField()
+        textField.font = .preferredFont(forTextStyle: .subheadline)
+        textField.autocorrectionType = .no
+        textField.placeholder = "화폐단위"
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    private let itemPrice: UITextField = {
+        let textField = UITextField()
+        textField.font = .preferredFont(forTextStyle: .headline)
+        textField.autocorrectionType = .no
+        textField.placeholder = "상품의 가격을 입력해주세요"
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    private let itemDiscountPrice: UITextField = {
+        let textField = UITextField()
+        textField.font = .preferredFont(forTextStyle: .headline)
+        textField.autocorrectionType = .no
+        textField.placeholder = "상품의 할인가를 입력해주세요 (옵션)"
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    private let itemStock: UITextField = {
+        let textField = UITextField()
+        textField.font = .preferredFont(forTextStyle: .headline)
+        textField.autocorrectionType = .no
+        textField.placeholder = "상품의 수량을 입력해주세요"
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    private let itemDescription: UITextView = {
+        let textView = UITextView()
+        textView.font = .preferredFont(forTextStyle: .subheadline)
+        textView.autocorrectionType = .no
+        textView.layer.borderColor = CGColor(gray: 0.8, alpha: 0.8)
+        textView.layer.borderWidth = 1
+        textView.layer.cornerRadius = 20
+        textView.textAlignment = .justified
+        textView.contentInset = .init(top: 5, left: 10, bottom: -5, right: -10)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        return textView
+    }()
     private let marketRegisterAndEditViewModel = MarketRegisterAndEditViewModel()
     private var itemImageCount = 0
     
@@ -44,7 +96,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         setBindData()
         setDataSource()
         setDelegate()
-        setConstraint()
+        setConstraints()
         setNotificationCenter()
     }
     
@@ -83,18 +135,85 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.itemPickerViewController.delegate = self
     }
     
-    private func setConstraint() {
+    private func setConstraints() {
         setImageCollectionView()
+        setItemTitleConstraint()
+        setItemCurrencyConstraint()
+        setItemPriceConstraint()
+        setItemDiscountPriceConstraint()
+        setItemStockConstraint()
+        setItemDescriptionConstraint()
     }
     
     private func setImageCollectionView() {
         self.view.addSubview(self.imageCollectionView)
         
         NSLayoutConstraint.activate([
-            self.imageCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+            self.imageCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             self.imageCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            self.imageCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+            self.imageCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             self.imageCollectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 1/10)
+        ])
+    }
+    
+    private func setItemTitleConstraint() {
+        self.view.addSubview(self.itemTitle)
+        
+        NSLayoutConstraint.activate([
+            self.itemTitle.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
+            self.itemTitle.topAnchor.constraint(equalTo: self.imageCollectionView.bottomAnchor, constant: 30),
+            self.itemTitle.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15),
+        ])
+    }
+    
+    private func setItemCurrencyConstraint() {
+        self.view.addSubview(self.itemCurrency)
+        
+        NSLayoutConstraint.activate([
+            self.itemCurrency.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
+            self.itemCurrency.topAnchor.constraint(equalTo: self.itemTitle.bottomAnchor, constant: 30),
+            self.itemCurrency.widthAnchor.constraint(equalTo: self.itemTitle.widthAnchor, multiplier: 3/20)
+        ])
+    }
+    
+    private func setItemPriceConstraint() {
+        self.view.addSubview(self.itemPrice)
+        
+        NSLayoutConstraint.activate([
+            self.itemPrice.leadingAnchor.constraint(equalTo: self.itemCurrency.trailingAnchor, constant: 15),
+            self.itemPrice.topAnchor.constraint(equalTo: self.itemCurrency.topAnchor),
+            self.itemPrice.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15)
+        ])
+    }
+    
+    private func setItemDiscountPriceConstraint() {
+        self.view.addSubview(self.itemDiscountPrice)
+        
+        NSLayoutConstraint.activate([
+            self.itemDiscountPrice.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
+            self.itemDiscountPrice.topAnchor.constraint(equalTo: self.itemCurrency.bottomAnchor, constant: 30),
+            self.itemDiscountPrice.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15),
+        ])
+    }
+    
+    private func setItemStockConstraint() {
+        self.view.addSubview(self.itemStock)
+        
+        NSLayoutConstraint.activate([
+            self.itemStock.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
+            self.itemStock.topAnchor.constraint(equalTo: self.itemDiscountPrice.bottomAnchor, constant: 30),
+            self.itemStock.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15),
+        ])
+    }
+    
+    private func setItemDescriptionConstraint() {
+        self.view.addSubview(self.itemDescription)
+        
+        NSLayoutConstraint.activate([
+            self.itemDescription.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
+            self.itemDescription.topAnchor.constraint(equalTo: self.itemStock.bottomAnchor, constant: 30),
+            self.itemDescription.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15),
+            self.itemDescription.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }
@@ -123,7 +242,7 @@ extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
 }
 
 extension MarketRegisterAndEditViewController: UICollectionViewDelegate {
-    
+    // TODO: - 사진을 누르면 사진 크게 보여주기
 }
 
 extension MarketRegisterAndEditViewController: UICollectionViewDelegateFlowLayout {
@@ -132,7 +251,7 @@ extension MarketRegisterAndEditViewController: UICollectionViewDelegateFlowLayou
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: self.view.frame.height * 1/13, height: self.view.frame.height * 1/50)
+        return CGSize(width: self.view.frame.height * 1/13, height: 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
