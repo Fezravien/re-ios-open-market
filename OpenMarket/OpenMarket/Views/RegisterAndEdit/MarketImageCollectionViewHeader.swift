@@ -31,7 +31,7 @@ final class MarketImageCollectionViewHeader: UICollectionReusableView {
     }
     
     @objc private func tappedAddButton() {
-        NotificationCenter.default.post(name: NSNotification.Name("TapAddButton"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(MarketRegisterAndEditViewController.notificationName), object: nil)
     }
     
     private func setImageAddButtonConstraint() {

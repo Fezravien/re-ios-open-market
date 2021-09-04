@@ -10,7 +10,8 @@ import PhotosUI
 import Photos
 
 final class MarketRegisterAndEditViewController: UIViewController {
-
+    static let notificationName = "TapAddButton"
+    
     enum State: String {
         case registration = "상품등록"
         case edit = "상품수정"
@@ -56,7 +57,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     private func setNotificationCenter() {
-        NotificationCenter.default.addObserver(self, selector: #selector(tappedAddButton), name: NSNotification.Name("TapAddButton"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(tappedAddButton), name: NSNotification.Name(MarketRegisterAndEditViewController.notificationName), object: nil)
     }
     
     @objc private func tappedAddButton() {
