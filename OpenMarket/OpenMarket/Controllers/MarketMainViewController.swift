@@ -36,7 +36,7 @@ final class MarketMainViewController: UIViewController {
         collectionView.backgroundColor = .white
         return collectionView
     }()
-    private let marketViewModel = MarketViewModel()
+    private let marketViewModel = MarketMainViewModel()
     private var page = 1
     
     override func viewDidLoad() {

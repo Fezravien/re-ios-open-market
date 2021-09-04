@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MarketViewModel {
+final class MarketMainViewModel {
     var observer: () -> () = { }
     private let networkManager = NetworkManager(loader: MarketNetwork(), decoder: JSONDecoder())
     private var marketItems: [Item] = [] {
