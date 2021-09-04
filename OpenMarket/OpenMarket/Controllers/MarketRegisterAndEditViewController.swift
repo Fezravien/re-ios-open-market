@@ -11,9 +11,9 @@ import Photos
 
 final class MarketRegisterAndEditViewController: UIViewController {
 
-    private enum State {
-        static let registration = "상품등록"
-        static let edit = "상품수정"
+    enum State: String {
+        case registration = "상품등록"
+        case edit = "상품수정"
     }
     
     private let imageCollectionView: UICollectionView = {
@@ -44,7 +44,6 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
         setDataSource()
         setDelegate()
         setConstraint()
@@ -57,6 +56,16 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     @objc private func tappedAddButton() {
         self.present(self.itemPickerViewController, animated: true, completion: nil)
+    }
+    
+    func setRegisterAndEditViewController(state: State) {
+        self.view.backgroundColor = .white
+        switch state {
+        case .registration:
+            self.navigationItem.title = State.registration.rawValue
+        case .edit:
+            self.navigationItem.title = State.edit.rawValue
+        }
     }
     
     private func setDataSource() {

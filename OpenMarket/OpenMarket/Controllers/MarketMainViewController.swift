@@ -92,6 +92,7 @@ final class MarketMainViewController: UIViewController {
     
     @objc private func tappedRegisterAndEditItemButton() {
         let viewController = MarketRegisterAndEditViewController()
+        viewController.setRegisterAndEditViewController(state: .registration)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
