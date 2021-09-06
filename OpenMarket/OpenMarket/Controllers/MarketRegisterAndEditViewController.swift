@@ -176,27 +176,27 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     private func validItemInfomation() -> Bool {
         guard let _ = self.itemInfomation.title else {
-            self.alert(title: "제목을 입력해주세요.")
+            self.alert(title: MarketInputError.title.rawValue)
             return false
         }
         
         guard let _ = self.itemInfomation.currency else {
-            self.alert(title: "화폐 단위를 입력해주세요.")
+            self.alert(title: MarketInputError.currency.rawValue)
             return false
         }
         
         guard let _ = self.itemInfomation.price else {
-            self.alert(title: "상품의 가격을 입력해주세요.")
+            self.alert(title: MarketInputError.price.rawValue)
             return false
         }
         
         guard let _ = self.itemInfomation.stock else {
-            self.alert(title: "상품의 개수를 입력해주세요.")
+            self.alert(title: MarketInputError.stock.rawValue)
             return false
         }
         
         guard let _ = self.itemInfomation.itemDescription else {
-            self.alert(title: "상품 상세설명을 입력해주세요")
+            self.alert(title: MarketInputError.description.rawValue)
             return false
         }
         
@@ -410,21 +410,21 @@ extension MarketRegisterAndEditViewController: UITextFieldDelegate {
             self.itemInfomation.title = textField.text
         case Identifier.itemPrice.rawValue:
             guard let _ = Int(textField.text ?? "") else {
-                self.alert(title: "상품 가격은 숫자만 가능합니다.")
+                self.alert(title: MarketInputError.priceType.rawValue)
                 self.itemPrice.text = nil
                 return
             }
             self.itemInfomation.price = textField.text
         case Identifier.itemDiscountPrice.rawValue:
             guard let _ = Int(textField.text ?? "") else {
-                self.alert(title: "상품 할인가격은 숫자만 가능합니다.")
+                self.alert(title: MarketInputError.discountPriceType.rawValue)
                 self.itemDiscountPrice.text = nil
                 return
             }
             self.itemInfomation.discountPrice = textField.text
         case Identifier.itemStock.rawValue:
             guard let _ = Int(textField.text ?? "") else {
-                self.alert(title: "상품 수량은 숫자만 가능합니다.")
+                self.alert(title: MarketInputError.stockType.rawValue)
                 self.itemStock.text = nil
                 return
             }
