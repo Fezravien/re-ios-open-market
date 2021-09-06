@@ -69,6 +69,10 @@ final class MarketRegisterAndEditViewController: UIViewController {
         enum ItemDescription {
             static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
         }
+        
+        enum CollectionHeader {
+            static let margin: UIEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
+        }
     }
     
     private let imageCollectionView: UICollectionView = {
@@ -390,7 +394,7 @@ extension MarketRegisterAndEditViewController: UICollectionViewDelegateFlowLayou
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        return Style.CollectionHeader.margin
     }
 }
 
