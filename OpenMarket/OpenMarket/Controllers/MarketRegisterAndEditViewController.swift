@@ -12,9 +12,31 @@ import Photos
 final class MarketRegisterAndEditViewController: UIViewController {
     static let notificationName = "TapAddButton"
     
+    struct itemInfomation {
+        var title: String?
+        var currency: String?
+        var price: String?
+        var discountPrice: String?
+        var stock: String?
+        var itemDescription: String?
+    }
+    
     enum State: String {
         case registration = "상품등록"
         case edit = "상품수정"
+    }
+    
+    private enum CurrencyState: String, CaseIterable {
+        case korea = "KRW"
+        case usa = "USD"
+        case japan = "JPY"
+    }
+    
+    private enum Identifier: String {
+        case itemTitle = "Title"
+        case itemPrice = "Price"
+        case itemDiscountPrice = "DiscountPrice"
+        case itemStock = "Stock"
     }
     
     private let imageCollectionView: UICollectionView = {
@@ -41,6 +63,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.autocorrectionType = .no
         textField.placeholder = "글 제목을 입력해주세요"
+        textField.accessibilityIdentifier = Identifier.itemTitle.rawValue
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -48,6 +71,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         let textField = UITextField()
         textField.font = .preferredFont(forTextStyle: .subheadline)
         textField.autocorrectionType = .no
+        textField.textAlignment = .center
         textField.placeholder = "화폐단위"
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -57,6 +81,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 가격을 입력해주세요"
+        textField.accessibilityIdentifier = Identifier.itemPrice.rawValue
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -65,6 +90,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 할인가를 입력해주세요 (옵션)"
+        textField.accessibilityIdentifier = Identifier.itemDiscountPrice.rawValue
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -73,6 +99,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 수량을 입력해주세요"
+        textField.accessibilityIdentifier = Identifier.itemStock.rawValue
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -88,8 +115,22 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
+    private let currencyPickerToolber: UIToolbar = {
+        let toolbar = UIToolbar()
+        toolbar.barStyle = .default
+        toolbar.isTranslucent = true
+        toolbar.backgroundColor = .systemGray
+        toolbar.sizeToFit()
+        return toolbar
+    }()
+    private let currencyPickerView: UIPickerView = {
+        let pickerView = UIPickerView()
+        return pickerView
+    }()
     private let marketRegisterAndEditViewModel = MarketRegisterAndEditViewModel()
     private var itemImageCount = 0
+    private var currencys = CurrencyState.allCases.map { $0.rawValue }
+    private var itemInfomation = itemInfomation(title: nil, currency: nil, price: nil, discountPrice: nil, stock: nil, itemDescription: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,6 +138,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         setDataSource()
         setDelegate()
         setConstraints()
+        setCurrencyTextField()
         setNotificationCenter()
     }
     
@@ -105,6 +147,16 @@ final class MarketRegisterAndEditViewController: UIViewController {
             if self.itemImageCount == self.marketRegisterAndEditViewModel.itemImageCount {
                 self.imageCollectionView.reloadData()
             }
+        }
+    }
+    func setRegisterAndEditViewController(state: State) {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(tappedFinishDoneButton))
+        self.view.backgroundColor = .white
+        switch state {
+        case .registration:
+            self.navigationItem.title = State.registration.rawValue
+        case .edit:
+            self.navigationItem.title = State.edit.rawValue
         }
     }
     
@@ -116,14 +168,59 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.present(self.itemPickerViewController, animated: true, completion: nil)
     }
     
-    func setRegisterAndEditViewController(state: State) {
-        self.view.backgroundColor = .white
-        switch state {
-        case .registration:
-            self.navigationItem.title = State.registration.rawValue
-        case .edit:
-            self.navigationItem.title = State.edit.rawValue
+    @objc private func tappedFinishDoneButton() {
+        if validItemInfomation() {
+            
         }
+    }
+    
+    private func validItemInfomation() -> Bool {
+        guard let _ = self.itemInfomation.title else {
+            self.alert(title: "제목을 입력해주세요.")
+            return false
+        }
+        
+        guard let _ = self.itemInfomation.currency else {
+            self.alert(title: "화폐 단위를 입력해주세요.")
+            return false
+        }
+        
+        guard let _ = self.itemInfomation.price else {
+            self.alert(title: "상품의 가격을 입력해주세요.")
+            return false
+        }
+        
+        guard let _ = self.itemInfomation.stock else {
+            self.alert(title: "상품의 개수를 입력해주세요.")
+            return false
+        }
+        
+        guard let _ = self.itemInfomation.itemDescription else {
+            self.alert(title: "상품 상세설명을 입력해주세요")
+            return false
+        }
+        
+        return true
+    }
+    
+    private func setCurrencyTextField() {
+        let doneButton = UIBarButtonItem(title: "확인", style: .done, target: self, action: #selector(tappedDoneButton))
+        let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        let cancelButton = UIBarButtonItem(title: "취소", style: .done, target: self, action: #selector(tappedCancelButton))
+        
+        self.currencyPickerToolber.setItems([cancelButton, space, doneButton], animated: true)
+        self.currencyPickerToolber.isUserInteractionEnabled = true
+        self.itemCurrency.inputView = self.currencyPickerView
+        self.itemCurrency.inputAccessoryView = self.currencyPickerToolber
+    }
+    
+    @objc private func tappedDoneButton() {
+        self.itemCurrency.text = self.itemInfomation.currency ?? ""
+        self.itemCurrency.resignFirstResponder()
+    }
+    
+    @objc private func tappedCancelButton() {
+        self.itemCurrency.resignFirstResponder()
     }
     
     private func setDataSource() {
@@ -133,6 +230,12 @@ final class MarketRegisterAndEditViewController: UIViewController {
     private func setDelegate() {
         self.imageCollectionView.delegate = self
         self.itemPickerViewController.delegate = self
+        self.currencyPickerView.delegate = self
+        self.itemTitle.delegate = self
+        self.itemPrice.delegate = self
+        self.itemDiscountPrice.delegate = self
+        self.itemStock.delegate = self
+        self.itemDescription.delegate = self
     }
     
     private func setConstraints() {
@@ -277,5 +380,63 @@ extension MarketRegisterAndEditViewController: PHPickerViewControllerDelegate {
                 picker.dismiss(animated: true, completion: nil)
             }
         }
+    }
+}
+
+extension MarketRegisterAndEditViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.currencys.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return self.currencys[row]
+    }
+}
+
+extension MarketRegisterAndEditViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.itemInfomation.currency = self.currencys[row]
+    }
+}
+
+extension MarketRegisterAndEditViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        switch textField.accessibilityIdentifier {
+        case Identifier.itemTitle.rawValue:
+            self.itemInfomation.title = textField.text
+        case Identifier.itemPrice.rawValue:
+            guard let _ = Int(textField.text ?? "") else {
+                self.alert(title: "상품 가격은 숫자만 가능합니다.")
+                self.itemPrice.text = nil
+                return
+            }
+            self.itemInfomation.price = textField.text
+        case Identifier.itemDiscountPrice.rawValue:
+            guard let _ = Int(textField.text ?? "") else {
+                self.alert(title: "상품 할인가격은 숫자만 가능합니다.")
+                self.itemDiscountPrice.text = nil
+                return
+            }
+            self.itemInfomation.discountPrice = textField.text
+        case Identifier.itemStock.rawValue:
+            guard let _ = Int(textField.text ?? "") else {
+                self.alert(title: "상품 수량은 숫자만 가능합니다.")
+                self.itemStock.text = nil
+                return
+            }
+            self.itemInfomation.stock = textField.text
+        default:
+            return
+        }
+    }
+}
+
+extension MarketRegisterAndEditViewController: UITextViewDelegate {
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.itemInfomation.itemDescription = textView.text
     }
 }
