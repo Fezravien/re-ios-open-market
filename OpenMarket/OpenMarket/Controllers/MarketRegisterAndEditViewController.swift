@@ -32,11 +32,43 @@ final class MarketRegisterAndEditViewController: UIViewController {
         case japan = "JPY"
     }
     
-    private enum Identifier: String {
-        case itemTitle = "Title"
-        case itemPrice = "Price"
-        case itemDiscountPrice = "DiscountPrice"
-        case itemStock = "Stock"
+    private enum Identifier {
+        static let itemTitle = "Title"
+        static let itemPrice = "Price"
+        static let itemDiscountPrice = "DiscountPrice"
+        static let itemStock = "Stock"
+    }
+    
+    private enum Style {
+        enum ImageCollectionView {
+            static let margin: UIEdgeInsets = .init(top: 20, left: 0, bottom: 0, right: 0)
+            static let height: CGFloat = 1/10
+        }
+        
+        enum ItemTitle {
+            static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
+        }
+        
+        enum ItemCurrency {
+            static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: 0)
+            static let width: CGFloat = 3/20
+        }
+        
+        enum ItemPrice {
+            static let margin: UIEdgeInsets = .init(top: 0, left: 15, bottom: 0, right: -15)
+        }
+        
+        enum ItemDiscountPrice {
+            static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
+        }
+        
+        enum ItemStock {
+            static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
+        }
+        
+        enum ItemDescription {
+            static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
+        }
     }
     
     private let imageCollectionView: UICollectionView = {
@@ -63,7 +95,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.autocorrectionType = .no
         textField.placeholder = "글 제목을 입력해주세요"
-        textField.accessibilityIdentifier = Identifier.itemTitle.rawValue
+        textField.accessibilityIdentifier = Identifier.itemTitle
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -81,7 +113,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 가격을 입력해주세요"
-        textField.accessibilityIdentifier = Identifier.itemPrice.rawValue
+        textField.accessibilityIdentifier = Identifier.itemPrice
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -90,7 +122,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 할인가를 입력해주세요 (옵션)"
-        textField.accessibilityIdentifier = Identifier.itemDiscountPrice.rawValue
+        textField.accessibilityIdentifier = Identifier.itemDiscountPrice
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -99,7 +131,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textField.font = .preferredFont(forTextStyle: .headline)
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 수량을 입력해주세요"
-        textField.accessibilityIdentifier = Identifier.itemStock.rawValue
+        textField.accessibilityIdentifier = Identifier.itemStock
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -253,9 +285,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             self.imageCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            self.imageCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            self.imageCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: Style.ImageCollectionView.margin.top),
             self.imageCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            self.imageCollectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 1/10)
+            self.imageCollectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: Style.ImageCollectionView.height)
         ])
     }
     
@@ -263,9 +295,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.addSubview(self.itemTitle)
         
         NSLayoutConstraint.activate([
-            self.itemTitle.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
-            self.itemTitle.topAnchor.constraint(equalTo: self.imageCollectionView.bottomAnchor, constant: 30),
-            self.itemTitle.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15),
+            self.itemTitle.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: Style.ItemTitle.margin.left),
+            self.itemTitle.topAnchor.constraint(equalTo: self.imageCollectionView.bottomAnchor, constant: Style.ItemTitle.margin.top),
+            self.itemTitle.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: Style.ItemTitle.margin.right),
         ])
     }
     
@@ -273,9 +305,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.addSubview(self.itemCurrency)
         
         NSLayoutConstraint.activate([
-            self.itemCurrency.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
-            self.itemCurrency.topAnchor.constraint(equalTo: self.itemTitle.bottomAnchor, constant: 30),
-            self.itemCurrency.widthAnchor.constraint(equalTo: self.itemTitle.widthAnchor, multiplier: 3/20)
+            self.itemCurrency.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: Style.ItemCurrency.margin.left),
+            self.itemCurrency.topAnchor.constraint(equalTo: self.itemTitle.bottomAnchor, constant: Style.ItemCurrency.margin.top),
+            self.itemCurrency.widthAnchor.constraint(equalTo: self.itemTitle.widthAnchor, multiplier: Style.ItemCurrency.width)
         ])
     }
     
@@ -283,9 +315,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.addSubview(self.itemPrice)
         
         NSLayoutConstraint.activate([
-            self.itemPrice.leadingAnchor.constraint(equalTo: self.itemCurrency.trailingAnchor, constant: 15),
+            self.itemPrice.leadingAnchor.constraint(equalTo: self.itemCurrency.trailingAnchor, constant: Style.ItemPrice.margin.left),
             self.itemPrice.topAnchor.constraint(equalTo: self.itemCurrency.topAnchor),
-            self.itemPrice.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15)
+            self.itemPrice.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: Style.ItemPrice.margin.right)
         ])
     }
     
@@ -293,9 +325,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.addSubview(self.itemDiscountPrice)
         
         NSLayoutConstraint.activate([
-            self.itemDiscountPrice.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
-            self.itemDiscountPrice.topAnchor.constraint(equalTo: self.itemCurrency.bottomAnchor, constant: 30),
-            self.itemDiscountPrice.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15),
+            self.itemDiscountPrice.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: Style.ItemDiscountPrice.margin.left),
+            self.itemDiscountPrice.topAnchor.constraint(equalTo: self.itemCurrency.bottomAnchor, constant: Style.ItemDiscountPrice.margin.top),
+            self.itemDiscountPrice.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: Style.ItemDiscountPrice.margin.right),
         ])
     }
     
@@ -303,9 +335,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.addSubview(self.itemStock)
         
         NSLayoutConstraint.activate([
-            self.itemStock.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
-            self.itemStock.topAnchor.constraint(equalTo: self.itemDiscountPrice.bottomAnchor, constant: 30),
-            self.itemStock.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15),
+            self.itemStock.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: Style.ItemStock.margin.left),
+            self.itemStock.topAnchor.constraint(equalTo: self.itemDiscountPrice.bottomAnchor, constant: Style.ItemStock.margin.top),
+            self.itemStock.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: Style.ItemStock.margin.right),
         ])
     }
     
@@ -313,9 +345,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.addSubview(self.itemDescription)
         
         NSLayoutConstraint.activate([
-            self.itemDescription.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: 15),
-            self.itemDescription.topAnchor.constraint(equalTo: self.itemStock.bottomAnchor, constant: 30),
-            self.itemDescription.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: -15),
+            self.itemDescription.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: Style.ItemDescription.margin.left),
+            self.itemDescription.topAnchor.constraint(equalTo: self.itemStock.bottomAnchor, constant: Style.ItemDescription.margin.top),
+            self.itemDescription.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: Style.ItemDescription.margin.right),
             self.itemDescription.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
@@ -406,23 +438,23 @@ extension MarketRegisterAndEditViewController: UIPickerViewDelegate {
 extension MarketRegisterAndEditViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField.accessibilityIdentifier {
-        case Identifier.itemTitle.rawValue:
+        case Identifier.itemTitle:
             self.itemInfomation.title = textField.text
-        case Identifier.itemPrice.rawValue:
+        case Identifier.itemPrice:
             guard let _ = Int(textField.text ?? "") else {
                 self.alert(title: MarketInputError.priceType.rawValue)
                 self.itemPrice.text = nil
                 return
             }
             self.itemInfomation.price = textField.text
-        case Identifier.itemDiscountPrice.rawValue:
+        case Identifier.itemDiscountPrice:
             guard let _ = Int(textField.text ?? "") else {
                 self.alert(title: MarketInputError.discountPriceType.rawValue)
                 self.itemDiscountPrice.text = nil
                 return
             }
             self.itemInfomation.discountPrice = textField.text
-        case Identifier.itemStock.rawValue:
+        case Identifier.itemStock:
             guard let _ = Int(textField.text ?? "") else {
                 self.alert(title: MarketInputError.stockType.rawValue)
                 self.itemStock.text = nil
