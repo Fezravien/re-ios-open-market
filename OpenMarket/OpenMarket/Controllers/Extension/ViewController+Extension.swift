@@ -17,4 +17,20 @@ extension UIViewController {
     
         self.present(alert, animated: true)
     }
+    
+    func alertInputPassword(completion: @escaping (String) -> ()) {
+        var textField = UITextField()
+        let alert: UIAlertController = UIAlertController(title: "비밀번호를 입력해주세요.", message: nil, preferredStyle: .alert)
+        alert.addTextField { alterTextField in
+            alterTextField.placeholder = "비밀번호"
+            textField = alterTextField
+        }
+        let okAction = UIAlertAction(title: "확인", style: .default) { _ in
+            completion(textField.text!)
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
+    }
 }
