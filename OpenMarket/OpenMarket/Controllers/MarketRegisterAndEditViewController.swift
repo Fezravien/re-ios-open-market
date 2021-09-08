@@ -169,6 +169,7 @@ final class MarketRegisterAndEditViewController: UIViewController, MarketRequest
         return pickerView
     }()
     private let marketRegisterAndEditViewModel = MarketRegisterAndEditViewModel()
+    private var state: State?
     private var itemImageCount = 0
     private var currencys = CurrencyState.allCases.map { $0.rawValue }
     private var itemInfomation = itemInfomation(title: nil, currency: nil, price: nil, discountPrice: nil, stock: nil, itemDescription: nil)
@@ -193,6 +194,7 @@ final class MarketRegisterAndEditViewController: UIViewController, MarketRequest
     func setRegisterAndEditViewController(state: State) {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(tappedFinishDoneButton))
         self.view.backgroundColor = .white
+        self.state = state
         switch state {
         case .registration:
             self.navigationItem.title = State.registration.rawValue
@@ -210,46 +212,60 @@ final class MarketRegisterAndEditViewController: UIViewController, MarketRequest
     }
     
     @objc private func tappedFinishDoneButton() {
-        if validItemInfomation() {
-            guard let title = self.itemInfomation.title,
-                  let currency = self.itemInfomation.currency,
-                  let price = self.itemInfomation.price,
-                  let stock = self.itemInfomation.stock,
-                  let description = self.itemInfomation.itemDescription else {
-                
-                return
-            }
-            self.alertInputPassword { [weak self] password in
-                let registerationData = ItemRegistration(title: title,
-                                                         descriptions: description,
-                                                         price: UInt(price)!,
-                                                         currency: currency,
-                                                         stock: UInt32(stock)!,
-                                                         discountedPrice: self?.itemInfomation.discountPrice == nil ? nil : UInt(self?.itemInfomation.discountPrice ?? "")!,
-                                                         images: (self?.marketRegisterAndEditViewModel.getItemImages())!,
-                                                         password: password)
-                
-                let registerationRequest = self?.createRequest(url: NetworkConstant.registrate.url, encodeBody: registerationData, method: .post)
-                switch registerationRequest {
-                case .success(let data):
-                    guard let request = data else { return }
-                    self?.marketRegisterAndEditViewModel.post(request: request, decodeType: Item.self, completion: { result in
-                        switch result {
-                        case .success(_):
-                            DispatchQueue.main.async {
-                                self?.navigationController?.popViewController(animated: true)
+        switch self.state {
+        case .registration:
+            if validItemInfomation() {
+                self.alertInputPassword { [weak self] password in
+                    switch self?.createRequest(password) {
+                    case .success(let data):
+                        guard let request = data else { return }
+                        self?.marketRegisterAndEditViewModel.post(request: request, decodeType: Item.self, completion: { result in
+                            switch result {
+                            case .success(_):
+                                DispatchQueue.main.async {
+                                    self?.navigationController?.popViewController(animated: true)
+                                }
+                            case .failure(_) :
+                                return
                             }
-                        case .failure(_) :
-                            return
-                        }
-                    })
-                case .failure(_):
-                    return
-                case .none:
-                    return
+                        })
+                    case .failure(_):
+                        return
+                    case .none:
+                        return
+                    }
                 }
             }
+        case .edit:
+            print()
+        case .none:
+            return
         }
+        
+    }
+    
+    private func createRequest(_ password: String) -> Result<URLRequest?, Error>? {
+        guard let title = self.itemInfomation.title,
+              let currency = self.itemInfomation.currency,
+              let price = self.itemInfomation.price,
+              let stock = self.itemInfomation.stock,
+              let description = self.itemInfomation.itemDescription else {
+            
+            return nil
+        }
+        
+        let registerationData = ItemRegistration(title: title,
+                                                 descriptions: description,
+                                                 price: UInt(price)!,
+                                                 currency: currency,
+                                                 stock: UInt32(stock)!,
+                                                 discountedPrice: self.itemInfomation.discountPrice == nil ? nil : UInt(self.itemInfomation.discountPrice ?? "")!,
+                                                 images: self.marketRegisterAndEditViewModel.getItemImages(),
+                                                 password: password)
+        
+        let registerationRequest = self.createRequest(url: NetworkConstant.registrate.url, encodeBody: registerationData, method: .post)
+        
+        return registerationRequest
     }
     
     private func validItemInfomation() -> Bool {
