@@ -9,7 +9,7 @@ import UIKit
 import PhotosUI
 import Photos
 
-final class MarketRegisterAndEditViewController: UIViewController {
+final class MarketRegisterAndEditViewController: UIViewController, MarketRequest {
     static let notificationName = "TapAddButton"
     
     struct itemInfomation {
@@ -97,6 +97,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     private let itemTitle: UITextField = {
         let textField = UITextField()
         textField.font = .preferredFont(forTextStyle: .headline)
+        textField.textColor = .black
         textField.autocorrectionType = .no
         textField.placeholder = "글 제목을 입력해주세요"
         textField.accessibilityIdentifier = Identifier.itemTitle
@@ -106,6 +107,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     private let itemCurrency: UITextField = {
         let textField = UITextField()
         textField.font = .preferredFont(forTextStyle: .subheadline)
+        textField.textColor = .black
         textField.autocorrectionType = .no
         textField.textAlignment = .center
         textField.placeholder = "화폐단위"
@@ -115,6 +117,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     private let itemPrice: UITextField = {
         let textField = UITextField()
         textField.font = .preferredFont(forTextStyle: .headline)
+        textField.textColor = .black
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 가격을 입력해주세요"
         textField.accessibilityIdentifier = Identifier.itemPrice
@@ -124,6 +127,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     private let itemDiscountPrice: UITextField = {
         let textField = UITextField()
         textField.font = .preferredFont(forTextStyle: .headline)
+        textField.textColor = .black
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 할인가를 입력해주세요 (옵션)"
         textField.accessibilityIdentifier = Identifier.itemDiscountPrice
@@ -133,6 +137,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     private let itemStock: UITextField = {
         let textField = UITextField()
         textField.font = .preferredFont(forTextStyle: .headline)
+        textField.textColor = .black
         textField.autocorrectionType = .no
         textField.placeholder = "상품의 수량을 입력해주세요"
         textField.accessibilityIdentifier = Identifier.itemStock
@@ -206,7 +211,44 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     @objc private func tappedFinishDoneButton() {
         if validItemInfomation() {
-            
+            guard let title = self.itemInfomation.title,
+                  let currency = self.itemInfomation.currency,
+                  let price = self.itemInfomation.price,
+                  let stock = self.itemInfomation.stock,
+                  let description = self.itemInfomation.itemDescription else {
+                
+                return
+            }
+            self.alertInputPassword { [weak self] password in
+                let registerationData = ItemRegistration(title: title,
+                                                         descriptions: description,
+                                                         price: UInt(price)!,
+                                                         currency: currency,
+                                                         stock: UInt32(stock)!,
+                                                         discountedPrice: self?.itemInfomation.discountPrice == nil ? nil : UInt(self?.itemInfomation.discountPrice ?? "")!,
+                                                         images: (self?.marketRegisterAndEditViewModel.getItemImages())!,
+                                                         password: password)
+                
+                let registerationRequest = self?.createRequest(url: NetworkConstant.registrate.url, encodeBody: registerationData, method: .post)
+                switch registerationRequest {
+                case .success(let data):
+                    guard let request = data else { return }
+                    self?.marketRegisterAndEditViewModel.post(request: request, decodeType: Item.self, completion: { result in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                self?.navigationController?.popViewController(animated: true)
+                            }
+                        case .failure(_) :
+                            return
+                        }
+                    })
+                case .failure(_):
+                    return
+                case .none:
+                    return
+                }
+            }
         }
     }
     

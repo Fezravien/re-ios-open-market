@@ -214,8 +214,6 @@
 			children = (
 				6D846D6426D88A1800349480 /* OpenMarketNetwork.swift */,
 				6D846D6626D88AA600349480 /* MarketDecode.swift */,
-				6D955AD526E73AFE004144F7 /* MultiPartFormConvert.swift */,
-				6D955ADA26E74103004144F7 /* MarketRequest.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -239,6 +237,7 @@
 		6D846D6C26DA045100349480 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				6D955ADC26E744CE004144F7 /* Protocol */,
 				6D846D8F26E5F0B200349480 /* Error */,
 				6D846D8A26E3D5AC00349480 /* Extension */,
 				6D846D6D26DA048400349480 /* MarketMainViewController.swift */,
@@ -297,6 +296,15 @@
 				6D955AD826E73D20004144F7 /* Data+Extension.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		6D955ADC26E744CE004144F7 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				6D955AD526E73AFE004144F7 /* MultiPartFormConvert.swift */,
+				6D955ADA26E74103004144F7 /* MarketRequest.swift */,
+			);
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
