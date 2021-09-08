@@ -43,6 +43,7 @@ final class MarketListCollectionViewCell: UICollectionViewCell {
     private let itemTitle: UILabel = {
         let label = UILabel()
         label.font = UIFont.preferredFont(forTextStyle: .headline)
+        label.textColor = .black
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

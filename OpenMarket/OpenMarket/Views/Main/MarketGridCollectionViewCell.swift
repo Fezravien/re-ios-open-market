@@ -44,6 +44,7 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.preferredFont(forTextStyle: .headline)
         label.numberOfLines = 2
+        label.textColor = .black
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
