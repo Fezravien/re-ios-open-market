@@ -16,11 +16,11 @@ final class MarketMainViewModel {
         }
     }
     
-    var marketItemsCount: Int {
+    var getMarketItemsCount: Int {
         return marketItems.count
     }
     
-    func marketItem(index: Int) -> Item {
+    func getMarketItem(index: Int) -> Item {
         return marketItems[index]
     }
     
