@@ -9,12 +9,13 @@ import UIKit
 
 final class MarketRegisterAndEditViewModel {
     var imageChanged: () -> () = { }
-    
+    private let networkManager = NetworkManager(loader: MarketNetwork(), decoder: JSONDecoder())
     private var itemImage: [UIImage] = [] {
         didSet {
             self.imageChanged()
         }
     }
+    private let mareketMainViewModel = MarketMainViewModel()
     
     var itemImageCount: Int { itemImage.count }
     
@@ -22,7 +23,30 @@ final class MarketRegisterAndEditViewModel {
         return self.itemImage[index]
     }
     
+    func getItemImages() -> [Data] {
+        var imageData: [Data] = []
+        for image in itemImage {
+            imageData.append(image.compress() ?? Data())
+        }
+        return imageData
+    }
+    
     func appendItemImage(_ image: UIImage) {
         self.itemImage.append(image)
+    }
+    
+    func post<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<Bool, Error>) -> Void) where T: Decodable {
+        self.networkManager.excuteDecode(request: request, decodeType: decodeType) { result in
+            switch result {
+            case .success(_):
+                completion(.success(true))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func patch() {
+        
     }
 }
