@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ItemRegistration {
+struct ItemRegistration: Encodable {
     let title: String
     let descriptions: String
     let price: UInt
@@ -16,4 +16,8 @@ struct ItemRegistration {
     let discountedPrice: UInt?
     let images: [Data]
     let password: String
+    
+    enum Codingkeys: String, CodingKey {
+        case discountedPrice = "discounted_price"
+    }
 }
