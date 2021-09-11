@@ -7,11 +7,11 @@
 
 import Foundation
 
-final class NetworkManager {
-    private let loader: MarketNetwork
+final class NetworkManager: MarketRequest {
+    private let loader: OpenMarketNetwork
     private let decoder: MarketDecode
     
-    init(loader: MarketNetwork, decoder: MarketDecode) {
+    init(loader: OpenMarketNetwork, decoder: MarketDecode) {
         self.loader = loader
         self.decoder = decoder
     }

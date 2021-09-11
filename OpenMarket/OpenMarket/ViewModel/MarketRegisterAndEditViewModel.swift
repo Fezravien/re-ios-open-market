@@ -15,7 +15,6 @@ final class MarketRegisterAndEditViewModel {
             self.imageChanged()
         }
     }
-    private let mareketMainViewModel = MarketMainViewModel()
     
     var itemImageCount: Int { itemImage.count }
     
@@ -33,6 +32,10 @@ final class MarketRegisterAndEditViewModel {
     
     func appendItemImage(_ image: UIImage) {
         self.itemImage.append(image)
+    }
+    
+    func createRequest<T: NetworkExchangeable>(url: URL?, type: T, method: NetworkConstant.Method) -> URLRequest? {
+        try! self.networkManager.createRequest(url: url, type: type, method: method)
     }
     
     func post<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<Bool, Error>) -> Void) where T: Decodable {

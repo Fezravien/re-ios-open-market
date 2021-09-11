@@ -8,39 +8,39 @@
 import Foundation
 
 protocol MarketRequest: MulitPartFormConvert {
-    func createRequest<T: Encodable>(url: URL?, encodeBody body: T, method: NetworkConstant.Method) -> Result<URLRequest?, Error>
-    func createMultipartFormRequest<T: Encodable>(url: URL, encodeBody body: T, method: NetworkConstant.Method) -> URLRequest
+    func createRequest<T: NetworkExchangeable>(url: URL?, type: T, method: NetworkConstant.Method) throws -> URLRequest?
+    func createMultipartFormRequest<T: NetworkExchangeable>(url: URL, type: T, method: NetworkConstant.Method) -> URLRequest
 }
 
 extension MarketRequest {
-    func createRequest<T: Encodable>(url: URL?, encodeBody body: T, method: NetworkConstant.Method) -> Result<URLRequest?, Error> {
-        guard let url = url else { return .failure(MarketModelError.url) }
+    func createRequest<T: NetworkExchangeable>(url: URL?, type: T, method: NetworkConstant.Method) throws -> URLRequest? {
+        guard let url = url else { throw MarketModelError.url }
         
         switch method {
         case .delete:
             let encode: Data
             do {
-                encode = try JSONEncoder().encode(body)
+                encode = try JSONEncoder().encode(type)
             } catch {
-                return .failure(MarketModelError.encoding(error))
+                throw MarketModelError.encoding(error)
             }
             var request = URLRequest(url: url)
             request.httpMethod = "DELETE"
             request.httpBody = encode
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            return .success(request)
+            return request
         case .post:
-            return .success(createMultipartFormRequest(url: url, encodeBody: body, method: .post))
+            return createMultipartFormRequest(url: url, type: type, method: .post)
         case .patch:
-            return .success(createMultipartFormRequest(url: url, encodeBody: body, method: .patch))
+            return createMultipartFormRequest(url: url, type: type, method: .patch)
         case .get:
-            return .failure(MarketModelError.get)
+            throw MarketModelError.get
         }
     }
     
-    func createMultipartFormRequest<T: Encodable>(url: URL, encodeBody body: T, method: NetworkConstant.Method) -> URLRequest {
+    func createMultipartFormRequest<T: NetworkExchangeable>(url: URL, type: T, method: NetworkConstant.Method) -> URLRequest {
         let boundary = baseBoundary()
-        let mirror = Mirror(reflecting: body)
+        let mirror = Mirror(reflecting: type)
         var bodyToDictionary: [String: Any] = [:]
         
         mirror.children.forEach {

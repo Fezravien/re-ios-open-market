@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ItemList: Decodable {
+struct ItemList: NetworkResponse {
     let page: UInt16
     let items: [Item]
 }

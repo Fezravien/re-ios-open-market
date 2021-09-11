@@ -9,7 +9,7 @@ import UIKit
 import PhotosUI
 import Photos
 
-final class MarketRegisterAndEditViewController: UIViewController, MarketRequest {
+final class MarketRegisterAndEditViewController: UIViewController {
     static let notificationName = "TapAddButton"
     
     struct itemInfomation {
@@ -216,24 +216,18 @@ final class MarketRegisterAndEditViewController: UIViewController, MarketRequest
         case .registration:
             if validItemInfomation() {
                 self.alertInputPassword { [weak self] password in
-                    switch self?.createRequest(password) {
-                    case .success(let data):
-                        guard let request = data else { return }
-                        self?.marketRegisterAndEditViewModel.post(request: request, decodeType: Item.self, completion: { result in
-                            switch result {
-                            case .success(_):
-                                DispatchQueue.main.async {
-                                    self?.navigationController?.popViewController(animated: true)
-                                }
-                            case .failure(_) :
-                                return
+                    guard let request = self?.createRequest(password) else { return }
+                    self?.marketRegisterAndEditViewModel.post(request: request, decodeType: Item.self, completion: { result in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                self?.navigationController?.popViewController(animated: true)
                             }
-                        })
-                    case .failure(_):
-                        return
-                    case .none:
-                        return
-                    }
+                        case .failure(_) :
+                            return
+                        }
+                    })
+                    
                 }
             }
         case .edit:
@@ -244,7 +238,7 @@ final class MarketRegisterAndEditViewController: UIViewController, MarketRequest
         
     }
     
-    private func createRequest(_ password: String) -> Result<URLRequest?, Error>? {
+    private func createRequest(_ password: String) -> URLRequest? {
         guard let title = self.itemInfomation.title,
               let currency = self.itemInfomation.currency,
               let price = self.itemInfomation.price,
@@ -263,7 +257,9 @@ final class MarketRegisterAndEditViewController: UIViewController, MarketRequest
                                                  images: self.marketRegisterAndEditViewModel.getItemImages(),
                                                  password: password)
         
-        let registerationRequest = self.createRequest(url: NetworkConstant.registrate.url, encodeBody: registerationData, method: .post)
+        let registerationRequest = self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registerationData, method: .post)
+        
+//            .self.createRequest(url: NetworkConstant.registrate.url, encodeBody: registerationData, method: .post)
         
         return registerationRequest
     }

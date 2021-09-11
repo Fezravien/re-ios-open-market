@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ItemModifcation: Encodable {
+struct ItemModifcation: NetworkRequest {
     let title: String?
     let descriptions: String?
     let price: UInt?
@@ -16,8 +16,4 @@ struct ItemModifcation: Encodable {
     let discountedPrice: UInt?
     let images: [Data]?
     let password: String
-    
-    enum Codingkeys: String, CodingKey {
-        case discountedPrice = "discounted_price"
-    }
 }
