@@ -123,10 +123,10 @@ final class MarketMainViewController: UIViewController {
     
     private func fetchMarketData(page: Int = 1) {
         self.marketindicater.startAnimating()
-        guard let fetchURL = NetworkConstant.itemList(page: page).url else { return }
-        let request = URLRequest(url: fetchURL)
+        guard let request = self.marketViewModel.createRequest(page) else { return }
     
-        self.marketViewModel.fetch(request: request, decodeType: ItemList.self) { [weak self] result in
+        self.marketViewModel.fetch(request: request, decodeType: ItemList.self) { [weak self] _ in
+            // TODO: - 실패 오류를 받아서 Alert로 사용자에게 알릴 수 있다.
             DispatchQueue.main.async {
                 self?.marketindicater.stopAnimating()
             }

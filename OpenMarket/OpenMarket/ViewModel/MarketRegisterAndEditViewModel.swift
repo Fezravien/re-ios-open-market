@@ -9,7 +9,7 @@ import UIKit
 
 final class MarketRegisterAndEditViewModel {
     var imageChanged: () -> () = { }
-    private let networkManager = NetworkManager(loader: MarketNetwork(), decoder: JSONDecoder())
+    private let networkManager = NetworkManager(loader: MarketNetwork(session: URLSession.shared), decoder: JSONDecoder())
     private var itemImage: [UIImage] = [] {
         didSet {
             self.imageChanged()
@@ -34,12 +34,19 @@ final class MarketRegisterAndEditViewModel {
         self.itemImage.append(image)
     }
     
-    func createRequest<T: NetworkExchangeable>(url: URL?, type: T, method: NetworkConstant.Method) -> URLRequest? {
-        try! self.networkManager.createRequest(url: url, type: type, method: method)
+    func createRequest<T: MultiPartForm>(url: URL?, type: T, method: NetworkConstant.Method) throws -> URLRequest? {
+        let request: URLRequest
+        do {
+            request = try self.networkManager.createRequest(url: url, encodeType: type, method: .post)
+        } catch {
+            throw MarketModelError.createRequest
+        }
+        
+        return request
     }
     
     func post<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<Bool, Error>) -> Void) where T: Decodable {
-        self.networkManager.excuteDecode(request: request, decodeType: decodeType) { result in
+        self.networkManager.excuteFetch(request: request, decodeType: decodeType) { result in
             switch result {
             case .success(_):
                 completion(.success(true))

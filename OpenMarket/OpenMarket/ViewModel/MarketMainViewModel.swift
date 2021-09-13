@@ -9,7 +9,7 @@ import Foundation
 
 final class MarketMainViewModel {
     var observer: () -> () = { }
-    private let networkManager = NetworkManager(loader: MarketNetwork(), decoder: JSONDecoder())
+    private let networkManager = NetworkManager(loader: MarketNetwork(session: URLSession.shared), decoder: JSONDecoder())
     private var marketItems: [Item] = [] {
         didSet {
             self.observer()
@@ -24,8 +24,13 @@ final class MarketMainViewModel {
         return marketItems[index]
     }
     
+    func createRequest(_ page: Int) -> URLRequest? {
+        let request = self.networkManager.createRequest(page)
+        return request
+    }
+    
     func fetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<Bool, Error>) -> Void) where T: Decodable {
-        self.networkManager.excuteDecode(request: request, decodeType: ItemList.self) { result in
+        self.networkManager.excuteFetch(request: request, decodeType: ItemList.self) { result in
             switch result {
             case .success(let data):
                 self.marketItems.append(contentsOf: data.items)

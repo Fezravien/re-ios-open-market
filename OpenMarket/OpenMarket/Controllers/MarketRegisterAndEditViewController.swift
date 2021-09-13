@@ -239,6 +239,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     private func createRequest(_ password: String) -> URLRequest? {
+        let request: URLRequest?
         guard let title = self.itemInfomation.title,
               let currency = self.itemInfomation.currency,
               let price = self.itemInfomation.price,
@@ -257,11 +258,12 @@ final class MarketRegisterAndEditViewController: UIViewController {
                                                  images: self.marketRegisterAndEditViewModel.getItemImages(),
                                                  password: password)
         
-        let registerationRequest = self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registerationData, method: .post)
-        
-//            .self.createRequest(url: NetworkConstant.registrate.url, encodeBody: registerationData, method: .post)
-        
-        return registerationRequest
+        do {
+            request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registerationData, method: .post)
+            return request
+        } catch {
+            return nil
+        }
     }
     
     private func validItemInfomation() -> Bool {
