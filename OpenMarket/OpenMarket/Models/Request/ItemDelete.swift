@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct ItemDelete: NetworkRequest {
+struct ItemDelete: Encodable {
     let password: String
 }

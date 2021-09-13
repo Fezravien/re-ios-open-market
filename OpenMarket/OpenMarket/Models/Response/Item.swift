@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Item: NetworkResponse {
+struct Item: Decodable {
     let id: UInt32
     let title: String
     let descriptions: String?
