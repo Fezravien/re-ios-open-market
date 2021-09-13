@@ -10,7 +10,7 @@ import Foundation
 enum MarketModelError: Error {
     case request(Error), response(Int)
     case encoding(Error), decoding(Error), casting(String), network(Error)
-    case url, data
+    case url, data, createRequest
     case get, post, patch, delete
 }
 
@@ -41,6 +41,8 @@ extension MarketModelError: LocalizedError {
             return "⛔️ \"DELECT\" 메소드 오류"
         case .url:
             return "⛔️ URL 오류"
+        case .createRequest:
+            return "⛔️ Request 생성 오류"
         }
     }
 }
