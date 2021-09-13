@@ -8,9 +8,13 @@
 import Foundation
 
 struct MarketNetwork: OpenMarketNetwork {
-    private let session: URLSession = .shared
+    private let session: MarketSession
     
-    func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) {
+    init(session: MarketSession) {
+        self.session = session
+    }
+    
+    func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data?, Error>) -> Void) {
         session.dataTask(with: request) { data, response, error in
             if let error = error { completion(.failure(MarketModelError.network(error))) }
             guard let response = response as? HTTPURLResponse else {
@@ -23,12 +27,7 @@ struct MarketNetwork: OpenMarketNetwork {
                 return
             }
             
-            guard let data = data else {
-                completion(.failure(MarketModelError.data))
-                return
-            }
-            
             completion(.success(data))
         }.resume()
-    }
+    }                        
 }

@@ -10,5 +10,3 @@ import Foundation
 protocol MarketDecode {
     func decode<T>(_ type: T.Type, from: Data) throws -> T where T : Decodable
 }
-
-extension JSONDecoder: MarketDecode { }
