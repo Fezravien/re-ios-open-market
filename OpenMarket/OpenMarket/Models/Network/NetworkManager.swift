@@ -10,10 +10,12 @@ import Foundation
 final class NetworkManager {
     private let loader: OpenMarketNetwork
     private let decoder: MarketDecode
+    private let encoder: MarketEncode
     
-    init(loader: OpenMarketNetwork, decoder: MarketDecode) {
+    init(loader: OpenMarketNetwork, decoder: MarketDecode, encoder: MarketEncode) {
         self.loader = loader
         self.decoder = decoder
+        self.encoder = encoder
     }
     
     func excuteFetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<T, Error>) -> Void) where T: Decodable {
@@ -56,7 +58,7 @@ final class NetworkManager {
         let encodeData: Data
         
         do {
-            encodeData = try JSONEncoder().encode(data)
+            encodeData = try encoder.encode(data)
         } catch {
             throw MarketModelError.encoding(error)
         }

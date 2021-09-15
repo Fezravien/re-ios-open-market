@@ -9,7 +9,7 @@ import Foundation
 
 final class MarketMainViewModel {
     var observer: () -> () = { }
-    private let networkManager = NetworkManager(loader: MarketNetwork(session: URLSession.shared), decoder: JSONDecoder())
+    private let networkManager = NetworkManager(loader: MarketNetwork(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
     private var marketItems: [Item] = [] {
         didSet {
             self.observer()
