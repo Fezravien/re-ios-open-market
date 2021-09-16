@@ -9,7 +9,12 @@ import Foundation
 @testable import OpenMarket
 
 final class MockEncoder: MarketEncode {
+    var isCalled = false
+    var inputValue: Encodable?
+
     func encode<T>(_ value: T) throws -> Data where T : Encodable {
-        return Data(try! encode(value))
+        self.isCalled = true
+        self.inputValue = value
+        return Data()
     }
 }
