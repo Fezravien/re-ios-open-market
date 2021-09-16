@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D644A8A26ECF29100279CC2 /* JSONDecoder+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A8926ECF29100279CC2 /* JSONDecoder+Extension.swift */; };
+		6D644A8C26ECF2BD00279CC2 /* MarketSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A8B26ECF2BD00279CC2 /* MarketSession.swift */; };
+		6D644A8E26ECF33B00279CC2 /* URLSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A8D26ECF33A00279CC2 /* URLSession+Extension.swift */; };
+		6D644A9026ED142900279CC2 /* MarketEncode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A8F26ED142900279CC2 /* MarketEncode.swift */; };
+		6D644A9226ED145700279CC2 /* JSONEncoder+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9126ED145700279CC2 /* JSONEncoder+Extension.swift */; };
+		6D644A9426ED15C300279CC2 /* MultiPartForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9326ED15C300279CC2 /* MultiPartForm.swift */; };
+		6D644A9626EFB74500279CC2 /* MockEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9526EFB74500279CC2 /* MockEncoder.swift */; };
+		6D644A9826F0A15000279CC2 /* MockSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9726F0A15000279CC2 /* MockSession.swift */; };
+		6D644A9A26F0C0F000279CC2 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9926F0C0F000279CC2 /* MockURLProtocol.swift */; };
+		6D644A9E26F0C14000279CC2 /* MarketNetworkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9D26F0C14000279CC2 /* MarketNetworkTest.swift */; };
+		6D644AA026F1DE9A00279CC2 /* EncodeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9F26F1DE9A00279CC2 /* EncodeTest.swift */; };
+		6D644AA226F1E47C00279CC2 /* NetworkManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AA126F1E47C00279CC2 /* NetworkManagerTest.swift */; };
+		6D644AA626F1E9FF00279CC2 /* MockNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AA526F1E9FF00279CC2 /* MockNetwork.swift */; };
+		6D644AAA26F379EE00279CC2 /* UIImageCompressTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AA926F379EE00279CC2 /* UIImageCompressTest.swift */; };
 		6D846D1026D75C8200349480 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D0F26D75C8200349480 /* AppDelegate.swift */; };
 		6D846D1226D75C8200349480 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D1126D75C8200349480 /* SceneDelegate.swift */; };
 		6D846D1926D75C8600349480 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D846D1826D75C8600349480 /* Assets.xcassets */; };
@@ -16,18 +30,27 @@
 		6D846D4726D75F0500349480 /* ItemRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D4626D75F0500349480 /* ItemRegistration.swift */; };
 		6D846D4926D75F3D00349480 /* ItemModifaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D4826D75F3D00349480 /* ItemModifaction.swift */; };
 		6D846D4B26D75F6800349480 /* ItemDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D4A26D75F6800349480 /* ItemDelete.swift */; };
-		6D846D4F26D78D0300349480 /* ItemListTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D4E26D78D0300349480 /* ItemListTest.swift */; };
-		6D846D5126D78D1A00349480 /* ItemTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5026D78D1A00349480 /* ItemTest.swift */; };
 		6D846D5926D7A3BE00349480 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5826D7A3BE00349480 /* NetworkManager.swift */; };
-		6D846D5D26D7A3FF00349480 /* MarketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5C26D7A3FF00349480 /* MarketViewModel.swift */; };
+		6D846D5D26D7A3FF00349480 /* MarketMainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5C26D7A3FF00349480 /* MarketMainViewModel.swift */; };
 		6D846D5F26D7A59300349480 /* NetworkConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D5E26D7A59300349480 /* NetworkConstant.swift */; };
 		6D846D6126D7A60500349480 /* MarketNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6026D7A60500349480 /* MarketNetwork.swift */; };
 		6D846D6526D88A1800349480 /* OpenMarketNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6426D88A1800349480 /* OpenMarketNetwork.swift */; };
-		6D846D6726D88AA600349480 /* OpenMarketDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6626D88AA600349480 /* OpenMarketDecode.swift */; };
+		6D846D6726D88AA600349480 /* MarketDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6626D88AA600349480 /* MarketDecode.swift */; };
 		6D846D6B26D8ED8500349480 /* MarketModelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6A26D8ED8500349480 /* MarketModelError.swift */; };
 		6D846D6E26DA048400349480 /* MarketMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D6D26DA048400349480 /* MarketMainViewController.swift */; };
 		6D846D7126DA6F8300349480 /* MarketListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D7026DA6F8300349480 /* MarketListCollectionViewCell.swift */; };
 		6D846D7326DFB17000349480 /* MarketGridCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D7226DFB17000349480 /* MarketGridCollectionViewCell.swift */; };
+		6D846D7726E0900F00349480 /* MarketRegisterAndEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D7626E0900F00349480 /* MarketRegisterAndEditViewController.swift */; };
+		6D846D7926E0B9BA00349480 /* MarketImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D7826E0B9BA00349480 /* MarketImageCollectionViewCell.swift */; };
+		6D846D7D26E0CEBC00349480 /* MarketImageCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D7C26E0CEBC00349480 /* MarketImageCollectionViewHeader.swift */; };
+		6D846D8426E316C900349480 /* MarketRegisterAndEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D8326E316C900349480 /* MarketRegisterAndEditViewModel.swift */; };
+		6D846D8E26E3D67A00349480 /* ViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D8D26E3D67A00349480 /* ViewController+Extension.swift */; };
+		6D846D9126E5F11F00349480 /* MarketInputError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D9026E5F11F00349480 /* MarketInputError.swift */; };
+		6D846D9426E616E900349480 /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D9326E616E900349480 /* UIImage+Extension.swift */; };
+		6D955AD926E73D20004144F7 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D955AD826E73D20004144F7 /* Data+Extension.swift */; };
+		6D955AE226E8C888004144F7 /* MockDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D955AE126E8C888004144F7 /* MockDecoder.swift */; };
+		6D955AE726E8CA88004144F7 /* DecodeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D955AE626E8CA88004144F7 /* DecodeTest.swift */; };
+		6D955AE926E8CB15004144F7 /* StubData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D955AE826E8CB15004144F7 /* StubData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +64,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6D644A8926ECF29100279CC2 /* JSONDecoder+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Extension.swift"; sourceTree = "<group>"; };
+		6D644A8B26ECF2BD00279CC2 /* MarketSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketSession.swift; sourceTree = "<group>"; };
+		6D644A8D26ECF33A00279CC2 /* URLSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Extension.swift"; sourceTree = "<group>"; };
+		6D644A8F26ED142900279CC2 /* MarketEncode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketEncode.swift; sourceTree = "<group>"; };
+		6D644A9126ED145700279CC2 /* JSONEncoder+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONEncoder+Extension.swift"; sourceTree = "<group>"; };
+		6D644A9326ED15C300279CC2 /* MultiPartForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPartForm.swift; sourceTree = "<group>"; };
+		6D644A9526EFB74500279CC2 /* MockEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEncoder.swift; sourceTree = "<group>"; };
+		6D644A9726F0A15000279CC2 /* MockSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSession.swift; sourceTree = "<group>"; };
+		6D644A9926F0C0F000279CC2 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
+		6D644A9D26F0C14000279CC2 /* MarketNetworkTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketNetworkTest.swift; sourceTree = "<group>"; };
+		6D644A9F26F1DE9A00279CC2 /* EncodeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeTest.swift; sourceTree = "<group>"; };
+		6D644AA126F1E47C00279CC2 /* NetworkManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerTest.swift; sourceTree = "<group>"; };
+		6D644AA526F1E9FF00279CC2 /* MockNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetwork.swift; sourceTree = "<group>"; };
+		6D644AA926F379EE00279CC2 /* UIImageCompressTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageCompressTest.swift; sourceTree = "<group>"; };
 		6D846D0C26D75C8200349480 /* OpenMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D846D0F26D75C8200349480 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6D846D1126D75C8200349480 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -54,18 +91,27 @@
 		6D846D4626D75F0500349480 /* ItemRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRegistration.swift; sourceTree = "<group>"; };
 		6D846D4826D75F3D00349480 /* ItemModifaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemModifaction.swift; sourceTree = "<group>"; };
 		6D846D4A26D75F6800349480 /* ItemDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDelete.swift; sourceTree = "<group>"; };
-		6D846D4E26D78D0300349480 /* ItemListTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListTest.swift; sourceTree = "<group>"; };
-		6D846D5026D78D1A00349480 /* ItemTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTest.swift; sourceTree = "<group>"; };
 		6D846D5826D7A3BE00349480 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		6D846D5C26D7A3FF00349480 /* MarketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketViewModel.swift; sourceTree = "<group>"; };
+		6D846D5C26D7A3FF00349480 /* MarketMainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketMainViewModel.swift; sourceTree = "<group>"; };
 		6D846D5E26D7A59300349480 /* NetworkConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConstant.swift; sourceTree = "<group>"; };
 		6D846D6026D7A60500349480 /* MarketNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketNetwork.swift; sourceTree = "<group>"; };
 		6D846D6426D88A1800349480 /* OpenMarketNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMarketNetwork.swift; sourceTree = "<group>"; };
-		6D846D6626D88AA600349480 /* OpenMarketDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMarketDecode.swift; sourceTree = "<group>"; };
+		6D846D6626D88AA600349480 /* MarketDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketDecode.swift; sourceTree = "<group>"; };
 		6D846D6A26D8ED8500349480 /* MarketModelError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketModelError.swift; sourceTree = "<group>"; };
 		6D846D6D26DA048400349480 /* MarketMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketMainViewController.swift; sourceTree = "<group>"; };
 		6D846D7026DA6F8300349480 /* MarketListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketListCollectionViewCell.swift; sourceTree = "<group>"; };
 		6D846D7226DFB17000349480 /* MarketGridCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketGridCollectionViewCell.swift; sourceTree = "<group>"; };
+		6D846D7626E0900F00349480 /* MarketRegisterAndEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketRegisterAndEditViewController.swift; sourceTree = "<group>"; };
+		6D846D7826E0B9BA00349480 /* MarketImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		6D846D7C26E0CEBC00349480 /* MarketImageCollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketImageCollectionViewHeader.swift; sourceTree = "<group>"; };
+		6D846D8326E316C900349480 /* MarketRegisterAndEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketRegisterAndEditViewModel.swift; sourceTree = "<group>"; };
+		6D846D8D26E3D67A00349480 /* ViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Extension.swift"; sourceTree = "<group>"; };
+		6D846D9026E5F11F00349480 /* MarketInputError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketInputError.swift; sourceTree = "<group>"; };
+		6D846D9326E616E900349480 /* UIImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
+		6D955AD826E73D20004144F7 /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
+		6D955AE126E8C888004144F7 /* MockDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDecoder.swift; sourceTree = "<group>"; };
+		6D955AE626E8CA88004144F7 /* DecodeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodeTest.swift; sourceTree = "<group>"; };
+		6D955AE826E8CB15004144F7 /* StubData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +171,7 @@
 			children = (
 				6D846D4C26D78CDE00349480 /* Models */,
 				6D846D2826D75C8600349480 /* Info.plist */,
+				6D644AA926F379EE00279CC2 /* UIImageCompressTest.swift */,
 			);
 			path = OpenMarketTests;
 			sourceTree = "<group>";
@@ -162,8 +209,12 @@
 		6D846D4C26D78CDE00349480 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				6D846D4E26D78D0300349480 /* ItemListTest.swift */,
-				6D846D5026D78D1A00349480 /* ItemTest.swift */,
+				6D955AF126E9F1CB004144F7 /* Stub */,
+				6D955AEA26E8E963004144F7 /* Mock */,
+				6D955AE626E8CA88004144F7 /* DecodeTest.swift */,
+				6D644A9F26F1DE9A00279CC2 /* EncodeTest.swift */,
+				6D644A9D26F0C14000279CC2 /* MarketNetworkTest.swift */,
+				6D644AA126F1E47C00279CC2 /* NetworkManagerTest.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -171,7 +222,8 @@
 		6D846D5626D7A16E00349480 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				6D846D5C26D7A3FF00349480 /* MarketViewModel.swift */,
+				6D846D5C26D7A3FF00349480 /* MarketMainViewModel.swift */,
+				6D846D8326E316C900349480 /* MarketRegisterAndEditViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -179,6 +231,7 @@
 		6D846D5726D7A3A600349480 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				6D955AD726E73CF0004144F7 /* Extension */,
 				6D846D6326D889B300349480 /* Constant */,
 				6D846D6226D889A500349480 /* Protocol */,
 				6D846D5826D7A3BE00349480 /* NetworkManager.swift */,
@@ -191,7 +244,10 @@
 			isa = PBXGroup;
 			children = (
 				6D846D6426D88A1800349480 /* OpenMarketNetwork.swift */,
-				6D846D6626D88AA600349480 /* OpenMarketDecode.swift */,
+				6D846D6626D88AA600349480 /* MarketDecode.swift */,
+				6D644A8F26ED142900279CC2 /* MarketEncode.swift */,
+				6D644A8B26ECF2BD00279CC2 /* MarketSession.swift */,
+				6D644A9326ED15C300279CC2 /* MultiPartForm.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -215,7 +271,10 @@
 		6D846D6C26DA045100349480 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				6D846D8F26E5F0B200349480 /* Error */,
+				6D846D8A26E3D5AC00349480 /* Extension */,
 				6D846D6D26DA048400349480 /* MarketMainViewController.swift */,
+				6D846D7626E0900F00349480 /* MarketRegisterAndEditViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -223,10 +282,76 @@
 		6D846D6F26DA6F2600349480 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6D846D7B26E0CE7E00349480 /* RegisterAndEdit */,
+				6D846D7A26E0CE7200349480 /* Main */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6D846D7A26E0CE7200349480 /* Main */ = {
+			isa = PBXGroup;
+			children = (
 				6D846D7026DA6F8300349480 /* MarketListCollectionViewCell.swift */,
 				6D846D7226DFB17000349480 /* MarketGridCollectionViewCell.swift */,
 			);
-			path = Views;
+			path = Main;
+			sourceTree = "<group>";
+		};
+		6D846D7B26E0CE7E00349480 /* RegisterAndEdit */ = {
+			isa = PBXGroup;
+			children = (
+				6D846D7826E0B9BA00349480 /* MarketImageCollectionViewCell.swift */,
+				6D846D7C26E0CEBC00349480 /* MarketImageCollectionViewHeader.swift */,
+			);
+			path = RegisterAndEdit;
+			sourceTree = "<group>";
+		};
+		6D846D8A26E3D5AC00349480 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				6D846D8D26E3D67A00349480 /* ViewController+Extension.swift */,
+				6D846D9326E616E900349480 /* UIImage+Extension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		6D846D8F26E5F0B200349480 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				6D846D9026E5F11F00349480 /* MarketInputError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
+		6D955AD726E73CF0004144F7 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				6D644A8926ECF29100279CC2 /* JSONDecoder+Extension.swift */,
+				6D644A9126ED145700279CC2 /* JSONEncoder+Extension.swift */,
+				6D644A8D26ECF33A00279CC2 /* URLSession+Extension.swift */,
+				6D955AD826E73D20004144F7 /* Data+Extension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		6D955AEA26E8E963004144F7 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				6D955AE126E8C888004144F7 /* MockDecoder.swift */,
+				6D644A9526EFB74500279CC2 /* MockEncoder.swift */,
+				6D644A9726F0A15000279CC2 /* MockSession.swift */,
+				6D644A9926F0C0F000279CC2 /* MockURLProtocol.swift */,
+				6D644AA526F1E9FF00279CC2 /* MockNetwork.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		6D955AF126E9F1CB004144F7 /* Stub */ = {
+			isa = PBXGroup;
+			children = (
+				6D955AE826E8CB15004144F7 /* StubData.swift */,
+			);
+			path = Stub;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -332,19 +457,33 @@
 				6D846D5926D7A3BE00349480 /* NetworkManager.swift in Sources */,
 				6D846D6E26DA048400349480 /* MarketMainViewController.swift in Sources */,
 				6D846D4426D75EAA00349480 /* Item.swift in Sources */,
+				6D846D9426E616E900349480 /* UIImage+Extension.swift in Sources */,
+				6D644A8C26ECF2BD00279CC2 /* MarketSession.swift in Sources */,
 				6D846D6B26D8ED8500349480 /* MarketModelError.swift in Sources */,
+				6D846D8E26E3D67A00349480 /* ViewController+Extension.swift in Sources */,
 				6D846D7126DA6F8300349480 /* MarketListCollectionViewCell.swift in Sources */,
+				6D644A9026ED142900279CC2 /* MarketEncode.swift in Sources */,
 				6D846D4226D75E5D00349480 /* ItemList.swift in Sources */,
 				6D846D6126D7A60500349480 /* MarketNetwork.swift in Sources */,
 				6D846D7326DFB17000349480 /* MarketGridCollectionViewCell.swift in Sources */,
+				6D644A8E26ECF33B00279CC2 /* URLSession+Extension.swift in Sources */,
 				6D846D5F26D7A59300349480 /* NetworkConstant.swift in Sources */,
-				6D846D5D26D7A3FF00349480 /* MarketViewModel.swift in Sources */,
+				6D846D7726E0900F00349480 /* MarketRegisterAndEditViewController.swift in Sources */,
+				6D846D5D26D7A3FF00349480 /* MarketMainViewModel.swift in Sources */,
+				6D955AD926E73D20004144F7 /* Data+Extension.swift in Sources */,
 				6D846D6526D88A1800349480 /* OpenMarketNetwork.swift in Sources */,
 				6D846D4726D75F0500349480 /* ItemRegistration.swift in Sources */,
+				6D644A9426ED15C300279CC2 /* MultiPartForm.swift in Sources */,
+				6D846D7926E0B9BA00349480 /* MarketImageCollectionViewCell.swift in Sources */,
 				6D846D1026D75C8200349480 /* AppDelegate.swift in Sources */,
+				6D846D7D26E0CEBC00349480 /* MarketImageCollectionViewHeader.swift in Sources */,
+				6D846D9126E5F11F00349480 /* MarketInputError.swift in Sources */,
+				6D644A9226ED145700279CC2 /* JSONEncoder+Extension.swift in Sources */,
 				6D846D4B26D75F6800349480 /* ItemDelete.swift in Sources */,
-				6D846D6726D88AA600349480 /* OpenMarketDecode.swift in Sources */,
+				6D846D6726D88AA600349480 /* MarketDecode.swift in Sources */,
+				6D644A8A26ECF29100279CC2 /* JSONDecoder+Extension.swift in Sources */,
 				6D846D4926D75F3D00349480 /* ItemModifaction.swift in Sources */,
+				6D846D8426E316C900349480 /* MarketRegisterAndEditViewModel.swift in Sources */,
 				6D846D1226D75C8200349480 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -353,8 +492,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D846D5126D78D1A00349480 /* ItemTest.swift in Sources */,
-				6D846D4F26D78D0300349480 /* ItemListTest.swift in Sources */,
+				6D644A9E26F0C14000279CC2 /* MarketNetworkTest.swift in Sources */,
+				6D644AA026F1DE9A00279CC2 /* EncodeTest.swift in Sources */,
+				6D644AA626F1E9FF00279CC2 /* MockNetwork.swift in Sources */,
+				6D644A9A26F0C0F000279CC2 /* MockURLProtocol.swift in Sources */,
+				6D644AAA26F379EE00279CC2 /* UIImageCompressTest.swift in Sources */,
+				6D955AE226E8C888004144F7 /* MockDecoder.swift in Sources */,
+				6D955AE726E8CA88004144F7 /* DecodeTest.swift in Sources */,
+				6D644A9626EFB74500279CC2 /* MockEncoder.swift in Sources */,
+				6D644AA226F1E47C00279CC2 /* NetworkManagerTest.swift in Sources */,
+				6D644A9826F0A15000279CC2 /* MockSession.swift in Sources */,
+				6D955AE926E8CB15004144F7 /* StubData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,6 +650,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WU6N2C8A3Z;
 				INFOPLIST_FILE = OpenMarket/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -520,6 +669,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WU6N2C8A3Z;
 				INFOPLIST_FILE = OpenMarket/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

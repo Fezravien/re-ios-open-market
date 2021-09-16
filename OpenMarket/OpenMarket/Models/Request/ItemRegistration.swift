@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ItemRegistration {
+struct ItemRegistration: MultiPartForm {
     let title: String
     let descriptions: String
     let price: UInt

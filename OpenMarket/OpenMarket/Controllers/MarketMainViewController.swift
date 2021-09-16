@@ -36,7 +36,7 @@ final class MarketMainViewController: UIViewController {
         collectionView.backgroundColor = .white
         return collectionView
     }()
-    private let marketViewModel = MarketViewModel()
+    private let marketViewModel = MarketMainViewModel()
     private var page = 1
     
     override func viewDidLoad() {
@@ -87,11 +87,13 @@ final class MarketMainViewController: UIViewController {
     }
     
     private func setNavigationItem() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tappedButtonDetailItem))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tappedRegisterAndEditItemButton))
     }
     
-    @objc private func tappedButtonDetailItem() {
-        print("tapped add button")
+    @objc private func tappedRegisterAndEditItemButton() {
+        let viewController = MarketRegisterAndEditViewController()
+        viewController.setRegisterAndEditViewController(state: .registration)
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func setConstraint() {
@@ -121,9 +123,10 @@ final class MarketMainViewController: UIViewController {
     
     private func fetchMarketData(page: Int = 1) {
         self.marketindicater.startAnimating()
-        guard let fetchURL = NetworkConstant.itemList(page: page).url else { return }
-        let request = URLRequest(url: fetchURL)
-        self.marketViewModel.fetch(request: request, decodeType: ItemList.self) { [weak self] result in
+        guard let request = self.marketViewModel.createRequest(page) else { return }
+    
+        self.marketViewModel.fetch(request: request, decodeType: ItemList.self) { [weak self] _ in
+            // TODO: - 실패 오류를 받아서 Alert로 사용자에게 알릴 수 있다.
             DispatchQueue.main.async {
                 self?.marketindicater.stopAnimating()
             }
@@ -133,7 +136,7 @@ final class MarketMainViewController: UIViewController {
 
 extension MarketMainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.marketViewModel.marketItemsCount
+        return self.marketViewModel.getMarketItemsCount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -142,12 +145,12 @@ extension MarketMainViewController: UICollectionViewDataSource {
         case 0:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketListCollectionViewCell.identifier, for: indexPath) as? MarketListCollectionViewCell else { return UICollectionViewCell() }
             
-            cell.listCellConfiguration(data: marketViewModel.marketItem(index: indexPath.row))
+            cell.configurateListCell(data: marketViewModel.getMarketItem(index: indexPath.row))
             return cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketGridCollectionViewCell.identifier, for: indexPath) as? MarketGridCollectionViewCell else { return UICollectionViewCell() }
             
-            cell.gridCellConfiguration(data: marketViewModel.marketItem(index: indexPath.row))
+            cell.configurateGridCell(data: marketViewModel.getMarketItem(index: indexPath.row))
             return cell
         default:
             return UICollectionViewCell()
@@ -183,7 +186,7 @@ extension MarketMainViewController: UICollectionViewDelegateFlowLayout {
 extension MarketMainViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for indexPath in indexPaths {
-            if marketViewModel.marketItemsCount == indexPath.row + 2 {
+            if marketViewModel.getMarketItemsCount == indexPath.row + 2 {
                 self.page += 1
                 fetchMarketData(page: page)
             }

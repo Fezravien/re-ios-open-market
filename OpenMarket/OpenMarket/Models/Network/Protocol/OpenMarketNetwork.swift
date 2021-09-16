@@ -8,5 +8,5 @@
 import Foundation
 
 protocol OpenMarketNetwork {
-    func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void)
+    func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data?, Error>) -> Void)
 }
