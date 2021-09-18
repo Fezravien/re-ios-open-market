@@ -87,9 +87,14 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        resetImageView()
         resetItemPrice()
         resetItemDiscountPrice()
         resetItemStock()
+    }
+    
+    private func resetImageView() {
+        self.itemImageView.image = nil
     }
     
     private func resetItemPrice() {
