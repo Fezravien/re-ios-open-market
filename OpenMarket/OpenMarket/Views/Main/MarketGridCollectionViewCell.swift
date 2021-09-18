@@ -81,7 +81,7 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
         setConstraints()
         convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
         convertStockFormat(stock: data.stock)
-        self.itemImageView.image = UIImage(data: downloadImage(data.thumbnails.first!))
+        downloadImage(data.thumbnails.first!)
         self.itemTitle.text = data.title
     }
     
@@ -106,15 +106,15 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
         self.itemStock.textColor = .systemGray
     }
     
-    private func downloadImage(_ imageURL: String) -> Data {
-        guard let url = URL(string: imageURL),
-              let image = try? Data(contentsOf: url) else {
-            
-            // TODO: - 오류처리를 통해 이미지가 없다고 판단하도록 할 수 있을듯
-            return Data()
+    private func downloadImage(_ imageURL: String) {
+        guard let url = URL(string: imageURL) else { return }
+        DispatchQueue.global(qos: .background).async {
+            if let image = try? Data(contentsOf: url) {
+                DispatchQueue.main.async {
+                    self.itemImageView.image = UIImage(data: image)
+                }
+            }
         }
-        
-        return image
     }
     
     private func convertStockFormat(stock: UInt) {
