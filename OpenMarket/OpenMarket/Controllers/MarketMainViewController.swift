@@ -159,7 +159,11 @@ extension MarketMainViewController: UICollectionViewDataSource {
 }
 
 extension MarketMainViewController: UICollectionViewDelegate {
-        
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailPage = MarketDetailViewController()
+        detailPage.setDetailViewController(item: self.marketViewModel.getMarketItem(index: indexPath.row))
+        self.navigationController?.pushViewController(detailPage, animated: true)
+    }
 }
 
 extension MarketMainViewController: UICollectionViewDelegateFlowLayout {

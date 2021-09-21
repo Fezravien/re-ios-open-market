@@ -128,7 +128,7 @@ final class MarketListCollectionViewCell: UICollectionViewCell {
     
     private func convertPriceFormat(currency: String, price: UInt, discountPrice: UInt?) {
         if let discountPrice = discountPrice {
-            let attributeString: NSMutableAttributedString = NSMutableAttributedString(string: "\(currency) \(price)")
+            let attributeString = NSMutableAttributedString(string: "\(currency) \(price)")
             attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSMakeRange(0, attributeString.length))
             self.itemPrice.textColor = .systemRed
             self.itemPrice.attributedText = attributeString
