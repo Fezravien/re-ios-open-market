@@ -30,7 +30,7 @@ class DecodeTest: XCTestCase {
     }
     
     func test_MarketItems_Decode_실패() {
-        XCTAssertNil(try? mockDecode!.decode(StubMarketItems.self, from: mockItems!))
+        XCTAssertNil(try? mockDecode!.decode(MockItemList.self, from: mockItems!))
     }
     
     func test_MarketItem_Decode_성공() {

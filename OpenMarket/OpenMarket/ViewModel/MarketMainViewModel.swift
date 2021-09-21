@@ -24,8 +24,8 @@ final class MarketMainViewModel {
         return marketItems[index]
     }
     
-    func createRequest(_ page: Int) -> URLRequest? {
-        let request = self.networkManager.createRequest(page)
+    func createRequest(_ page: UInt) -> URLRequest? {
+        let request = self.networkManager.createRequest(page: page)
         return request
     }
     

@@ -24,7 +24,7 @@ class NetworkManagerTest: XCTestCase {
     
     func test_NetworkManager_CreateRequest_GET() {
         let networkManager = NetworkManager(loader: MockNetwork(), decoder: JSONDecoder(), encoder: JSONEncoder())
-        let requestThroughManager = networkManager.createRequest(1)
+        let requestThroughManager = networkManager.createRequest(id: 1)
         let request = URLRequest(url: NetworkConstant.itemList(page: 1).url!)
         
         XCTAssertEqual(requestThroughManager, request)
@@ -34,7 +34,7 @@ class NetworkManagerTest: XCTestCase {
         let networkManager = NetworkManager(loader: MockNetwork(), decoder: JSONDecoder(), encoder: JSONEncoder())
         
         do {
-            let request = try networkManager.createRequet(data: ItemDelete(password: "1234"), itemID: 1)
+            let request = try networkManager.createRequest(data: ItemDelete(password: "1234"), itemID: 1)
             XCTAssertEqual(request?.httpMethod, "DELETE")
             XCTAssertEqual(request?.allHTTPHeaderFields, ["Content-Type" : "application/json"])
         } catch {
@@ -65,10 +65,9 @@ class NetworkManagerTest: XCTestCase {
     }
     
     func test_NetworkManager_Fetch_Succeed() {
-        
         self.mockNetwork!.result = .success(mockItemList)
         let networkManager = NetworkManager(loader: self.mockNetwork!, decoder: JSONDecoder(), encoder: JSONEncoder())
-        let request = networkManager.createRequest(1)!
+        let request = networkManager.createRequest(page: 1)!
         networkManager.excuteFetch(request: request, decodeType: ItemList.self) { result in
             switch result {
             case .success(let data):

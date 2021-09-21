@@ -235,7 +235,6 @@ final class MarketRegisterAndEditViewController: UIViewController {
         case .none:
             return
         }
-        
     }
     
     private func createRequest(_ password: String) -> URLRequest? {

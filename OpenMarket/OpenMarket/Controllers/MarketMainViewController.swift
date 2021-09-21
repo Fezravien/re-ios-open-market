@@ -37,7 +37,7 @@ final class MarketMainViewController: UIViewController {
         return collectionView
     }()
     private let marketViewModel = MarketMainViewModel()
-    private var page = 1
+    private var page: UInt = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,7 +121,7 @@ final class MarketMainViewController: UIViewController {
         ])
     }
     
-    private func fetchMarketData(page: Int = 1) {
+    private func fetchMarketData(page: UInt = 1) {
         self.marketindicater.startAnimating()
         guard let request = self.marketViewModel.createRequest(page) else { return }
     
@@ -159,7 +159,11 @@ extension MarketMainViewController: UICollectionViewDataSource {
 }
 
 extension MarketMainViewController: UICollectionViewDelegate {
-        
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailPage = MarketDetailViewController()
+        detailPage.setDetailViewController(item: self.marketViewModel.getMarketItem(index: indexPath.row))
+        self.navigationController?.pushViewController(detailPage, animated: true)
+    }
 }
 
 extension MarketMainViewController: UICollectionViewDelegateFlowLayout {
