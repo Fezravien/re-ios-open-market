@@ -17,7 +17,7 @@ class MarketDetailViewController: UIViewController {
     }()
     private let imageScrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.backgroundColor = .gray
+        scrollView.backgroundColor = .white
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.isPagingEnabled = true
         scrollView.translatesAutoresizingMaskIntoConstraints = false
