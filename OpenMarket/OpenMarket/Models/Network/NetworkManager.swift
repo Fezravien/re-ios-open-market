@@ -47,14 +47,24 @@ final class NetworkManager {
         }
     }
     
-    func createRequest(_ page: Int) -> URLRequest? {
+    /// 목록 조회 (Fetch) - page
+    func createRequest(page: UInt) -> URLRequest? {
         guard let fetchURL = NetworkConstant.itemList(page: page).url else { return nil }
         let request = URLRequest(url: fetchURL)
         
         return request
     }
     
-    func createRequet<T: Encodable>(data: T, itemID: Int) throws -> URLRequest? {
+    /// 상품 조회 - ID
+    func createRequest(id: UInt) -> URLRequest? {
+        guard let fetchURL = NetworkConstant.item(id: id).url else { return nil }
+        let request = URLRequest(url: fetchURL)
+        
+        return request
+    }
+    
+    /// POST, PATCH - Mulit-part/Form-data
+    func createRequest<T: Encodable>(data: T, itemID: Int) throws -> URLRequest? {
         let encodeData: Data
         
         do {
@@ -71,6 +81,7 @@ final class NetworkManager {
         return request
     }
     
+    /// DELETE - JSONEncoder
     func createRequest<T: MultiPartForm>(url: URL?, encodeType: T, method: NetworkConstant.Method) throws -> URLRequest {
         guard let url = url else { throw MarketModelError.url }
             
