@@ -89,7 +89,8 @@ class MarketDetailViewController: UIViewController {
     }
     
     private func bindDataDetailItem() {
-        self.marketDetailViewModel.detailItemObserver = {
+        self.marketDetailViewModel.detailItemObserver = { [weak self] in
+            guard let self = self else { return }
             guard let data = self.marketDetailViewModel.getDetailItem() else { return }
             DispatchQueue.main.async {
                 self.convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
@@ -101,7 +102,8 @@ class MarketDetailViewController: UIViewController {
     }
     
     private func bindDataImage() {
-        self.marketDetailViewModel.itemImagesObserver = {
+        self.marketDetailViewModel.itemImagesObserver = { [weak self] in
+            guard let self = self else { return }
             for index in 0..<self.marketDetailViewModel.getImageCount {
                 DispatchQueue.main.async {
                     let imageView = UIImageView()
