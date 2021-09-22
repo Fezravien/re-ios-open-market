@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate {
+class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate, Refreshable {
     private let detailPageScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.backgroundColor = .white
@@ -71,6 +71,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate 
         return label
     }()
     private let marketDetailViewModel = MarketDetailViewModel()
+    lazy var marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,9 +101,8 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate 
                         switch result {
                         case .success(_):
                             DispatchQueue.main.async {
-                                let marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
-                                marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .edit, item: self.marketDetailViewModel.getDetailItem())
-                                self.navigationController?.pushViewController(marketRegisterAndEditViewController, animated: true)
+                                self.marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .edit, item: self.marketDetailViewModel.getDetailItem())
+                                self.navigationController?.pushViewController(self.marketRegisterAndEditViewController, animated: true)
                             }
                         case .failure(_):
                             DispatchQueue.main.async {
@@ -147,6 +147,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate 
     
     private func setDelegate() {
         self.imageScrollView.delegate = self
+        self.marketRegisterAndEditViewController.refreshDelegate = self
     }
     
     private func setPageControlSelectedPage(currentPage: Int) {
@@ -200,6 +201,11 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate 
                 self.alert(title: MarketModelError.network(error).description)
             }
         }
+    }
+    
+    func refreshitem() {
+        guard let item = self.marketDetailViewModel.getDetailItem() else { return }
+        setDetailViewController(item: item)
     }
     
     private func convertPriceFormat(currency: String, price: UInt, discountPrice: UInt?) {

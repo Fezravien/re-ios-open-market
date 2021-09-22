@@ -65,8 +65,8 @@ final class MarketRegisterAndEditViewModel {
         return request
     }
     
-    func post<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<Bool, Error>) -> Void) where T: Decodable {
-        self.networkManager.excuteFetch(request: request, decodeType: decodeType) { result in
+    func post(request: URLRequest, completion: @escaping (Result<Bool, Error>) -> Void) {
+        self.networkManager.excutePost(request: request) { result in
             switch result {
             case .success(_):
                 completion(.success(true))
@@ -75,11 +75,7 @@ final class MarketRegisterAndEditViewModel {
             }
         }
     }
-    
-    func patch() {
-        
-    }
-    
+
     func downloadImage(imageURL: [String]) {
         var images: [UIImage] = []
         if imageURL.isEmpty { return }

@@ -173,6 +173,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     private var itemImageCount = 0
     private var currencys = CurrencyState.allCases.map { $0.rawValue }
     private var itemInfomation = itemInfomation(title: nil, currency: nil, price: nil, discountPrice: nil, stock: nil, itemDescription: nil)
+    weak var refreshDelegate: Refreshable?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -241,8 +242,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
             switch self.state {
             case .registration:
                 self.alertInputPassword { [weak self] password in
-                    guard let request = self?.createRequest(password) else { return }
-                    self?.marketRegisterAndEditViewModel.post(request: request, decodeType: Item.self, completion: { result in
+                    guard let request = self?.createRequestForRegistration(password) else { return }
+                    self?.marketRegisterAndEditViewModel.post(request: request, completion: { result in
                         switch result {
                         case .success(_):
                             DispatchQueue.main.async {
@@ -255,7 +256,20 @@ final class MarketRegisterAndEditViewController: UIViewController {
                 }
             case .edit:
                 self.alertInputPassword { [weak self] password in
-                    
+                    guard let request = self?.createRequestForEdit(password) else { return }
+                    self?.marketRegisterAndEditViewModel.post(request: request, completion: { result in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                self?.alert(title: "수정이 완료되었습니다") { 
+                                    self?.navigationController?.popViewController(animated: true)
+                                }
+                                self?.refreshDelegate?.refreshitem()
+                            }
+                        case .failure(_) :
+                            return
+                        }
+                    })
                 }
             case .none:
                 return
@@ -263,8 +277,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         }
     }
     
-    private func createRequest(_ password: String) -> URLRequest? {
-        let request: URLRequest?
+    private func createRequestForRegistration(_ password: String) -> URLRequest? {
         guard let title = self.itemInfomation.title,
               let currency = self.itemInfomation.currency,
               let price = self.itemInfomation.price,
@@ -284,7 +297,26 @@ final class MarketRegisterAndEditViewController: UIViewController {
                                                  password: password)
         
         do {
-            request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registerationData, method: .post)
+            let request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registerationData, method: .post)
+            return request
+        } catch {
+            return nil
+        }
+    }
+    
+    private func createRequestForEdit(_ password: String) -> URLRequest? {
+        let editData = ItemModifcation(title: self.itemTitle.text,
+                                       descriptions: self.itemDescription.text,
+                                       price: UInt(self.itemPrice.text!),
+                                       currency: self.itemCurrency.text,
+                                       stock: UInt(self.itemStock.text!),
+                                       discountedPrice: self.itemDiscountPrice.text == nil ? nil : UInt(self.itemDiscountPrice.text!),
+                                       images: self.marketRegisterAndEditViewModel.getItemImages(),
+                                       password: password)
+        
+        do {
+            guard let item = self.marketRegisterAndEditViewModel.getEditItem() else { return nil }
+            let request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.edit(id: item.id).url, type: editData, method: .patch)
             return request
         } catch {
             return nil
@@ -292,27 +324,27 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     private func validItemInfomation() -> Bool {
-        guard let _ = self.itemInfomation.title else {
+        guard let _ = self.itemTitle.text else {
             self.alert(title: MarketInputError.title.rawValue)
             return false
         }
         
-        guard let _ = self.itemInfomation.currency else {
+        guard let _ = self.itemCurrency.text else {
             self.alert(title: MarketInputError.currency.rawValue)
             return false
         }
         
-        guard let _ = self.itemInfomation.price else {
+        guard let _ = self.itemPrice.text else {
             self.alert(title: MarketInputError.price.rawValue)
             return false
         }
         
-        guard let _ = self.itemInfomation.stock else {
+        guard let _ = self.itemStock.text else {
             self.alert(title: MarketInputError.stock.rawValue)
             return false
         }
         
-        guard let _ = self.itemInfomation.itemDescription else {
+        guard let _ = self.itemDescription.text else {
             self.alert(title: MarketInputError.description.rawValue)
             return false
         }

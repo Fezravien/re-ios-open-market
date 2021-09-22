@@ -30,6 +30,10 @@ final class MarketDetailViewModel {
         return self.itemImages[index]
     }
     
+    func getImageDatas() -> [Data] {
+        return self.itemImages
+    }
+    
     func getDetailItem() -> Item? {
         return self.detailItem
     }
