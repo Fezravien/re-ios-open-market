@@ -152,7 +152,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         textView.layer.borderWidth = 1
         textView.layer.cornerRadius = 20
         textView.textAlignment = .justified
-        textView.contentInset = .init(top: 5, left: 10, bottom: -5, right: -10)
+        textView.contentInset = .init(top: 5, left: 10, bottom: 5, right: 10)
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
@@ -177,6 +177,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setBindData()
+        setBindEditData()
         setDataSource()
         setDelegate()
         setConstraints()
@@ -185,13 +186,36 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     private func setBindData() {
-        self.marketRegisterAndEditViewModel.imageChanged = {
-            if self.itemImageCount == self.marketRegisterAndEditViewModel.itemImageCount {
-                self.imageCollectionView.reloadData()
+        self.marketRegisterAndEditViewModel.imageChanged = { [weak self] in
+            switch self?.state {
+            case .registration:
+                if self?.itemImageCount == self?.marketRegisterAndEditViewModel.itemImageCount {
+                    self?.imageCollectionView.reloadData()
+                }
+            case .edit:
+                self?.imageCollectionView.reloadData()
+            case .none:
+                return
             }
         }
     }
-    func setRegisterAndEditViewController(state: State) {
+    
+    private func setBindEditData() {
+        self.marketRegisterAndEditViewModel.editItemChanged = { [weak self] in
+            guard let item = self?.marketRegisterAndEditViewModel.getEditItem() else { return }
+            DispatchQueue.main.async {
+                self?.marketRegisterAndEditViewModel.downloadImage(imageURL: item.images ?? [])
+                self?.itemTitle.text = item.title
+                self?.itemCurrency.text = item.currency
+                self?.itemPrice.text = String(item.price)
+                self?.itemDiscountPrice.text = item.discountPrice == nil ? nil : String(item.discountPrice!)
+                self?.itemStock.text = String(item.stock)
+                self?.itemDescription.text = item.descriptions
+            }
+        }
+    }
+    
+    func setRegisterAndEditViewController(state: State, item: Item? = nil) {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(tappedFinishDoneButton))
         self.view.backgroundColor = .white
         self.state = state
@@ -200,9 +224,10 @@ final class MarketRegisterAndEditViewController: UIViewController {
             self.navigationItem.title = State.registration.rawValue
         case .edit:
             self.navigationItem.title = State.edit.rawValue
+            self.marketRegisterAndEditViewModel.setEditItem(item: item)
         }
     }
-    
+
     private func setNotificationCenter() {
         NotificationCenter.default.addObserver(self, selector: #selector(tappedAddButton), name: NSNotification.Name(MarketRegisterAndEditViewController.notificationName), object: nil)
     }
@@ -212,9 +237,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     @objc private func tappedFinishDoneButton() {
-        switch self.state {
-        case .registration:
-            if validItemInfomation() {
+        if validItemInfomation(){
+            switch self.state {
+            case .registration:
                 self.alertInputPassword { [weak self] password in
                     guard let request = self?.createRequest(password) else { return }
                     self?.marketRegisterAndEditViewModel.post(request: request, decodeType: Item.self, completion: { result in
@@ -227,13 +252,14 @@ final class MarketRegisterAndEditViewController: UIViewController {
                             return
                         }
                     })
+                }
+            case .edit:
+                self.alertInputPassword { [weak self] password in
                     
                 }
+            case .none:
+                return
             }
-        case .edit:
-            print()
-        case .none:
-            return
         }
     }
     
@@ -404,9 +430,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.addSubview(self.itemDescription)
         
         NSLayoutConstraint.activate([
-            self.itemDescription.leadingAnchor.constraint(equalTo: self.imageCollectionView.leadingAnchor, constant: Style.ItemDescription.margin.left),
+            self.itemDescription.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: Style.ItemDescription.margin.left),
             self.itemDescription.topAnchor.constraint(equalTo: self.itemStock.bottomAnchor, constant: Style.ItemDescription.margin.top),
-            self.itemDescription.trailingAnchor.constraint(equalTo: self.imageCollectionView.trailingAnchor, constant: Style.ItemDescription.margin.right),
+            self.itemDescription.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: Style.ItemDescription.margin.right),
             self.itemDescription.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
@@ -436,7 +462,11 @@ extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
 }
 
 extension MarketRegisterAndEditViewController: UICollectionViewDelegate {
-    // TODO: - 사진을 누르면 사진 크게 보여주기
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.alertCheck(title: "사진을 삭제할까요?") { [weak self] in
+            self?.marketRegisterAndEditViewModel.removeItemImage(index: indexPath.row)
+        }
+    }
 }
 
 extension MarketRegisterAndEditViewController: UICollectionViewDelegateFlowLayout {
