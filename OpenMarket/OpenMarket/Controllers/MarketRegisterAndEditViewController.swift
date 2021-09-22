@@ -238,7 +238,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     @objc private func tappedFinishDoneButton() {
-        if validItemInfomation(){
+        if validItemInfomation() {
             switch self.state {
             case .registration:
                 self.alertInputPassword { [weak self] password in
@@ -261,13 +261,15 @@ final class MarketRegisterAndEditViewController: UIViewController {
                         switch result {
                         case .success(_):
                             DispatchQueue.main.async {
-                                self?.alert(title: "수정이 완료되었습니다") { 
+                                self?.alert(title: "수정이 완료되었습니다") {
+                                    self?.refreshDelegate?.refreshitem()
                                     self?.navigationController?.popViewController(animated: true)
                                 }
-                                self?.refreshDelegate?.refreshitem()
                             }
                         case .failure(_) :
-                            return
+                            DispatchQueue.main.async {
+                                self?.alert(title: "비밀번호를 확인해주세요.")
+                            }
                         }
                     })
                 }
@@ -324,27 +326,27 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     private func validItemInfomation() -> Bool {
-        guard let _ = self.itemTitle.text else {
+        guard let title = self.itemTitle.text, title.count >= 1 else {
             self.alert(title: MarketInputError.title.rawValue)
             return false
         }
         
-        guard let _ = self.itemCurrency.text else {
+        guard let currency = self.itemCurrency.text, currency.count >= 1 else {
             self.alert(title: MarketInputError.currency.rawValue)
             return false
         }
         
-        guard let _ = self.itemPrice.text else {
+        guard let price = self.itemPrice.text, price.count >= 1 else {
             self.alert(title: MarketInputError.price.rawValue)
             return false
         }
         
-        guard let _ = self.itemStock.text else {
+        guard let stock = self.itemStock.text, stock.count >= 1 else {
             self.alert(title: MarketInputError.stock.rawValue)
             return false
         }
         
-        guard let _ = self.itemDescription.text else {
+        guard let descriptions = self.itemDescription.text, descriptions.count >= 1 else {
             self.alert(title: MarketInputError.description.rawValue)
             return false
         }
@@ -558,30 +560,32 @@ extension MarketRegisterAndEditViewController: UIPickerViewDelegate {
 
 extension MarketRegisterAndEditViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
+        guard let text = textField.text else { return }
+        
         switch textField.accessibilityIdentifier {
         case Identifier.itemTitle:
             self.itemInfomation.title = textField.text
         case Identifier.itemPrice:
-            guard let _ = Int(textField.text ?? "") else {
+            guard let _ = Int(text) else {
                 self.alert(title: MarketInputError.priceType.rawValue)
                 self.itemPrice.text = nil
                 return
             }
             self.itemInfomation.price = textField.text
         case Identifier.itemDiscountPrice:
-            guard let _ = Int(textField.text ?? "") else {
+            guard let _ = Int(text) else {
                 self.alert(title: MarketInputError.discountPriceType.rawValue)
                 self.itemDiscountPrice.text = nil
                 return
             }
             self.itemInfomation.discountPrice = textField.text
         case Identifier.itemStock:
-            guard let _ = Int(textField.text ?? "") else {
+            guard let _ = Int(text) else {
                 self.alert(title: MarketInputError.stockType.rawValue)
                 self.itemStock.text = nil
                 return
             }
-            self.itemInfomation.stock = textField.text
+            self.itemInfomation.stock = text
         default:
             return
         }

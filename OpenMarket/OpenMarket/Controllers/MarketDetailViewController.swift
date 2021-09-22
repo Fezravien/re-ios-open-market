@@ -163,6 +163,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
                 self.convertStockFormat(stock: data.stock)
                 self.itemDescription.text = data.descriptions
                 self.itemTitle.text = data.title
+                self.loadViewIfNeeded()
             }
         }
     }
@@ -190,12 +191,13 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     
     func setDetailViewController(item: Item) {
         guard let request = self.marketDetailViewModel.createRequestForItemFetch(item.id) else { return }
-        self.navigationItem.title = item.title
         self.marketDetailViewModel.fetch(request: request, decodeType: Item.self) { result in
             switch result {
             case .success(let judge):
                 if judge {
-                    // TODO: - 데이터 Fetch 성공후 어떠한 작업이 필요하다면 ...
+                    DispatchQueue.main.async {
+                        self.navigationItem.title = self.marketDetailViewModel.getDetailItem()?.title
+                    }
                 }
             case .failure(let error):
                 self.alert(title: MarketModelError.network(error).description)
