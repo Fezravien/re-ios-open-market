@@ -139,7 +139,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate 
                                              currency: currentItem.currency,
                                              stock: currentItem.stock,
                                              discountedPrice: currentItem.discountPrice,
-                                             images: currentItem.images,
+                                             images: self.marketDetailViewModel.getImageDatas(),
                                              password: password)
         
         return itemModifation

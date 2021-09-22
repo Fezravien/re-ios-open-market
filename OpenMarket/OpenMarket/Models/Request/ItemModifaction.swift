@@ -14,6 +14,6 @@ struct ItemModifcation: MultiPartForm {
     let currency: String?
     let stock: UInt?
     let discountedPrice: UInt?
-    let images: [String]?
+    let images: [Data]?
     let password: String
 }
