@@ -174,6 +174,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             for index in 0..<self.marketDetailViewModel.getImageCount {
                 DispatchQueue.main.async {
                     let imageView = UIImageView()
+                    imageView.contentMode = .scaleAspectFit
                     let positionX = self.imageScrollView.frame.width * CGFloat(index)
                     let positionY = self.imageScrollView.frame.origin.y
                     imageView.frame = CGRect(x: positionX, y: positionY, width: self.imageScrollView.bounds.width, height: self.imageScrollView.bounds.height)
