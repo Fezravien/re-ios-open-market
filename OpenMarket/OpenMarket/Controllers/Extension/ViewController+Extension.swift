@@ -10,9 +10,24 @@ import UIKit
 extension UIViewController {
     typealias AlertActionHandler = ((UIAlertAction) -> Void)
     
-    func alert(title: String, message: String? = nil, okTitle: String = "OK") {
-        let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction: UIAlertAction = UIAlertAction(title: okTitle, style: .cancel)
+    func alert(title: String, message: String? = nil, okTitle: String = "OK", completion: (() -> ())? = nil ) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: okTitle, style: .cancel) { _ in
+            completion?()
+        }
+        alert.addAction(okAction)
+    
+        self.present(alert, animated: true)
+    }
+    
+    func alertCheck(title: String, message: String? = nil, okTitle: String = "OK", completion: @escaping () -> ()) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: okTitle, style: .destructive) { _ in
+            completion()
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alert.addAction(cancelAction)
         alert.addAction(okAction)
     
         self.present(alert, animated: true)

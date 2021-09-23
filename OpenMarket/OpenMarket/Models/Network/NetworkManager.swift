@@ -35,14 +35,15 @@ final class NetworkManager {
         }
     }
     
-    func excutePost(request: URLRequest, completion: @escaping (Error) -> Void) {
+    func excutePost(request: URLRequest, completion: @escaping (Result<Bool,Error>) -> Void) {
         self.loader.excuteNetwork(request: request) { result in
             switch result {
             case .success(let data):
                 // TODO: - POST 후 받은 것을 가지고 다른 기능 구현가능
                 guard let _ = data else { return }
+                completion(.success(true))
             case .failure(let error):
-                completion(MarketModelError.request(error))
+                completion(.failure(MarketModelError.request(error)))
             }
         }
     }
@@ -63,7 +64,7 @@ final class NetworkManager {
         return request
     }
     
-    /// POST, PATCH - Mulit-part/Form-data
+    /// DELETE - JSONEncoder
     func createRequest<T: Encodable>(data: T, itemID: Int) throws -> URLRequest? {
         let encodeData: Data
         
@@ -81,7 +82,7 @@ final class NetworkManager {
         return request
     }
     
-    /// DELETE - JSONEncoder
+    /// POST, PATCH - Mulit-part/Form-data
     func createRequest<T: MultiPartForm>(url: URL?, encodeType: T, method: NetworkConstant.Method) throws -> URLRequest {
         guard let url = url else { throw MarketModelError.url }
             

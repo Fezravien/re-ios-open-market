@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MarketDetailViewController: UIViewController {
+class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate, Refreshable {
     private let detailPageScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.backgroundColor = .white
@@ -71,17 +71,83 @@ class MarketDetailViewController: UIViewController {
         return label
     }()
     private let marketDetailViewModel = MarketDetailViewModel()
+    lazy var marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setConstraints()
+        addNavigationItem()
         setDelegate()
         bindDataDetailItem()
         bindDataImage()
     }
     
+    private func addNavigationItem() {
+        let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tappedEditButton))
+        self.navigationItem.rightBarButtonItem = editButton
+    }
+    
+    @objc private func tappedEditButton() {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
+            
+        }
+        let editAction = UIAlertAction(title: "수정", style: .default) { _ in
+            self.alertInputPassword { password in
+                guard let modifyItem = self.createModifyItemFormat(password: password) else { return }
+                do {
+                    guard let request = try self.marketDetailViewModel.createRequestForItemPatch(id: self.marketDetailViewModel.getDetailItem()!.id, item: modifyItem) else { return }
+                    self.marketDetailViewModel.patch(request: request) { result in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                self.marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .edit, item: self.marketDetailViewModel.getDetailItem())
+                                self.navigationController?.pushViewController(self.marketRegisterAndEditViewController, animated: true)
+                            }
+                        case .failure(_):
+                            DispatchQueue.main.async {
+                                self.alert(title: "비밀번호가 틀립니다.")
+                            }
+                        }
+                    }
+                } catch {
+                    
+                }
+            }
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        alert.addAction(cancelAction)
+        alert.addAction(deleteAction)
+        alert.addAction(editAction)
+        
+        self.present(alert, animated: true) {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAlertController))
+            self.view.addGestureRecognizer(tapGesture)
+        }
+    }
+    
+    @objc func dismissAlertController(){
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    private func createModifyItemFormat(password: String) -> ItemModifcation? {
+        guard let currentItem = self.marketDetailViewModel.getDetailItem() else { return nil }
+        let itemModifation = ItemModifcation(title: currentItem.title,
+                                             descriptions: currentItem.descriptions,
+                                             price: currentItem.price,
+                                             currency: currentItem.currency,
+                                             stock: currentItem.stock,
+                                             discountedPrice: currentItem.discountPrice,
+                                             images: self.marketDetailViewModel.getImageDatas(),
+                                             password: password)
+        
+        return itemModifation
+    }
+    
     private func setDelegate() {
         self.imageScrollView.delegate = self
+        self.marketRegisterAndEditViewController.refreshDelegate = self
     }
     
     private func setPageControlSelectedPage(currentPage: Int) {
@@ -97,6 +163,7 @@ class MarketDetailViewController: UIViewController {
                 self.convertStockFormat(stock: data.stock)
                 self.itemDescription.text = data.descriptions
                 self.itemTitle.text = data.title
+                self.loadViewIfNeeded()
             }
         }
     }
@@ -107,6 +174,7 @@ class MarketDetailViewController: UIViewController {
             for index in 0..<self.marketDetailViewModel.getImageCount {
                 DispatchQueue.main.async {
                     let imageView = UIImageView()
+                    imageView.contentMode = .scaleAspectFit
                     let positionX = self.imageScrollView.frame.width * CGFloat(index)
                     let positionY = self.imageScrollView.frame.origin.y
                     imageView.frame = CGRect(x: positionX, y: positionY, width: self.imageScrollView.bounds.width, height: self.imageScrollView.bounds.height)
@@ -123,18 +191,24 @@ class MarketDetailViewController: UIViewController {
     }
     
     func setDetailViewController(item: Item) {
-        guard let request = self.marketDetailViewModel.createRequest(item.id) else { return }
-        self.navigationItem.title = item.title
+        guard let request = self.marketDetailViewModel.createRequestForItemFetch(item.id) else { return }
         self.marketDetailViewModel.fetch(request: request, decodeType: Item.self) { result in
             switch result {
             case .success(let judge):
                 if judge {
-                    // TODO: - 데이터 Fetch 성공후 어떠한 작업이 필요하다면 ...
+                    DispatchQueue.main.async {
+                        self.navigationItem.title = self.marketDetailViewModel.getDetailItem()?.title
+                    }
                 }
             case .failure(let error):
                 self.alert(title: MarketModelError.network(error).description)
             }
         }
+    }
+    
+    func refreshitem() {
+        guard let item = self.marketDetailViewModel.getDetailItem() else { return }
+        setDetailViewController(item: item)
     }
     
     private func convertPriceFormat(currency: String, price: UInt, discountPrice: UInt?) {
