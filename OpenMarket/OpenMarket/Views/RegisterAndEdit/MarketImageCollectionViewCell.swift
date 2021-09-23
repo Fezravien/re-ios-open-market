@@ -20,7 +20,6 @@ final class MarketImageCollectionViewCell: UICollectionViewCell {
     
     func configurateImageCell(image: UIImage) {
         setItemImageViewConstraint()
-        self.backgroundColor = .systemOrange
         self.itemImageView.image = image
     }
     
