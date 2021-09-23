@@ -222,6 +222,29 @@ final class MarketRegisterAndEditViewController: UIViewController {
         }
     }
     
+    private func setKeyboardObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc func adjustForKeyboard(notification: Notification) {
+        guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+
+        let keyboardScreenEndFrame = keyboardValue.cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+
+        if notification.name == UIResponder.keyboardWillHideNotification {
+            itemDescription.contentInset = .zero
+        } else {
+            itemDescription.contentInset = UIEdgeInsets(top: 15, left: 10, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 10)
+        }
+
+        itemDescription.scrollIndicatorInsets = itemDescription.contentInset
+
+        let selectedRange = itemDescription.selectedRange
+        itemDescription.scrollRangeToVisible(selectedRange)
+    }
+    
     func setRegisterAndEditViewController(state: State, item: Item? = nil) {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(tappedFinishDoneButton))
         self.view.backgroundColor = .white
