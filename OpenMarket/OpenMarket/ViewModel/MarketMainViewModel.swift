@@ -17,11 +17,15 @@ final class MarketMainViewModel {
     }
     
     var getMarketItemsCount: Int {
-        return marketItems.count
+        return self.marketItems.count
     }
     
     func getMarketItem(index: Int) -> Item {
-        return marketItems[index]
+        return self.marketItems[index]
+    }
+    
+    func removeAllItems() {
+        self.marketItems = []
     }
     
     func createRequest(_ page: UInt) -> URLRequest? {

@@ -291,7 +291,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
                         case .success(_):
                             DispatchQueue.main.async {
                                 self?.alert(title: "수정이 완료되었습니다") {
-                                    self?.refreshDelegate?.refreshitem()
+                                    self?.refreshDelegate?.refreshItem()
                                     self?.navigationController?.popViewController(animated: true)
                                 }
                             }

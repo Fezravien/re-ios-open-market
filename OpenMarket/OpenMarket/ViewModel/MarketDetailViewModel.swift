@@ -43,6 +43,15 @@ final class MarketDetailViewModel {
         return request
     }
     
+    func createRequestForItemDelete(data: ItemDelete ,id: UInt) -> URLRequest? {
+        do {
+            let request = try self.networkManager.createRequest(data: data, itemID: id)
+            return request
+        } catch {
+            return nil
+        }
+    }
+    
     func createRequestForItemPatch(id: UInt, item: ItemModifcation) throws -> URLRequest? {
         do {
             let request = try self.networkManager.createRequest(url: NetworkConstant.edit(id: id).url ?? URL(string: ""), encodeType: item, method: .patch)

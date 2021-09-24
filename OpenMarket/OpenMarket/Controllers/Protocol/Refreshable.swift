@@ -8,5 +8,5 @@
 import Foundation
 
 protocol Refreshable: NSObject {
-    func refreshitem()
+    func refreshItem()
 }

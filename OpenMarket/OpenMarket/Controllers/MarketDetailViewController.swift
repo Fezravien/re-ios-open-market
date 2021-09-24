@@ -71,6 +71,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         return label
     }()
     private let marketDetailViewModel = MarketDetailViewModel()
+    var refreshDelegate: Refreshable?
     lazy var marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
     
     override func viewDidLoad() {
@@ -90,7 +91,26 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     @objc private func tappedEditButton() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
-            
+            self.alertInputPassword { password in
+                guard let item = self.marketDetailViewModel.getDetailItem() else { return }
+                let password = ItemDelete(password: password)
+                guard let request = self.marketDetailViewModel.createRequestForItemDelete(data: password, id: item.id) else { return }
+                self.marketDetailViewModel.patch(request: request) { result in
+                    switch result {
+                    case .success(_):
+                        DispatchQueue.main.async {
+                            self.alert(title: "상품이 삭제되었습니다.") {
+                                self.refreshDelegate?.refreshItem()
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        }
+                    case .failure(_):
+                        DispatchQueue.main.async {
+                            self.alert(title: "비밀번호가 틀립니다.")
+                        }
+                    }
+                }
+            }
         }
         let editAction = UIAlertAction(title: "수정", style: .default) { _ in
             self.alertInputPassword { password in
@@ -167,7 +187,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             }
         }
     }
-    
+
     private func bindDataImage() {
         self.marketDetailViewModel.itemImagesObserver = { [weak self] in
             guard let self = self else { return }
@@ -206,7 +226,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         }
     }
     
-    func refreshitem() {
+    func refreshItem() {
         guard let item = self.marketDetailViewModel.getDetailItem() else { return }
         setDetailViewController(item: item)
     }

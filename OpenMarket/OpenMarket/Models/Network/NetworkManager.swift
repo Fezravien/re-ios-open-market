@@ -65,7 +65,7 @@ final class NetworkManager {
     }
     
     /// DELETE - JSONEncoder
-    func createRequest<T: Encodable>(data: T, itemID: Int) throws -> URLRequest? {
+    func createRequest<T: Encodable>(data: T, itemID: UInt) throws -> URLRequest? {
         let encodeData: Data
         
         do {
