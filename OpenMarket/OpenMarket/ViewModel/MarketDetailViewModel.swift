@@ -38,6 +38,11 @@ final class MarketDetailViewModel {
         return self.detailItem
     }
     
+    func refreshItem(item: Item) {
+        downloadImage(imageURL: item.images ?? [])
+        self.detailItem = item
+    }
+    
     func createRequestForItemFetch(_ id: UInt) -> URLRequest? {
         let request = self.networkManager.createRequest(id: id)
         return request
@@ -61,27 +66,14 @@ final class MarketDetailViewModel {
         }
     }
     
-    func fetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<Bool, Error>) -> Void) where T: Decodable {
+    func fetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Item?) -> ()) where T: Decodable {
         self.networkManager.excuteFetch(request: request, decodeType: T.self) { result in
             switch result {
             case .success(let data):
-                guard let data = data as? Item else { return }
-                self.detailItem = data
-                self.downloadImage(imageURL: data.images ?? [])
-                completion(.success(true))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    func patch(request: URLRequest, completion: @escaping (Result<Bool,Error>) -> Void) {
-        self.networkManager.excutePost(request: request) { result in
-            switch result {
-            case .success(_):
-                completion(.success(true))
+                if let _ = data as? ItemDelete { return }
+                completion(data as? Item)
             case .failure(_):
-                completion(.failure(MarketModelError.patch))
+                completion(nil)
             }
         }
     }

@@ -7,8 +7,7 @@
 
 import UIKit
 
-final class MarketMainViewController: UIViewController, Refreshable {
-
+final class MarketMainViewController: UIViewController, RegisterationToMainDelegate, DetailToMainDelegate {
     private enum segmentStyle: String, CaseIterable {
         case list = "List"
         case grid = "Grid"
@@ -111,9 +110,10 @@ final class MarketMainViewController: UIViewController, Refreshable {
     }
     
     @objc private func tappedRegisterAndEditItemButton() {
-        let viewController = MarketRegisterAndEditViewController()
-        viewController.setRegisterAndEditViewController(state: .registration)
-        self.navigationController?.pushViewController(viewController, animated: true)
+        let marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
+        marketRegisterAndEditViewController.registrationToMainDelegate = self
+        marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .registration)
+        self.navigationController?.pushViewController(marketRegisterAndEditViewController, animated: true)
     }
     
     private func setConstraint() {
@@ -153,9 +153,17 @@ final class MarketMainViewController: UIViewController, Refreshable {
         }
     }
     
-    func refreshItem() {
+    func refreshMainItemList() {
         self.mode = .delete
         self.marketViewModel.removeAllItems()
+    }
+    
+    func displayRegisteratedItem(item: Item) {
+        self.marketDetailViewController = MarketDetailViewController()
+        self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.marketDetailViewController?.refreshDetailItem(item: item)
+        }
     }
 }
 
@@ -186,8 +194,9 @@ extension MarketMainViewController: UICollectionViewDataSource {
 extension MarketMainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.marketDetailViewController = MarketDetailViewController()
+        self.marketDetailViewController?.detailToMainDelegate = self
         self.marketDetailViewController?.setDetailViewController(item: self.marketViewModel.getMarketItem(index: indexPath.row))
-        self.navigationController?.pushViewController(self.marketDetailViewController!, animated: true)
+        self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
     }
 }
 

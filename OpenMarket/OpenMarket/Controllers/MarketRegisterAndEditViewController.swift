@@ -168,12 +168,20 @@ final class MarketRegisterAndEditViewController: UIViewController {
         let pickerView = UIPickerView()
         return pickerView
     }()
+    private let indicater: UIActivityIndicatorView = {
+        let indicater = UIActivityIndicatorView(style: .large)
+        indicater.hidesWhenStopped = true
+        indicater.translatesAutoresizingMaskIntoConstraints = false
+        return indicater
+    }()
+    
     private let marketRegisterAndEditViewModel = MarketRegisterAndEditViewModel()
     private var state: State?
     private var itemImageCount = 0
     private var currencys = CurrencyState.allCases.map { $0.rawValue }
     private var itemInfomation = itemInfomation(title: nil, currency: nil, price: nil, discountPrice: nil, stock: nil, itemDescription: nil)
-    weak var refreshDelegate: Refreshable?
+    weak var registrationToDetailDelegate: RegisterationToDetailDelegate?
+    weak var registrationToMainDelegate: RegisterationToMainDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -271,33 +279,45 @@ final class MarketRegisterAndEditViewController: UIViewController {
             switch self.state {
             case .registration:
                 self.alertInputPassword { [weak self] password in
-                    guard let request = self?.createRequestForRegistration(password) else { return }
-                    self?.marketRegisterAndEditViewModel.post(request: request, completion: { result in
-                        switch result {
-                        case .success(_):
+                    self?.indicater.startAnimating()
+                    guard let request = self?.createRequestForRegistration(password) else {
+                        return
+                    }
+                    self?.marketRegisterAndEditViewModel.post(request: request, completion: { [weak self] item in
+                        guard let item = item else {
                             DispatchQueue.main.async {
-                                self?.navigationController?.popViewController(animated: true)
+                                self?.indicater.stopAnimating()
                             }
-                        case .failure(_) :
                             return
+                        }
+                        
+                        DispatchQueue.main.async {
+                            self?.indicater.stopAnimating()
+                            self?.alert(title: "등록이 완료되었습니다") {
+                                self?.navigationController?.popViewController(animated: true)
+                                self?.registrationToMainDelegate?.displayRegisteratedItem(item: item)
+                            }
                         }
                     })
                 }
             case .edit:
                 self.alertInputPassword { [weak self] password in
+                    self?.indicater.startAnimating()
                     guard let request = self?.createRequestForEdit(password) else { return }
-                    self?.marketRegisterAndEditViewModel.post(request: request, completion: { result in
-                        switch result {
-                        case .success(_):
+                    self?.marketRegisterAndEditViewModel.post(request: request, completion: { item in
+                        guard let item = item else {
                             DispatchQueue.main.async {
-                                self?.alert(title: "수정이 완료되었습니다") {
-                                    self?.refreshDelegate?.refreshItem()
-                                    self?.navigationController?.popViewController(animated: true)
-                                }
+                                self?.indicater.stopAnimating()
+                                self?.alert(title: "비밀번호를 확인해주세요")
                             }
-                        case .failure(_) :
-                            DispatchQueue.main.async {
-                                self?.alert(title: "비밀번호를 확인해주세요.")
+                            return
+                        }
+                        
+                        DispatchQueue.main.async {
+                            self?.indicater.stopAnimating()
+                            self?.alert(title: "수정이 완료되었습니다") {
+                                self?.registrationToDetailDelegate?.refreshDetailItem(item: item)
+                                self?.navigationController?.popViewController(animated: true)
                             }
                         }
                     })
@@ -306,15 +326,32 @@ final class MarketRegisterAndEditViewController: UIViewController {
                 return
             }
         }
+        self.indicater.stopAnimating()
     }
     
     private func createRequestForRegistration(_ password: String) -> URLRequest? {
-        guard let title = self.itemInfomation.title,
-              let currency = self.itemInfomation.currency,
-              let price = self.itemInfomation.price,
-              let stock = self.itemInfomation.stock,
-              let description = self.itemInfomation.itemDescription else {
+        guard let registrationItem = createRegistrationItem(password: password) else { return nil }
+        
+        do {
+            let request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registrationItem, method: .post)
+            return request
+        } catch {
+            return nil
+        }
+    }
+    
+    private func createRegistrationItem(password: String) -> ItemRegistration? {
+        guard let title = self.itemTitle.text,
+              let currency = self.itemCurrency.text,
+              let price = self.itemPrice.text,
+              let stock = self.itemStock.text,
+              let description = self.itemDescription.text,
+              let discountPriceText = self.itemDiscountPrice.text else {
             
+            DispatchQueue.main.async {
+                self.alert(title: "등록에 실패했습니다")
+                self.indicater.stopAnimating()
+            }
             return nil
         }
         
@@ -322,17 +359,12 @@ final class MarketRegisterAndEditViewController: UIViewController {
                                                  descriptions: description,
                                                  price: UInt(price)!,
                                                  currency: currency,
-                                                 stock: UInt32(stock)!,
-                                                 discountedPrice: self.itemInfomation.discountPrice == nil ? nil : UInt(self.itemInfomation.discountPrice ?? "")!,
+                                                 stock: UInt(stock)!,
+                                                 discountedPrice: self.itemDiscountPrice.text == "" ? nil : UInt(discountPriceText)!,
                                                  images: self.marketRegisterAndEditViewModel.getItemImages(),
                                                  password: password)
         
-        do {
-            let request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registerationData, method: .post)
-            return request
-        } catch {
-            return nil
-        }
+        return registerationData
     }
     
     private func createRequestForEdit(_ password: String) -> URLRequest? {
@@ -426,6 +458,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         setItemDiscountPriceConstraint()
         setItemStockConstraint()
         setItemDescriptionConstraint()
+        setIndicaterConstraint()
     }
     
     private func setImageCollectionView() {
@@ -497,6 +530,15 @@ final class MarketRegisterAndEditViewController: UIViewController {
             self.itemDescription.topAnchor.constraint(equalTo: self.itemStock.bottomAnchor, constant: Style.ItemDescription.margin.top),
             self.itemDescription.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: Style.ItemDescription.margin.right),
             self.itemDescription.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
+    
+    private func setIndicaterConstraint() {
+        self.view.addSubview(self.indicater)
+        
+        NSLayoutConstraint.activate([
+            self.indicater.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.indicater.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
         ])
     }
 }

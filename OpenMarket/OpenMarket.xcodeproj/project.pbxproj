@@ -23,7 +23,9 @@
 		6D644AAA26F379EE00279CC2 /* UIImageCompressTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AA926F379EE00279CC2 /* UIImageCompressTest.swift */; };
 		6D644AAC26F6061C00279CC2 /* MarketDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AAB26F6061C00279CC2 /* MarketDetailViewController.swift */; };
 		6D644AB026F763AC00279CC2 /* MarketDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AAF26F763AC00279CC2 /* MarketDetailViewModel.swift */; };
-		6D644AB526FADAD900279CC2 /* Refreshable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AB426FADAD900279CC2 /* Refreshable.swift */; };
+		6D644AB926FED99600279CC2 /* RegisterationToMainDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AB826FED99600279CC2 /* RegisterationToMainDelegate.swift */; };
+		6D644ABB26FED9C200279CC2 /* RegisterationToDetailDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644ABA26FED9C200279CC2 /* RegisterationToDetailDelegate.swift */; };
+		6D644ABD26FEF81700279CC2 /* DetailToMainDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644ABC26FEF81700279CC2 /* DetailToMainDelegate.swift */; };
 		6D846D1026D75C8200349480 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D0F26D75C8200349480 /* AppDelegate.swift */; };
 		6D846D1226D75C8200349480 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D1126D75C8200349480 /* SceneDelegate.swift */; };
 		6D846D1926D75C8600349480 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D846D1826D75C8600349480 /* Assets.xcassets */; };
@@ -83,7 +85,9 @@
 		6D644AA926F379EE00279CC2 /* UIImageCompressTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageCompressTest.swift; sourceTree = "<group>"; };
 		6D644AAB26F6061C00279CC2 /* MarketDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketDetailViewController.swift; sourceTree = "<group>"; };
 		6D644AAF26F763AC00279CC2 /* MarketDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketDetailViewModel.swift; sourceTree = "<group>"; };
-		6D644AB426FADAD900279CC2 /* Refreshable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refreshable.swift; sourceTree = "<group>"; };
+		6D644AB826FED99600279CC2 /* RegisterationToMainDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterationToMainDelegate.swift; sourceTree = "<group>"; };
+		6D644ABA26FED9C200279CC2 /* RegisterationToDetailDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterationToDetailDelegate.swift; sourceTree = "<group>"; };
+		6D644ABC26FEF81700279CC2 /* DetailToMainDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailToMainDelegate.swift; sourceTree = "<group>"; };
 		6D846D0C26D75C8200349480 /* OpenMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D846D0F26D75C8200349480 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6D846D1126D75C8200349480 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -141,7 +145,9 @@
 		6D644AB126FADAA400279CC2 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				6D644AB426FADAD900279CC2 /* Refreshable.swift */,
+				6D644AB826FED99600279CC2 /* RegisterationToMainDelegate.swift */,
+				6D644ABA26FED9C200279CC2 /* RegisterationToDetailDelegate.swift */,
+				6D644ABC26FEF81700279CC2 /* DetailToMainDelegate.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -471,6 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D644ABB26FED9C200279CC2 /* RegisterationToDetailDelegate.swift in Sources */,
 				6D846D5926D7A3BE00349480 /* NetworkManager.swift in Sources */,
 				6D846D6E26DA048400349480 /* MarketMainViewController.swift in Sources */,
 				6D644AAC26F6061C00279CC2 /* MarketDetailViewController.swift in Sources */,
@@ -490,15 +497,16 @@
 				6D846D7726E0900F00349480 /* MarketRegisterAndEditViewController.swift in Sources */,
 				6D846D5D26D7A3FF00349480 /* MarketMainViewModel.swift in Sources */,
 				6D955AD926E73D20004144F7 /* Data+Extension.swift in Sources */,
+				6D644AB926FED99600279CC2 /* RegisterationToMainDelegate.swift in Sources */,
 				6D846D6526D88A1800349480 /* OpenMarketNetwork.swift in Sources */,
 				6D846D4726D75F0500349480 /* ItemRegistration.swift in Sources */,
+				6D644ABD26FEF81700279CC2 /* DetailToMainDelegate.swift in Sources */,
 				6D644A9426ED15C300279CC2 /* MultiPartForm.swift in Sources */,
 				6D846D7926E0B9BA00349480 /* MarketImageCollectionViewCell.swift in Sources */,
 				6D846D1026D75C8200349480 /* AppDelegate.swift in Sources */,
 				6D846D7D26E0CEBC00349480 /* MarketImageCollectionViewHeader.swift in Sources */,
 				6D846D9126E5F11F00349480 /* MarketInputError.swift in Sources */,
 				6D644A9226ED145700279CC2 /* JSONEncoder+Extension.swift in Sources */,
-				6D644AB526FADAD900279CC2 /* Refreshable.swift in Sources */,
 				6D846D4B26D75F6800349480 /* ItemDelete.swift in Sources */,
 				6D846D6726D88AA600349480 /* MarketDecode.swift in Sources */,
 				6D644A8A26ECF29100279CC2 /* JSONDecoder+Extension.swift in Sources */,

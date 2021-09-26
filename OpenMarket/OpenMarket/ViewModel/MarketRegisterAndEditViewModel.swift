@@ -65,13 +65,13 @@ final class MarketRegisterAndEditViewModel {
         return request
     }
     
-    func post(request: URLRequest, completion: @escaping (Result<Bool, Error>) -> Void) {
-        self.networkManager.excutePost(request: request) { result in
+    func post(request: URLRequest, completion: @escaping (Item?) -> ()) {
+        self.networkManager.excuteFetch(request: request, decodeType: Item.self) { result in
             switch result {
-            case .success(_):
-                completion(.success(true))
-            case .failure(let error):
-                completion(.failure(error))
+            case .success(let data):
+                completion(data)
+            case .failure(_):
+                completion(nil)
             }
         }
     }
