@@ -106,7 +106,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
                     return
                 }
                 
-                self.marketDetailViewModel.fetch(request: request, decodeType: ItemDelete.self) { item in
+                self.marketDetailViewModel.fetch(request: request, decodeType: Item.self) { item in
                     guard let _ = item else {
                         DispatchQueue.main.async {
                             self.indicater.stopAnimating()
