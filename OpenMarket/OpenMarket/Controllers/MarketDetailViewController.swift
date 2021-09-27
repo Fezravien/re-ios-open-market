@@ -70,6 +70,12 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    private let indicater: UIActivityIndicatorView = {
+        let indicater = UIActivityIndicatorView(style: .large)
+        indicater.hidesWhenStopped = true
+        indicater.translatesAutoresizingMaskIntoConstraints = false
+        return indicater
+    }()
     private let marketDetailViewModel = MarketDetailViewModel()
     weak var detailToMainDelegate: DetailToMainDelegate?
     lazy var marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
@@ -92,6 +98,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
             self.alertInputPassword { password in
+                self.indicater.startAnimating()
                 let password = ItemDelete(password: password)
                 guard let item = self.marketDetailViewModel.getDetailItem(),
                       let request = self.marketDetailViewModel.createRequestForItemDelete(data: password, id: item.id) else {
@@ -102,12 +109,14 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
                 self.marketDetailViewModel.fetch(request: request, decodeType: ItemDelete.self) { item in
                     guard let _ = item else {
                         DispatchQueue.main.async {
+                            self.indicater.stopAnimating()
                             self.alert(title: "비밀번호를 확인해주세요")
                         }
                         return
                     }
                     
                     DispatchQueue.main.async {
+                        self.indicater.stopAnimating()
                         self.alert(title: "상품이 삭제되었습니다.") {
                             self.detailToMainDelegate?.refreshMainItemList()
                             self.navigationController?.popViewController(animated: true)
@@ -118,21 +127,24 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         }
         let editAction = UIAlertAction(title: "수정", style: .default) { _ in
             self.alertInputPassword { password in
+                self.indicater.startAnimating()
                 guard let modifyItem = self.createModifyItemFormat(password: password),
                       let request = try? self.marketDetailViewModel.createRequestForItemPatch(id: self.marketDetailViewModel.getDetailItem()!.id, item: modifyItem) else {
                     
                     return
                 }
                 
-                self.marketDetailViewModel.fetch(request: request, decodeType: ItemDelete.self) { item in
+                self.marketDetailViewModel.fetch(request: request, decodeType: Item.self) { item in
                     guard let item = item else {
                         DispatchQueue.main.async {
+                            self.indicater.stopAnimating()
                             self.alert(title: "비밀번호를 확인해주세요")
                         }
                         return
                     }
                     
                     DispatchQueue.main.async {
+                        self.indicater.stopAnimating()
                         self.marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .edit, item: item)
                         self.navigationController?.pushViewController(self.marketRegisterAndEditViewController, animated: true)
                     }
@@ -188,8 +200,6 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
                 self.convertStockFormat(stock: data.stock)
                 self.itemDescription.text = data.descriptions
                 self.itemTitle.text = data.title
-                self.view.layoutIfNeeded()
-//                self.loadViewIfNeeded()
             }
         }
     }
@@ -260,6 +270,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         setItemDiscountPriceConstraint()
         setItemStockConstraint()
         setItemDescription()
+        setIndicaterConstraint()
     }
     
     private func setDetailPageScrollViewConstraint() {
@@ -347,6 +358,15 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             self.itemDescription.trailingAnchor.constraint(equalTo: self.imageScrollView.trailingAnchor, constant: -10),
             self.itemDescription.bottomAnchor.constraint(equalTo: self.detailPageScrollView.bottomAnchor),
             self.itemDescription.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: -20)
+        ])
+    }
+    
+    private func setIndicaterConstraint() {
+        self.view.addSubview(self.indicater)
+        
+        NSLayoutConstraint.activate([
+            self.indicater.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.indicater.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
         ])
     }
 }

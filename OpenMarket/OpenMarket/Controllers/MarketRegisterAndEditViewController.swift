@@ -219,6 +219,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.marketRegisterAndEditViewModel.editItemChanged = { [weak self] in
             guard let item = self?.marketRegisterAndEditViewModel.getEditItem() else { return }
             DispatchQueue.main.async {
+                self?.navigationItem.title = item.title
                 self?.marketRegisterAndEditViewModel.downloadImage(imageURL: item.images ?? [])
                 self?.itemTitle.text = item.title
                 self?.itemCurrency.text = item.currency
@@ -257,11 +258,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(tappedFinishDoneButton))
         self.view.backgroundColor = .white
         self.state = state
-        switch state {
-        case .registration:
-            self.navigationItem.title = State.registration.rawValue
-        case .edit:
-            self.navigationItem.title = State.edit.rawValue
+        
+        if state == .edit {
             self.marketRegisterAndEditViewModel.setEditItem(item: item)
         }
     }
