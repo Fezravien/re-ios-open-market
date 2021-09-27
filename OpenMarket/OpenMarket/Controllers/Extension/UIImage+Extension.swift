@@ -21,7 +21,7 @@ extension UIImage {
     func compress() -> Data? {
         var neededCompressImage = self
         var quality: CGFloat = 1
-        let maxDataSize = 300 * 1024
+        let maxDataSize = 300 * 1000
         guard var compressedImageData = neededCompressImage.jpegData(compressionQuality: 1) else { return nil }
         
         while compressedImageData.count > maxDataSize {

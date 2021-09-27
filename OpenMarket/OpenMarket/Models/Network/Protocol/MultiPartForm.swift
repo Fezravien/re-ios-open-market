@@ -7,5 +7,6 @@
 
 import Foundation
 
-protocol MultiPartForm { }
-
+protocol MultiPartForm {
+    var asDictionary : [String: Any?] { get }
+}

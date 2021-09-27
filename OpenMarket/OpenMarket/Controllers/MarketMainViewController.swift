@@ -7,16 +7,21 @@
 
 import UIKit
 
-final class MarketMainViewController: UIViewController {
-
+final class MarketMainViewController: UIViewController, RegisterationToMainDelegate, DetailToMainDelegate {
     private enum segmentStyle: String, CaseIterable {
         case list = "List"
         case grid = "Grid"
     }
     
+    private enum Mode {
+        case normal
+        case delete
+    }
+    
     private let marketindicater: UIActivityIndicatorView = {
         let indicater = UIActivityIndicatorView(style: .large)
         indicater.color = .darkGray
+        indicater.hidesWhenStopped = true
         indicater.translatesAutoresizingMaskIntoConstraints = false
         return indicater
     }()
@@ -37,7 +42,9 @@ final class MarketMainViewController: UIViewController {
         return collectionView
     }()
     private let marketViewModel = MarketMainViewModel()
+    private var marketDetailViewController: MarketDetailViewController?
     private var page: UInt = 1
+    private var mode: Mode = .normal
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,8 +59,20 @@ final class MarketMainViewController: UIViewController {
     
     private func bindData() {
         self.marketViewModel.observer = {
+            if self.marketViewModel.getMarketItemsCount == 0 {
+                self.page = 1
+                self.fetchMarketData()
+                return
+            }
+            
             DispatchQueue.main.async {
+                self.marketindicater.startAnimating()
                 self.marketCollectionView.reloadData()
+                if self.mode == .delete {
+                    self.mode = .normal
+                    self.marketCollectionView.setContentOffset(CGPoint(x: 0, y: self.marketCollectionView.contentInset.top), animated: true)
+                }
+                self.marketindicater.stopAnimating()
             }
         }
     }
@@ -91,9 +110,10 @@ final class MarketMainViewController: UIViewController {
     }
     
     @objc private func tappedRegisterAndEditItemButton() {
-        let viewController = MarketRegisterAndEditViewController()
-        viewController.setRegisterAndEditViewController(state: .registration)
-        self.navigationController?.pushViewController(viewController, animated: true)
+        let marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
+        marketRegisterAndEditViewController.registrationToMainDelegate = self
+        marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .registration)
+        self.navigationController?.pushViewController(marketRegisterAndEditViewController, animated: true)
     }
     
     private func setConstraint() {
@@ -132,6 +152,19 @@ final class MarketMainViewController: UIViewController {
             }
         }
     }
+    
+    func refreshMainItemList() {
+        self.mode = .delete
+        self.marketViewModel.removeAllItems()
+    }
+    
+    func displayRegisteratedItem(item: Item) {
+        self.marketDetailViewController = MarketDetailViewController()
+        self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.marketDetailViewController?.refreshDetailItem(item: item)
+        }
+    }
 }
 
 extension MarketMainViewController: UICollectionViewDataSource {
@@ -160,9 +193,10 @@ extension MarketMainViewController: UICollectionViewDataSource {
 
 extension MarketMainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailPage = MarketDetailViewController()
-        detailPage.setDetailViewController(item: self.marketViewModel.getMarketItem(index: indexPath.row))
-        self.navigationController?.pushViewController(detailPage, animated: true)
+        self.marketDetailViewController = MarketDetailViewController()
+        self.marketDetailViewController?.detailToMainDelegate = self
+        self.marketDetailViewController?.setDetailViewController(item: self.marketViewModel.getMarketItem(index: indexPath.row))
+        self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
     }
 }
 

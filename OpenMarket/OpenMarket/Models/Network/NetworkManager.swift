@@ -35,19 +35,6 @@ final class NetworkManager {
         }
     }
     
-    func excutePost(request: URLRequest, completion: @escaping (Result<Bool,Error>) -> Void) {
-        self.loader.excuteNetwork(request: request) { result in
-            switch result {
-            case .success(let data):
-                // TODO: - POST 후 받은 것을 가지고 다른 기능 구현가능
-                guard let _ = data else { return }
-                completion(.success(true))
-            case .failure(let error):
-                completion(.failure(MarketModelError.request(error)))
-            }
-        }
-    }
-    
     /// 목록 조회 (Fetch) - page
     func createRequest(page: UInt) -> URLRequest? {
         guard let fetchURL = NetworkConstant.itemList(page: page).url else { return nil }
@@ -65,7 +52,7 @@ final class NetworkManager {
     }
     
     /// DELETE - JSONEncoder
-    func createRequest<T: Encodable>(data: T, itemID: Int) throws -> URLRequest? {
+    func createRequest<T: Encodable>(data: T, itemID: UInt) throws -> URLRequest? {
         let encodeData: Data
         
         do {
@@ -98,15 +85,7 @@ final class NetworkManager {
     
     private func createMultipartFormRequest<T: MultiPartForm>(url: URL, type: T, method: NetworkConstant.Method) -> URLRequest {
         let boundary = baseBoundary()
-        let mirror = Mirror(reflecting: type)
-        var bodyToDictionary: [String: Any] = [:]
-        
-        mirror.children.forEach {
-            guard let label = $0.label else { return }
-            bodyToDictionary["\(label)"] = $0.value
-        }
-        
-        let encodeBody = createBody(dictionaryData: bodyToDictionary, boundary)
+        let encodeBody = createBody(dictionaryData: type.asDictionary, boundary)
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")

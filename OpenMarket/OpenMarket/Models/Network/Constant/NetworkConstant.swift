@@ -13,7 +13,7 @@ enum NetworkConstant {
     case item(id: UInt)
     case registrate
     case edit(id: UInt)
-    case delete(id: Int)
+    case delete(id: UInt)
     
     var url: URL? {
         switch self {
