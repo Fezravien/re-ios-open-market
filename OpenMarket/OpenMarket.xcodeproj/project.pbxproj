@@ -152,6 +152,48 @@
 			path = Protocol;
 			sourceTree = "<group>";
 		};
+		6D8466602704816400B26925 /* DetailPage */ = {
+			isa = PBXGroup;
+			children = (
+				6D644AAB26F6061C00279CC2 /* MarketDetailViewController.swift */,
+			);
+			path = DetailPage;
+			sourceTree = "<group>";
+		};
+		6D846661270481CD00B26925 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				6D846D6D26DA048400349480 /* MarketMainViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		6D846662270481D600B26925 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6D846D7026DA6F8300349480 /* MarketListCollectionViewCell.swift */,
+				6D846D7226DFB17000349480 /* MarketGridCollectionViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6D8466632704820400B26925 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				6D846D7826E0B9BA00349480 /* MarketImageCollectionViewCell.swift */,
+				6D846D7C26E0CEBC00349480 /* MarketImageCollectionViewHeader.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		6D8466642704820800B26925 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				6D846D7626E0900F00349480 /* MarketRegisterAndEditViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
 		6D846D0326D75C8200349480 = {
 			isa = PBXGroup;
 			children = (
@@ -173,9 +215,10 @@
 		6D846D0E26D75C8200349480 /* OpenMarket */ = {
 			isa = PBXGroup;
 			children = (
+				6D846D6926D8ED3B00349480 /* Errors */,
+				6D955AD726E73CF0004144F7 /* Extensions */,
 				6D846D3F26D75E3700349480 /* Models */,
-				6D846D5626D7A16E00349480 /* ViewModel */,
-				6D846D6C26DA045100349480 /* Controllers */,
+				6D846D5626D7A16E00349480 /* ViewModels */,
 				6D846D6F26DA6F2600349480 /* Views */,
 				6D846D1826D75C8600349480 /* Assets.xcassets */,
 				6D846D1126D75C8200349480 /* SceneDelegate.swift */,
@@ -199,7 +242,6 @@
 		6D846D3F26D75E3700349480 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				6D846D6926D8ED3B00349480 /* Error */,
 				6D846D5726D7A3A600349480 /* Network */,
 				6D846D4526D75EEF00349480 /* Request */,
 				6D846D4026D75E4400349480 /* Response */,
@@ -239,20 +281,19 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		6D846D5626D7A16E00349480 /* ViewModel */ = {
+		6D846D5626D7A16E00349480 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				6D846D5C26D7A3FF00349480 /* MarketMainViewModel.swift */,
 				6D846D8326E316C900349480 /* MarketRegisterAndEditViewModel.swift */,
 				6D644AAF26F763AC00279CC2 /* MarketDetailViewModel.swift */,
 			);
-			path = ViewModel;
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		6D846D5726D7A3A600349480 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				6D955AD726E73CF0004144F7 /* Extension */,
 				6D846D6326D889B300349480 /* Constant */,
 				6D846D6226D889A500349480 /* Protocol */,
 				6D846D5826D7A3BE00349480 /* NetworkManager.swift */,
@@ -281,80 +322,55 @@
 			path = Constant;
 			sourceTree = "<group>";
 		};
-		6D846D6926D8ED3B00349480 /* Error */ = {
+		6D846D6926D8ED3B00349480 /* Errors */ = {
 			isa = PBXGroup;
 			children = (
 				6D846D6A26D8ED8500349480 /* MarketModelError.swift */,
+				6D846D9026E5F11F00349480 /* MarketInputError.swift */,
 			);
-			path = Error;
-			sourceTree = "<group>";
-		};
-		6D846D6C26DA045100349480 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				6D644AB126FADAA400279CC2 /* Protocol */,
-				6D846D8F26E5F0B200349480 /* Error */,
-				6D846D8A26E3D5AC00349480 /* Extension */,
-				6D846D6D26DA048400349480 /* MarketMainViewController.swift */,
-				6D846D7626E0900F00349480 /* MarketRegisterAndEditViewController.swift */,
-				6D644AAB26F6061C00279CC2 /* MarketDetailViewController.swift */,
-			);
-			path = Controllers;
+			path = Errors;
 			sourceTree = "<group>";
 		};
 		6D846D6F26DA6F2600349480 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				6D846D7B26E0CE7E00349480 /* RegisterAndEdit */,
-				6D846D7A26E0CE7200349480 /* Main */,
+				6D644AB126FADAA400279CC2 /* Protocol */,
+				6D846D7A26E0CE7200349480 /* MainPage */,
+				6D846D7B26E0CE7E00349480 /* RegisterAndEditPage */,
+				6D8466602704816400B26925 /* DetailPage */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		6D846D7A26E0CE7200349480 /* Main */ = {
+		6D846D7A26E0CE7200349480 /* MainPage */ = {
 			isa = PBXGroup;
 			children = (
-				6D846D7026DA6F8300349480 /* MarketListCollectionViewCell.swift */,
-				6D846D7226DFB17000349480 /* MarketGridCollectionViewCell.swift */,
+				6D846661270481CD00B26925 /* ViewController */,
+				6D846662270481D600B26925 /* Views */,
 			);
-			path = Main;
+			path = MainPage;
 			sourceTree = "<group>";
 		};
-		6D846D7B26E0CE7E00349480 /* RegisterAndEdit */ = {
+		6D846D7B26E0CE7E00349480 /* RegisterAndEditPage */ = {
 			isa = PBXGroup;
 			children = (
-				6D846D7826E0B9BA00349480 /* MarketImageCollectionViewCell.swift */,
-				6D846D7C26E0CEBC00349480 /* MarketImageCollectionViewHeader.swift */,
+				6D8466642704820800B26925 /* ViewController */,
+				6D8466632704820400B26925 /* View */,
 			);
-			path = RegisterAndEdit;
+			path = RegisterAndEditPage;
 			sourceTree = "<group>";
 		};
-		6D846D8A26E3D5AC00349480 /* Extension */ = {
-			isa = PBXGroup;
-			children = (
-				6D846D8D26E3D67A00349480 /* ViewController+Extension.swift */,
-				6D846D9326E616E900349480 /* UIImage+Extension.swift */,
-			);
-			path = Extension;
-			sourceTree = "<group>";
-		};
-		6D846D8F26E5F0B200349480 /* Error */ = {
-			isa = PBXGroup;
-			children = (
-				6D846D9026E5F11F00349480 /* MarketInputError.swift */,
-			);
-			path = Error;
-			sourceTree = "<group>";
-		};
-		6D955AD726E73CF0004144F7 /* Extension */ = {
+		6D955AD726E73CF0004144F7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				6D644A8926ECF29100279CC2 /* JSONDecoder+Extension.swift */,
 				6D644A9126ED145700279CC2 /* JSONEncoder+Extension.swift */,
 				6D644A8D26ECF33A00279CC2 /* URLSession+Extension.swift */,
 				6D955AD826E73D20004144F7 /* Data+Extension.swift */,
+				6D846D8D26E3D67A00349480 /* ViewController+Extension.swift */,
+				6D846D9326E616E900349480 /* UIImage+Extension.swift */,
 			);
-			path = Extension;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		6D955AEA26E8E963004144F7 /* Mock */ = {
