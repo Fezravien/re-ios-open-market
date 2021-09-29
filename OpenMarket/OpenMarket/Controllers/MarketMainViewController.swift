@@ -177,13 +177,19 @@ extension MarketMainViewController: UICollectionViewDataSource {
         switch self.marketSegmentController.selectedSegmentIndex {
         case 0:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketListCollectionViewCell.identifier, for: indexPath) as? MarketListCollectionViewCell else { return UICollectionViewCell() }
-            
-            cell.configurateListCell(data: marketViewModel.getMarketItem(index: indexPath.row))
+            let item = self.marketViewModel.getMarketItem(index: indexPath.row)
+            self.marketViewModel.downloadImage(item.thumbnails.first ?? "") { imageData in
+                cell.configurateListCellImage(imageData: imageData)
+            }
+            cell.configurateListCellText(data: self.marketViewModel.getMarketItem(index: indexPath.row))
             return cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketGridCollectionViewCell.identifier, for: indexPath) as? MarketGridCollectionViewCell else { return UICollectionViewCell() }
-            
-            cell.configurateGridCell(data: marketViewModel.getMarketItem(index: indexPath.row))
+            let item = self.marketViewModel.getMarketItem(index: indexPath.row)
+            self.marketViewModel.downloadImage(item.thumbnails.first ?? "") { imageData in
+                cell.configurateGridCellImage(imageData: imageData)
+            }
+            cell.configurateGridCellText(data: self.marketViewModel.getMarketItem(index: indexPath.row))
             return cell
         default:
             return UICollectionViewCell()

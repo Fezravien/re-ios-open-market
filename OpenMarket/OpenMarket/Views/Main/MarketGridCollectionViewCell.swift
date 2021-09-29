@@ -75,7 +75,7 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
-    func configurateGridCell(data: Item) {
+    func configurateGridCellText(data: Item) {
         self.contentView.layer.borderWidth = 2
         self.contentView.layer.cornerRadius = 15
         setConstraints()
@@ -83,6 +83,12 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
         convertStockFormat(stock: data.stock)
         downloadImage(data.thumbnails.first!)
         self.itemTitle.text = data.title
+    }
+    
+    func configurateGridCellImage(imageData: Data?) {
+        DispatchQueue.main.async {
+            self.itemImageView.image = UIImage(data: imageData ?? Data())
+        }
     }
     
     override func prepareForReuse() {
