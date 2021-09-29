@@ -71,12 +71,19 @@ final class MarketListCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
-    func configurateListCell(data: Item) {
-        setConstraints()
-        convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
-        convertStockFormat(stock: data.stock)
-        downloadImage(data.thumbnails.first!)
-        self.itemTitle.text = data.title
+    func configurateListCellText(data: Item) {
+        DispatchQueue.main.async {
+            self.setConstraints()
+            self.convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
+            self.convertStockFormat(stock: data.stock)
+            self.itemTitle.text = data.title
+        }
+    }
+    
+    func configurateListCellImage(imageData: Data?) {
+        DispatchQueue.main.async {
+            self.itemImageView.image = UIImage(data: imageData ?? Data())
+        }
     }
     
     override func prepareForReuse() {
@@ -105,16 +112,16 @@ final class MarketListCollectionViewCell: UICollectionViewCell {
         self.itemStock.textColor = .systemGray
     }
     
-    private func downloadImage(_ imageURL: String) {
-        guard let url = URL(string: imageURL) else { return }
-        DispatchQueue.global(qos: .background).async {
-            if let image = try? Data(contentsOf: url) {
-                DispatchQueue.main.async {
-                    self.itemImageView.image = UIImage(data: image)
-                }
-            }
-        }
-    }
+//    private func downloadImage(_ imageURL: String) {
+//        guard let url = URL(string: imageURL) else { return }
+//        DispatchQueue.global(qos: .background).async {
+//            if let image = try? Data(contentsOf: url) {
+//                DispatchQueue.main.async {
+//                    self.itemImageView.image = UIImage(data: image)
+//                }
+//            }
+//        }
+//    }
     
     private func convertStockFormat(stock: UInt) {
         if stock == 0 {
