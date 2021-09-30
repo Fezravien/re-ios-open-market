@@ -39,6 +39,17 @@ final class MarketRegisterAndEditViewController: UIViewController {
         static let itemStock = "Stock"
     }
     
+    private enum registerationConstraint: String {
+        case title = "제목을 입력해주세요."
+        case currency = "화폐 단위를 입력해주세요."
+        case price = "상품의 가격을 입력해주세요."
+        case priceType = "상품 가격은 숫자만 가능합니다."
+        case discountPriceType = "상품 할인가격은 숫자만 가능합니다."
+        case stock = "상품의 개수를 입력해주세요."
+        case stockType = "상품 수량은 숫자만 가능합니다."
+        case description = "상품 상세설명을 입력해주세요"
+    }
+    
     private enum Style {
         enum ImageCollectionView {
             static let margin: UIEdgeInsets = .init(top: 20, left: 0, bottom: 0, right: 0)
@@ -386,27 +397,27 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     private func validItemInfomation() -> Bool {
         guard let title = self.itemTitle.text, title.count >= 1 else {
-            self.alert(title: MarketInputError.title.rawValue)
+            self.alert(title: registerationConstraint.title.rawValue)
             return false
         }
         
         guard let currency = self.itemCurrency.text, currency.count >= 1 else {
-            self.alert(title: MarketInputError.currency.rawValue)
+            self.alert(title: registerationConstraint.currency.rawValue)
             return false
         }
         
         guard let price = self.itemPrice.text, price.count >= 1 else {
-            self.alert(title: MarketInputError.price.rawValue)
+            self.alert(title: registerationConstraint.price.rawValue)
             return false
         }
         
         guard let stock = self.itemStock.text, stock.count >= 1 else {
-            self.alert(title: MarketInputError.stock.rawValue)
+            self.alert(title: registerationConstraint.stock.rawValue)
             return false
         }
         
         guard let descriptions = self.itemDescription.text, descriptions.count >= 1 else {
-            self.alert(title: MarketInputError.description.rawValue)
+            self.alert(title: registerationConstraint.description.rawValue)
             return false
         }
         
@@ -636,21 +647,21 @@ extension MarketRegisterAndEditViewController: UITextFieldDelegate {
             self.itemInfomation.title = textField.text
         case Identifier.itemPrice:
             guard let _ = Int(text) else {
-                self.alert(title: MarketInputError.priceType.rawValue)
+                self.alert(title: registerationConstraint.priceType.rawValue)
                 self.itemPrice.text = nil
                 return
             }
             self.itemInfomation.price = textField.text
         case Identifier.itemDiscountPrice:
             guard let _ = Int(text) else {
-                self.alert(title: MarketInputError.discountPriceType.rawValue)
+                self.alert(title: registerationConstraint.discountPriceType.rawValue)
                 self.itemDiscountPrice.text = nil
                 return
             }
             self.itemInfomation.discountPrice = textField.text
         case Identifier.itemStock:
             guard let _ = Int(text) else {
-                self.alert(title: MarketInputError.stockType.rawValue)
+                self.alert(title: registerationConstraint.stockType.rawValue)
                 self.itemStock.text = nil
                 return
             }
