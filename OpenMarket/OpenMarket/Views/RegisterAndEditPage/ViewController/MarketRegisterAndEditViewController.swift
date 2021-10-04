@@ -340,13 +340,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     private func createRequestForRegistration(_ password: String) -> URLRequest? {
         guard let registrationItem = createRegistrationItem(password: password) else { return nil }
+        let request = self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registrationItem, method: .post)
         
-        do {
-            let request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registrationItem, method: .post)
-            return request
-        } catch {
-            return nil
-        }
+        return request
     }
     
     private func createRegistrationItem(password: String) -> ItemRegistration? {
@@ -378,21 +374,19 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     private func createRequestForEdit(_ password: String) -> URLRequest? {
         let editData = ItemModification(title: self.itemTitle.text,
-                                       descriptions: self.itemDescription.text,
-                                       price: UInt(self.itemPrice.text!),
-                                       currency: self.itemCurrency.text,
-                                       stock: UInt(self.itemStock.text!),
-                                       discountedPrice: self.itemDiscountPrice.text == nil ? nil : UInt(self.itemDiscountPrice.text!),
-                                       images: self.marketRegisterAndEditViewModel.getItemImages(),
-                                       password: password)
+                                        descriptions: self.itemDescription.text,
+                                        price: UInt(self.itemPrice.text!),
+                                        currency: self.itemCurrency.text,
+                                        stock: UInt(self.itemStock.text!),
+                                        discountedPrice: self.itemDiscountPrice.text == nil ? nil : UInt(self.itemDiscountPrice.text!),
+                                        images: self.marketRegisterAndEditViewModel.getItemImages(),
+                                        password: password)
         
-        do {
-            guard let item = self.marketRegisterAndEditViewModel.getEditItem() else { return nil }
-            let request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.edit(id: item.id).url, type: editData, method: .patch)
-            return request
-        } catch {
-            return nil
-        }
+        
+        guard let item = self.marketRegisterAndEditViewModel.getEditItem() else { return nil }
+        let request = self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.edit(id: item.id).url, type: editData, method: .patch)
+        
+        return request
     }
     
     private func validItemInfomation() -> Bool {

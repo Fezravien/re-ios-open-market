@@ -54,14 +54,9 @@ final class MarketRegisterAndEditViewModel {
         self.itemImages.remove(at: index)
     }
     
-    func createRequest<T: MultiPartForm>(url: URL?, type: T, method: NetworkConstant.Method) throws -> URLRequest? {
-        let request: URLRequest
-        do {
-            request = try self.networkManager.createRequest(url: url, encodeType: type, method: method)
-        } catch {
-            throw MarketModelError.createRequest
-        }
-        
+    func createRequest<T: MultiPartForm>(url: URL?, type: T, method: NetworkConstant.Method) -> URLRequest? {
+        let request = self.networkManager.createRequest(url: url, encodeType: type, method: method)
+
         return request
     }
     

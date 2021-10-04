@@ -58,12 +58,10 @@ final class MarketDetailViewModel {
     }
     
     func createRequestForItemPatch(id: UInt, item: ItemModification) throws -> URLRequest? {
-        do {
-            let request = try self.networkManager.createRequest(url: NetworkConstant.edit(id: id).url ?? URL(string: ""), encodeType: item, method: .patch)
-            return request
-        } catch {
-            return nil
-        }
+        let request = self.networkManager.createRequest(url: NetworkConstant.edit(id: id).url ?? URL(string: ""), encodeType: item, method: .patch)
+        
+        return request
+        
     }
     
     func fetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Item?) -> ()) where T: Decodable {
