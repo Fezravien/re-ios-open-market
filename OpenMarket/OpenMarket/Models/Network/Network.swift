@@ -16,8 +16,8 @@ final class Network: MarketNetwork {
     
     func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data?, Error>) -> Void) {
         session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(MarketModelError.network(error)))
+            if let _ = error {
+                completion(.failure(MarketModelError.network))
                 return
             }
             

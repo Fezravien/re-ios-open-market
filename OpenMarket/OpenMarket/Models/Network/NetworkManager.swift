@@ -70,8 +70,8 @@ final class NetworkManager {
     }
     
     /// POST, PATCH - 상품 등록/수정 (mulitpart/form-data)
-    func createRequest<T: MultiPartForm>(url: URL?, encodeType: T, method: NetworkConstant.Method) throws -> URLRequest {
-        guard let url = url else { throw MarketModelError.url }
+    func createRequest<T: MultiPartForm>(url: URL?, encodeType: T, method: NetworkConstant.Method) -> URLRequest? {
+        guard let url = url else { return nil }
             
         switch method {
         case .post:
@@ -79,7 +79,7 @@ final class NetworkManager {
         case .patch:
             return createMultipartFormRequest(url: url, type: encodeType, method: .patch)
         default :
-            throw MarketModelError.createRequest
+            return nil
         }
     }
     

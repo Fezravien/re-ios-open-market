@@ -9,7 +9,7 @@ import Foundation
 
 enum MarketModelError: Error {
     case request, response(Int)
-    case encoding, decoding, casting, network
+    case encoding, decoding, casting(String), network
     case url, data, createRequest
     case get, post, patch, delete
 }
@@ -21,8 +21,8 @@ extension MarketModelError: LocalizedError {
             return "⛔️ 요청 오류"
         case .response(let statusCode):
             return "⛔️ 응답 상태코드 : \(statusCode)"
-        case .casting:
-            return "⛔️ 캐스팅 오류"
+        case .casting(let error):
+            return "⛔️ 캐스팅 오류 : \(error)"
         case .network:
             return "⛔️ 네트워크 오류"
         case .data:
