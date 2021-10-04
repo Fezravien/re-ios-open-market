@@ -106,6 +106,7 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
     }
     
     private func setNavigationItem() {
+        self.navigationController?.view.backgroundColor = .systemGray3
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(tappedRegisterAndEditItemButton))
     }
     
