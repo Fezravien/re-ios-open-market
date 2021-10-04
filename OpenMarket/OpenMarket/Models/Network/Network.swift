@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MarketNetwork: OpenMarketNetwork {
+final class Network: MarketNetwork {
     private let session: MarketSession
     
     init(session: MarketSession) {

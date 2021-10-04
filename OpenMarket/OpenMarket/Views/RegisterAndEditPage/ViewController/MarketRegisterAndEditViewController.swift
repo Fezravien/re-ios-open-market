@@ -377,7 +377,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     private func createRequestForEdit(_ password: String) -> URLRequest? {
-        let editData = ItemModifcation(title: self.itemTitle.text,
+        let editData = ItemModification(title: self.itemTitle.text,
                                        descriptions: self.itemDescription.text,
                                        price: UInt(self.itemPrice.text!),
                                        currency: self.itemCurrency.text,

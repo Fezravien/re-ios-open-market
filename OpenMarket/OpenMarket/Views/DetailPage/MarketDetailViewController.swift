@@ -167,9 +167,9 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         self.dismiss(animated: true, completion: nil)
     }
     
-    private func createModifyItemFormat(password: String) -> ItemModifcation? {
+    private func createModifyItemFormat(password: String) -> ItemModification? {
         guard let currentItem = self.marketDetailViewModel.getDetailItem() else { return nil }
-        let itemModifation = ItemModifcation(title: currentItem.title,
+        let itemModifation = ItemModification(title: currentItem.title,
                                              descriptions: currentItem.descriptions,
                                              price: currentItem.price,
                                              currency: currentItem.currency,

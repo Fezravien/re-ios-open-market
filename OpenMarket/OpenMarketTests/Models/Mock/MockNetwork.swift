@@ -8,7 +8,7 @@
 import Foundation
 @testable import OpenMarket
 
-final class MockNetwork: OpenMarketNetwork {
+final class MockNetwork: MarketNetwork {
     var isCalled = false
     var result: Result<Data?, Error>?
     

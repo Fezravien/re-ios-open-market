@@ -23,7 +23,7 @@ enum StubRequestData {
                                         discountedPrice: nil,
                                         images: [image!],
                                         password: "1234")
-    static let editData = ItemModifcation(title: "Bye World",
+    static let editData = ItemModification(title: "Bye World",
                                            descriptions: "Finished Swift Programing",
                                            price: 200,
                                            currency: "KOR",

@@ -10,7 +10,7 @@ import UIKit
 final class MarketRegisterAndEditViewModel {
     var imageChanged: () -> () = { }
     var editItemChanged: () -> () = { }
-    private let networkManager = NetworkManager(loader: MarketNetwork(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
+    private let networkManager = NetworkManager(loader: Network(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
     private var itemImages: [UIImage] = [] {
         didSet {
             self.imageChanged()

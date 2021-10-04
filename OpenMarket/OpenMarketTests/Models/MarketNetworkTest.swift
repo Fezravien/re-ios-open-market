@@ -26,7 +26,7 @@ class MarketNetworkTest: XCTestCase {
     }
     
     func test_Network_Success() {
-        let mockNetwork = MarketNetwork(session: self.session!)
+        let mockNetwork = Network(session: self.session!)
         MockURLProtocol.error = nil
         MockURLProtocol.requestHandler = { [weak self] request in
             let response = HTTPURLResponse(url: NetworkConstant.itemList(page: 1).url!,
@@ -53,7 +53,7 @@ class MarketNetworkTest: XCTestCase {
     }
     
     func test_Network_Fail_Response() {
-        let mockNetwork = MarketNetwork(session: self.session!)
+        let mockNetwork = Network(session: self.session!)
         MockURLProtocol.error = nil
         MockURLProtocol.requestHandler = { [weak self] request in
             let response = HTTPURLResponse(url: NetworkConstant.itemList(page: 1).url!,

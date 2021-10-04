@@ -10,7 +10,7 @@ import Foundation
 final class MarketDetailViewModel {
     var detailItemObserver: () -> () = { }
     var itemImagesObserver: () -> () = { }
-    private let networkManager = NetworkManager(loader: MarketNetwork(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
+    private let networkManager = NetworkManager(loader: Network(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
     private var detailItem: Item? {
         didSet {
             self.detailItemObserver()
@@ -57,7 +57,7 @@ final class MarketDetailViewModel {
         }
     }
     
-    func createRequestForItemPatch(id: UInt, item: ItemModifcation) throws -> URLRequest? {
+    func createRequestForItemPatch(id: UInt, item: ItemModification) throws -> URLRequest? {
         do {
             let request = try self.networkManager.createRequest(url: NetworkConstant.edit(id: id).url ?? URL(string: ""), encodeType: item, method: .patch)
             return request
