@@ -82,7 +82,7 @@ final class MarketRegisterAndEditViewModel {
         for index in 0..<imageURL.count {
             guard let url = URL(string: imageURL[index]) else { return }
             
-            DispatchQueue.global(qos: .background).async {
+            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
                 if let image = try? Data(contentsOf: url) {
                     DispatchQueue.main.async {
                         images.append(UIImage(data: image) ?? UIImage())
