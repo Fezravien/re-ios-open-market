@@ -19,12 +19,12 @@ final class NetworkManager {
     }
     
     func excuteFetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<T, Error>) -> Void) where T: Decodable {
-        self.networkLoader.excuteNetwork(request: request) { [weak self] result in
+        self.networkLoader.excuteNetwork(request: request) { [unowned self] result in
             switch result {
             case .success(let data):
                 do {
                     guard let data = data else { return }
-                    guard let jsonDecode = try self?.decoder.decode(T.self, from: data) else { return }
+                    let jsonDecode = try self.decoder.decode(T.self, from: data)
                     completion(.success(jsonDecode))
                 } catch {
                     completion(.failure(MarketModelError.decoding))
