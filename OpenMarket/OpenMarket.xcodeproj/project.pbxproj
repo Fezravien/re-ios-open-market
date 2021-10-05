@@ -16,7 +16,6 @@
 		6D644A9626EFB74500279CC2 /* MockEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9526EFB74500279CC2 /* MockEncoder.swift */; };
 		6D644A9826F0A15000279CC2 /* MockSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9726F0A15000279CC2 /* MockSession.swift */; };
 		6D644A9A26F0C0F000279CC2 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9926F0C0F000279CC2 /* MockURLProtocol.swift */; };
-		6D644A9E26F0C14000279CC2 /* MarketNetworkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9D26F0C14000279CC2 /* MarketNetworkTest.swift */; };
 		6D644AA026F1DE9A00279CC2 /* EncodeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644A9F26F1DE9A00279CC2 /* EncodeTest.swift */; };
 		6D644AA226F1E47C00279CC2 /* NetworkManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AA126F1E47C00279CC2 /* NetworkManagerTest.swift */; };
 		6D644AA626F1E9FF00279CC2 /* MockNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644AA526F1E9FF00279CC2 /* MockNetwork.swift */; };
@@ -78,7 +77,6 @@
 		6D644A9526EFB74500279CC2 /* MockEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEncoder.swift; sourceTree = "<group>"; };
 		6D644A9726F0A15000279CC2 /* MockSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSession.swift; sourceTree = "<group>"; };
 		6D644A9926F0C0F000279CC2 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
-		6D644A9D26F0C14000279CC2 /* MarketNetworkTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketNetworkTest.swift; sourceTree = "<group>"; };
 		6D644A9F26F1DE9A00279CC2 /* EncodeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeTest.swift; sourceTree = "<group>"; };
 		6D644AA126F1E47C00279CC2 /* NetworkManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerTest.swift; sourceTree = "<group>"; };
 		6D644AA526F1E9FF00279CC2 /* MockNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetwork.swift; sourceTree = "<group>"; };
@@ -276,7 +274,6 @@
 				6D955AEA26E8E963004144F7 /* Mock */,
 				6D955AE626E8CA88004144F7 /* DecodeTest.swift */,
 				6D644A9F26F1DE9A00279CC2 /* EncodeTest.swift */,
-				6D644A9D26F0C14000279CC2 /* MarketNetworkTest.swift */,
 				6D644AA126F1E47C00279CC2 /* NetworkManagerTest.swift */,
 				6D6650E9270AF81E003A3FFF /* NetworkTest.swift */,
 			);
@@ -535,7 +532,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D644A9E26F0C14000279CC2 /* MarketNetworkTest.swift in Sources */,
 				6D644AA026F1DE9A00279CC2 /* EncodeTest.swift in Sources */,
 				6D644AA626F1E9FF00279CC2 /* MockNetwork.swift in Sources */,
 				6D644A9A26F0C0F000279CC2 /* MockURLProtocol.swift in Sources */,
