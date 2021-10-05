@@ -12,8 +12,8 @@ final class NetworkManager {
     private let decoder: MarketDecode
     private let encoder: MarketEncode
     
-    init(loader: MarketNetwork, decoder: MarketDecode, encoder: MarketEncode) {
-        self.networkLoader = loader
+    init(networkLoader: MarketNetwork, decoder: MarketDecode, encoder: MarketEncode) {
+        self.networkLoader = networkLoader
         self.decoder = decoder
         self.encoder = encoder
     }

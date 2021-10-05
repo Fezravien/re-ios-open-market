@@ -10,7 +10,7 @@ import Foundation
 final class MarketDetailViewModel {
     var detailItemObserver: () -> () = { }
     var itemImagesObserver: () -> () = { }
-    private let networkManager = NetworkManager(loader: Network(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
+    private let networkManager = NetworkManager(networkLoader: Network(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
     private var detailItem: Item? {
         didSet {
             self.detailItemObserver()
