@@ -67,14 +67,14 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
     // MARK: - Data binding with ViewModel (MainViewModel)
     
     private func bindData() {
-        self.marketMainViewModel.observer = {
-            if self.marketMainViewModel.getMarketItemsCount == 0 {
+        self.marketMainViewModel.bindItemListFetch { [unowned self] in
+            if self.marketMainViewModel.marketItems.count == 0 {
                 self.page = 1
                 self.fetchMarketData()
                 return
             }
             
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [unowned self] in
                 self.itemListLoadingindicater.startAnimating()
                 self.itemListCollectionView.reloadData()
                 if self.mode == .delete {
@@ -191,7 +191,7 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
 
 extension MarketMainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.marketMainViewModel.getMarketItemsCount
+        return self.marketMainViewModel.marketItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -199,19 +199,19 @@ extension MarketMainViewController: UICollectionViewDataSource {
         switch self.itemListModeSegmentControl.selectedSegmentIndex {
         case 0:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketListCollectionViewCell.identifier, for: indexPath) as? MarketListCollectionViewCell else { return UICollectionViewCell() }
-            let item = self.marketMainViewModel.getMarketItem(index: indexPath.row)
+            let item = self.marketMainViewModel.marketItems[indexPath.row]
             self.marketMainViewModel.downloadImage(item.thumbnails.first ?? "") { imageData in
                 cell.configurateListCellImage(imageData: imageData)
             }
-            cell.configurateListCellText(data: self.marketMainViewModel.getMarketItem(index: indexPath.row))
+            cell.configurateListCellText(data: item)
             return cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketGridCollectionViewCell.identifier, for: indexPath) as? MarketGridCollectionViewCell else { return UICollectionViewCell() }
-            let item = self.marketMainViewModel.getMarketItem(index: indexPath.row)
+            let item = self.marketMainViewModel.marketItems[indexPath.row]
             self.marketMainViewModel.downloadImage(item.thumbnails.first ?? "") { imageData in
                 cell.configurateGridCellImage(imageData: imageData)
             }
-            cell.configurateGridCellText(data: self.marketMainViewModel.getMarketItem(index: indexPath.row))
+            cell.configurateGridCellText(data: item)
             return cell
         default:
             return UICollectionViewCell()
@@ -225,7 +225,7 @@ extension MarketMainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.marketDetailViewController = MarketDetailViewController()
         self.marketDetailViewController?.detailToMainDelegate = self
-        self.marketDetailViewController?.setDetailViewController(item: self.marketMainViewModel.getMarketItem(index: indexPath.row))
+        self.marketDetailViewController?.setDetailViewController(item: self.marketMainViewModel.marketItems[indexPath.row])
         self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
     }
 }
@@ -258,7 +258,7 @@ extension MarketMainViewController: UICollectionViewDelegateFlowLayout {
 extension MarketMainViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         for indexPath in indexPaths {
-            if marketMainViewModel.getMarketItemsCount == indexPath.row + 2 {
+            if marketMainViewModel.marketItems.count == indexPath.row + 2 {
                 self.page += 1
                 fetchMarketData(page: page)
             }

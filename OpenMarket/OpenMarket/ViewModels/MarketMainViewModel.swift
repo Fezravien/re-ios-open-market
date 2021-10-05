@@ -8,26 +8,33 @@
 import Foundation
 
 final class MarketMainViewModel {
-    var observer: () -> () = { }
+    private var itemListFetchHandler: () -> Void = { }
+    private var itemDisplayHandler: () -> Void = { }
     private let networkManager = NetworkManager(networkLoader: Network(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
-    private var marketItems: [Item] = [] {
+    private(set) var marketItems: [Item] = [] {
         didSet {
-            self.observer()
+            self.itemListFetchHandler()
         }
     }
     private let imageCache = NSCache<NSString, NSData>()
     
-    var getMarketItemsCount: Int {
-        return self.marketItems.count
+    // MARK: - Set closure for data binding with MainView
+    
+    func bindItemListFetch(itemListFetchHandler: @escaping () -> Void) {
+        self.itemListFetchHandler = itemListFetchHandler
     }
     
-    func getMarketItem(index: Int) -> Item {
-        return self.marketItems[index]
+    func bindItemDisplayHandler(itemDisplayHandler: @escaping () -> Void) {
+        self.itemDisplayHandler = itemDisplayHandler
     }
+    
+    // MARK: - Model change due to the user's event.
     
     func removeAllItems() {
         self.marketItems = []
     }
+    
+    // MARK: - Networking
     
     func createRequest(_ page: UInt) -> URLRequest? {
         let request = self.networkManager.createRequest(page: page)
