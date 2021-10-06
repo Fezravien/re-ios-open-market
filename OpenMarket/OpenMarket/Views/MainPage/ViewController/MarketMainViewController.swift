@@ -68,14 +68,13 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
     
     private func bindData() {
         self.marketMainViewModel.bindItemListFetch { [unowned self] in
-            if self.marketMainViewModel.marketItems.count == 0 {
+            if self.marketMainViewModel.marketItems?.count == 0 {
                 self.page = 1
                 self.fetchMarketData()
                 return
             }
             
             DispatchQueue.main.async { [unowned self] in
-                self.itemListLoadingindicater.startAnimating()
                 self.itemListCollectionView.reloadData()
                 if self.mode == .delete {
                     self.mode = .normal
@@ -160,13 +159,13 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
     // MARK: - Fetch itmeList data from Server
     
     private func fetchMarketData(page: UInt = 1) {
-        self.itemListLoadingindicater.startAnimating()
         guard let request = self.marketMainViewModel.createRequest(page) else { return }
-    
-        self.marketMainViewModel.fetch(request: request, decodeType: ItemList.self) { [weak self] _ in
-            // TODO: - 실패 오류를 받아서 Alert로 사용자에게 알릴 수 있다.
-            DispatchQueue.main.async {
-                self?.itemListLoadingindicater.stopAnimating()
+        self.itemListLoadingindicater.startAnimating()
+        self.marketMainViewModel.fetch(request: request, decodeType: ItemList.self) { [unowned self] error in
+            guard let error = error , let message = error as? MarketModelError else { return }
+            DispatchQueue.main.async { [unowned self] in
+                self.itemListLoadingindicater.stopAnimating()
+                self.alert(title: "데이터 불러오기를 실패했습니다. \n \(message.description)")
             }
         }
     }
@@ -191,27 +190,30 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
 
 extension MarketMainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.marketMainViewModel.marketItems.count
+        return self.marketMainViewModel.marketItems?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         switch self.itemListModeSegmentControl.selectedSegmentIndex {
         case 0:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketListCollectionViewCell.identifier, for: indexPath) as? MarketListCollectionViewCell else { return UICollectionViewCell() }
-            let item = self.marketMainViewModel.marketItems[indexPath.row]
-            self.marketMainViewModel.downloadImage(item.thumbnails.first ?? "") { imageData in
-                cell.configurateListCellImage(imageData: imageData)
-            }
-            cell.configurateListCellText(data: item)
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketListCollectionViewCell.identifier, for: indexPath) as? MarketListCollectionViewCell,
+                  let items = self.marketMainViewModel.marketItems else {
+                        
+                        return UICollectionViewCell()
+                    }
+
+            self.marketMainViewModel.downloadImage(items[indexPath.row].images?.first ?? "")
+            self.marketMainViewModel.putItemToCell(item: items[indexPath.row])
             return cell
         case 1:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketGridCollectionViewCell.identifier, for: indexPath) as? MarketGridCollectionViewCell else { return UICollectionViewCell() }
-            let item = self.marketMainViewModel.marketItems[indexPath.row]
-            self.marketMainViewModel.downloadImage(item.thumbnails.first ?? "") { imageData in
-                cell.configurateGridCellImage(imageData: imageData)
-            }
-            cell.configurateGridCellText(data: item)
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketGridCollectionViewCell.identifier, for: indexPath) as? MarketGridCollectionViewCell,
+                  let items = self.marketMainViewModel.marketItems else {
+                        
+                        return UICollectionViewCell()
+                    }
+
+            self.marketMainViewModel.downloadImage(items[indexPath.row].images?.first ?? "")
+            self.marketMainViewModel.putItemToCell(item: items[indexPath.row])
             return cell
         default:
             return UICollectionViewCell()
@@ -223,9 +225,10 @@ extension MarketMainViewController: UICollectionViewDataSource {
 
 extension MarketMainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let items = self.marketMainViewModel.marketItems else { return }
         self.marketDetailViewController = MarketDetailViewController()
         self.marketDetailViewController?.detailToMainDelegate = self
-        self.marketDetailViewController?.setDetailViewController(item: self.marketMainViewModel.marketItems[indexPath.row])
+        self.marketDetailViewController?.setDetailViewController(item: items[indexPath.row])
         self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
     }
 }
@@ -257,8 +260,9 @@ extension MarketMainViewController: UICollectionViewDelegateFlowLayout {
 
 extension MarketMainViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        guard let items = self.marketMainViewModel.marketItems else { return }
         for indexPath in indexPaths {
-            if marketMainViewModel.marketItems.count == indexPath.row + 2 {
+            if items.count == indexPath.row + 2 {
                 self.page += 1
                 fetchMarketData(page: page)
             }
