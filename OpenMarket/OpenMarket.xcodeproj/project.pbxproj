@@ -26,6 +26,7 @@
 		6D644ABB26FED9C200279CC2 /* RegisterationToDetailDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644ABA26FED9C200279CC2 /* RegisterationToDetailDelegate.swift */; };
 		6D644ABD26FEF81700279CC2 /* DetailToMainDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D644ABC26FEF81700279CC2 /* DetailToMainDelegate.swift */; };
 		6D6650EA270AF81E003A3FFF /* NetworkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6650E9270AF81E003A3FFF /* NetworkTest.swift */; };
+		6D6650EC270DCD6E003A3FFF /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6650EB270DCD6E003A3FFF /* MainSceneDelegate.swift */; };
 		6D846D1026D75C8200349480 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D0F26D75C8200349480 /* AppDelegate.swift */; };
 		6D846D1226D75C8200349480 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D846D1126D75C8200349480 /* SceneDelegate.swift */; };
 		6D846D1926D75C8600349480 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D846D1826D75C8600349480 /* Assets.xcassets */; };
@@ -87,6 +88,7 @@
 		6D644ABA26FED9C200279CC2 /* RegisterationToDetailDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterationToDetailDelegate.swift; sourceTree = "<group>"; };
 		6D644ABC26FEF81700279CC2 /* DetailToMainDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailToMainDelegate.swift; sourceTree = "<group>"; };
 		6D6650E9270AF81E003A3FFF /* NetworkTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTest.swift; sourceTree = "<group>"; };
+		6D6650EB270DCD6E003A3FFF /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		6D846D0C26D75C8200349480 /* OpenMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D846D0F26D75C8200349480 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6D846D1126D75C8200349480 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				6D644AB826FED99600279CC2 /* RegisterationToMainDelegate.swift */,
 				6D644ABA26FED9C200279CC2 /* RegisterationToDetailDelegate.swift */,
 				6D644ABC26FEF81700279CC2 /* DetailToMainDelegate.swift */,
+				6D6650EB270DCD6E003A3FFF /* MainSceneDelegate.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -490,6 +493,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D6650EC270DCD6E003A3FFF /* MainSceneDelegate.swift in Sources */,
 				6D644ABB26FED9C200279CC2 /* RegisterationToDetailDelegate.swift in Sources */,
 				6D846D5926D7A3BE00349480 /* NetworkManager.swift in Sources */,
 				6D846D6E26DA048400349480 /* MarketMainViewController.swift in Sources */,
@@ -689,6 +693,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = WU6N2C8A3Z;
 				INFOPLIST_FILE = OpenMarket/Info.plist;
@@ -698,6 +703,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.Fezravien.OpenMarket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -708,6 +714,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = WU6N2C8A3Z;
 				INFOPLIST_FILE = OpenMarket/Info.plist;
@@ -717,6 +724,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.Fezravien.OpenMarket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

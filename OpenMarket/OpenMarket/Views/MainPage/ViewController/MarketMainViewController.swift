@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MarketMainViewController: UIViewController, RegisterationToMainDelegate, DetailToMainDelegate {
+final class MarketMainViewController: UIViewController, RegisterationToMainDelegate, DetailToMainDelegate, MainSceneDelegate {
     
     // MARK: - Name Space
     
@@ -56,8 +56,8 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationItem()
-        bindData()
         fetchMarketData()
+        bindData()
         setSegment()
         setConstraint()
         setDelegate()
@@ -80,7 +80,6 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
                     self.mode = .normal
                     self.itemListCollectionView.setContentOffset(CGPoint(x: 0, y: self.itemListCollectionView.contentInset.top), animated: true)
                 }
-                self.itemListLoadingindicater.stopAnimating()
             }
         }
     }
@@ -184,6 +183,12 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
             self.marketDetailViewController?.refreshDetailItem(item: item)
         }
     }
+    
+    func updataCell(indexPath: IndexPath) {
+        if self.itemListLoadingindicater.isAnimating {
+            self.itemListLoadingindicater.stopAnimating()
+        }
+    }
 }
 
 // MARK: - UICollectionView - DataSource
@@ -201,9 +206,9 @@ extension MarketMainViewController: UICollectionViewDataSource {
                         
                         return UICollectionViewCell()
                     }
+            cell.mainSceneDelegate = self
 
-            self.marketMainViewModel.downloadImage(items[indexPath.row].images?.first ?? "")
-            self.marketMainViewModel.putItemToCell(item: items[indexPath.row])
+            cell.configuarationCell(item: items[indexPath.row], indexPath: indexPath)
             return cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MarketGridCollectionViewCell.identifier, for: indexPath) as? MarketGridCollectionViewCell,
@@ -211,9 +216,8 @@ extension MarketMainViewController: UICollectionViewDataSource {
                         
                         return UICollectionViewCell()
                     }
-
-            self.marketMainViewModel.downloadImage(items[indexPath.row].images?.first ?? "")
-            self.marketMainViewModel.putItemToCell(item: items[indexPath.row])
+            cell.mainSceneDelegate = self
+            cell.configuarationCell(item: items[indexPath.row], indexPath: indexPath)
             return cell
         default:
             return UICollectionViewCell()

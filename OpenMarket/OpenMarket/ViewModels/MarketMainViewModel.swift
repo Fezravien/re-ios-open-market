@@ -10,7 +10,6 @@ import UIKit
 
 final class MarketMainViewModel {
     private var itemListFetchHandler: (() -> Void)?
-    private var itemDisplayHandler: (() -> Void)?
     private var itemImageHandler: (() -> Void)?
     private let networkManager = NetworkManager(networkLoader: Network(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
     private(set) var marketItems: [Item]? {
@@ -18,16 +17,12 @@ final class MarketMainViewModel {
             self.itemListFetchHandler?()
         }
     }
-    private(set) var marketItem: Item? {
-        didSet {
-            self.itemDisplayHandler?()
-        }
-    }
-    private(set) var itemImage: Data? {
+    private(set) var itemThumbnail: Data? {
         didSet {
             self.itemImageHandler?()
         }
     }
+    private(set) var marketItem: Item?
     private let imageCache = NSCache<NSString, NSData>()
     
     // MARK: - Set closure for data binding with MainView
@@ -36,11 +31,7 @@ final class MarketMainViewModel {
         self.itemListFetchHandler = itemListFetchHandler
     }
     
-    func bindItemDisplayHandler(itemDisplayHandler: @escaping () -> Void) {
-        self.itemDisplayHandler = itemDisplayHandler
-    }
-    
-    func bindItemImageHandler(itemImageHandler: @escaping () -> Void) {
+    func bindThumbnailHandler(itemImageHandler: @escaping () -> Void) {
         self.itemImageHandler = itemImageHandler
     }
     
@@ -52,7 +43,7 @@ final class MarketMainViewModel {
     
     // MARK: - MainView Cell: Model change due to the user's event.
     
-    func putItemToCell(item: Item) {
+    func itemForCell(item: Item) {
         self.marketItem = item
     }
     
@@ -81,15 +72,15 @@ final class MarketMainViewModel {
         return request
     }
     
-    func downloadImage(_ imageURL: String) {
+    func downloadThumbnail(_ imageURL: String) {
         guard let url = URL(string: imageURL) else { return }
         if let imageCache = self.imageCache.object(forKey: imageURL as NSString) {
-            self.itemImage = imageCache as Data
+            self.itemThumbnail = imageCache as Data
         } else {
             DispatchQueue.global(qos: .background).async {
                 guard let imageData = try? Data(contentsOf: url) else { return }
                 self.imageCache.setObject(imageData as NSData, forKey: imageURL as NSString)
-                self.itemImage = imageData
+                self.itemThumbnail = imageData
             }
         }
     }
@@ -98,7 +89,11 @@ final class MarketMainViewModel {
         self.networkManager.excuteFetch(request: request, decodeType: ItemList.self) { result in
             switch result {
             case .success(let data):
-                self.marketItems = data.items
+                if self.marketItems == nil {
+                    self.marketItems = data.items
+                    return
+                }
+                self.marketItems?.append(contentsOf: data.items)
                 completion(nil)
             case .failure(let error):
                 guard let error = error as? MarketModelError else { return }
