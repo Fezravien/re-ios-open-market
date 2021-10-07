@@ -11,7 +11,7 @@ import UIKit
 final class MarketMainViewModel {
     private var itemListFetchHandler: (() -> Void)?
     private var itemImageHandler: (() -> Void)?
-    private let networkManager = NetworkManager(networkLoader: Network(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
+    private let session: MarketSession
     private(set) var marketItems: [Item]? {
         didSet {
             self.itemListFetchHandler?()
@@ -23,7 +23,13 @@ final class MarketMainViewModel {
         }
     }
     private(set) var marketItem: Item?
-    private let imageCache = NSCache<NSString, NSData>()
+    private(set) var imageCache = NSCache<NSString, NSData>()
+    
+    // MARK: - initialize ViewModel
+    
+    init(session: MarketSession = URLSession.shared) {
+        self.session = session
+    }
     
     // MARK: - Set closure for data binding with MainView
     
@@ -68,7 +74,8 @@ final class MarketMainViewModel {
     // MARK: - Networking
     
     func createRequest(_ page: UInt) -> URLRequest? {
-        let request = self.networkManager.createRequest(page: page)
+        let networkManager = NetworkManager(networkLoader: Network(session: self.session), decoder: JSONDecoder(), encoder: JSONEncoder())
+        let request = networkManager.createRequest(page: page)
         return request
     }
     
@@ -86,7 +93,8 @@ final class MarketMainViewModel {
     }
     
     func fetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Error?) -> Void) where T: Decodable {
-        self.networkManager.excuteFetch(request: request, decodeType: ItemList.self) { result in
+        let networkManager = NetworkManager(networkLoader: Network(session: self.session), decoder: JSONDecoder(), encoder: JSONEncoder())
+        networkManager.excuteFetch(request: request, decodeType: ItemList.self) { result in
             switch result {
             case .success(let data):
                 if self.marketItems == nil {

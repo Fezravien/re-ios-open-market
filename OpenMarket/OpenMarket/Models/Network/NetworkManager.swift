@@ -19,7 +19,7 @@ final class NetworkManager {
     }
     
     func excuteFetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<T, Error>) -> Void) where T: Decodable {
-        self.networkLoader.excuteNetwork(request: request) { [unowned self] result in
+        self.networkLoader.excuteNetwork(request: request) { result in
             switch result {
             case .success(let data):
                 do {
