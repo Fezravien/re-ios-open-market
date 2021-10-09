@@ -12,15 +12,8 @@ import Photos
 final class MarketRegisterAndEditViewController: UIViewController {
     static let notificationName = "TapAddButton"
     
-    struct itemInfomation {
-        var title: String?
-        var currency: String?
-        var price: String?
-        var discountPrice: String?
-        var stock: String?
-        var itemDescription: String?
-    }
-    
+    // MARK: - Name Space and loyout style
+
     enum State: String {
         case registration = "상품등록"
         case edit = "상품수정"
@@ -74,6 +67,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
             static let margin: UIEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
         }
     }
+    
+    // MARK: - variable, constant and UI Initialization
     
     private let imageCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -174,14 +169,14 @@ final class MarketRegisterAndEditViewController: UIViewController {
         indicater.translatesAutoresizingMaskIntoConstraints = false
         return indicater
     }()
-    
     private let marketRegisterAndEditViewModel = MarketRegisterAndEditViewModel()
     private var state: State?
     private var itemImageCount = 0
     private var currencys = CurrencyState.allCases.map { $0.rawValue }
-    private var itemInfomation = itemInfomation(title: nil, currency: nil, price: nil, discountPrice: nil, stock: nil, itemDescription: nil)
     weak var registrationToDetailDelegate: RegisterationToDetailDelegate?
     weak var registrationToMainDelegate: RegisterationToMainDelegate?
+    
+    // MARK: - View life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -194,10 +189,14 @@ final class MarketRegisterAndEditViewController: UIViewController {
         setKeyboardObserver()
     }
     
+    // MARK: - View touch event
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.view.endEditing(true)
     }
+    
+    // MARK: - Data binding with ViewModel (RegisterAndEditViewModel)
     
     private func bindData() {
         self.marketRegisterAndEditViewModel.bindItemImages { [weak self] in
@@ -264,6 +263,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
         }
     }
     
+    // MARK: - Set Keyboard observer and Action
+    
     private func setKeyboardObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -287,6 +288,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
         itemDescription.scrollRangeToVisible(selectedRange)
     }
     
+    // MARK: - Receive data from MainViewController
+    
     func setRegisterAndEditViewController(state: State, item: Item? = nil) {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(tappedFinishDoneButton))
         self.view.backgroundColor = .white
@@ -296,14 +299,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
             self.marketRegisterAndEditViewModel.setEditItem(item: item)
         }
     }
-
-    private func setNotificationCenter() {
-        NotificationCenter.default.addObserver(self, selector: #selector(tappedAddButton), name: NSNotification.Name(MarketRegisterAndEditViewController.notificationName), object: nil)
-    }
     
-    @objc private func tappedAddButton() {
-        self.present(self.itemPickerViewController, animated: true, completion: nil)
-    }
+    // MARK: - Push Done Button (Register and Edit)
     
     @objc private func tappedFinishDoneButton() {
         if validItemInfomation() {
@@ -360,6 +357,18 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.indicater.stopAnimating()
     }
     
+    // MARK: - Add image button notification
+    
+    private func setNotificationCenter() {
+        NotificationCenter.default.addObserver(self, selector: #selector(tappedAddButton), name: NSNotification.Name(MarketRegisterAndEditViewController.notificationName), object: nil)
+    }
+    
+    @objc private func tappedAddButton() {
+        self.present(self.itemPickerViewController, animated: true, completion: nil)
+    }
+    
+    // MARK: - Create Request Registration and Edit
+    
     private func createRequestForRegistration(_ password: String) -> URLRequest? {
         guard let registrationItem = createRegistrationItem(password: password) else { return nil }
         let request = self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registrationItem, method: .post)
@@ -411,6 +420,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
         return request
     }
     
+    // MARK: - Valid user input
+    
     private func validItemInfomation() -> Bool {
         guard let title = self.itemTitle.text, title.count >= 1 else {
             self.alert(title: RegisterationError.title.rawValue)
@@ -440,6 +451,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
         return true
     }
     
+    // MARK: - Currency
+    
     private func setCurrencyTextField() {
         let doneButton = UIBarButtonItem(title: "확인", style: .done, target: self, action: #selector(tappedDoneButton))
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
@@ -452,13 +465,14 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     @objc private func tappedDoneButton() {
-//        self.itemCurrency.text = self.itemInfomation.currency ?? ""
         self.itemCurrency.resignFirstResponder()
     }
     
     @objc private func tappedCancelButton() {
         self.itemCurrency.resignFirstResponder()
     }
+    
+    // MARK: - Set DataSource and Delegate
     
     private func setDataSource() {
         self.imageCollectionView.dataSource = self
@@ -474,6 +488,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.itemStock.delegate = self
         self.itemDescription.delegate = self
     }
+    
+    // MARK: - Set constraint UI
     
     private func setConstraints() {
         setImageCollectionView()
@@ -568,6 +584,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
 }
 
+// MARK: - UICollectionView DataSource and Delegate
+
 extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.marketRegisterAndEditViewModel.itemImages.count
@@ -599,6 +617,8 @@ extension MarketRegisterAndEditViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - UICollectionView FlowLayout
+
 extension MarketRegisterAndEditViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.height * 1/13, height: self.view.frame.height * 1/13)
@@ -610,6 +630,22 @@ extension MarketRegisterAndEditViewController: UICollectionViewDelegateFlowLayou
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return Style.CollectionHeader.margin
+    }
+}
+
+// MARK: - PHPicker DataSource and Delegate
+
+extension MarketRegisterAndEditViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.currencys.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return self.currencys[row]
     }
 }
 
@@ -634,25 +670,13 @@ extension MarketRegisterAndEditViewController: PHPickerViewControllerDelegate {
     }
 }
 
-extension MarketRegisterAndEditViewController: UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return self.currencys.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return self.currencys[row]
-    }
-}
-
 extension MarketRegisterAndEditViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.marketRegisterAndEditViewModel.setCurrency(currency: self.currencys[row])
     }
 }
+
+// MARK: - UITextField Delegate
 
 extension MarketRegisterAndEditViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -687,6 +711,8 @@ extension MarketRegisterAndEditViewController: UITextFieldDelegate {
         }
     }
 }
+
+// MARK: - UITextView Delegate
 
 extension MarketRegisterAndEditViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
