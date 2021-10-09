@@ -53,7 +53,7 @@ final class MarketMainViewModel {
         self.marketItem = item
     }
     
-    // MARK: - Convert data format
+    // MARK: - Convert data fordmat
     
     func convertStockFormat(stock: UInt) -> String {
         return stock == 0 ? "품절" : "잔여수량 : \(stock)"
