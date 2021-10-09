@@ -23,7 +23,7 @@ enum StubRequestData {
                                         discountedPrice: nil,
                                         images: [image!],
                                         password: "1234")
-    static let editData = ItemModifcation(title: "Bye World",
+    static let editData = ItemModification(title: "Bye World",
                                            descriptions: "Finished Swift Programing",
                                            price: 200,
                                            currency: "KOR",
@@ -31,28 +31,4 @@ enum StubRequestData {
                                            discountedPrice: 90,
                                            images: [image!],
                                            password: "1234")
-}
-
-struct MockItemList: Decodable {
-    let page: UInt16
-    let items: [MockItem]
-}
-
-struct MockItem: Decodable {
-    let id: UInt32
-//    let title: String
-    let descriptions: String?
-    let price: UInt
-    let currency: String
-    let stock: UInt
-    let discountPrice: UInt?
-    let thumbnails: [String]
-    let images: [String]?
-    let registrationDate: Double
-    
-    enum CodingKeys: String, CodingKey {
-        case id, descriptions, price, currency, stock, thumbnails, images
-        case discountPrice = "discounted_price"
-        case registrationDate = "registration_date"
-    }
 }

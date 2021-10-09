@@ -8,34 +8,34 @@
 import Foundation
 
 final class NetworkManager {
-    private let loader: OpenMarketNetwork
+    private let networkLoader: MarketNetwork
     private let decoder: MarketDecode
     private let encoder: MarketEncode
     
-    init(loader: OpenMarketNetwork, decoder: MarketDecode, encoder: MarketEncode) {
-        self.loader = loader
+    init(networkLoader: MarketNetwork, decoder: MarketDecode, encoder: MarketEncode) {
+        self.networkLoader = networkLoader
         self.decoder = decoder
         self.encoder = encoder
     }
     
     func excuteFetch<T>(request: URLRequest, decodeType: T.Type, completion: @escaping (Result<T, Error>) -> Void) where T: Decodable {
-        self.loader.excuteNetwork(request: request) { [weak self] result in
+        self.networkLoader.excuteNetwork(request: request) { result in
             switch result {
             case .success(let data):
                 do {
                     guard let data = data else { return }
-                    guard let jsonDecode = try self?.decoder.decode(T.self, from: data) else { return }
+                    let jsonDecode = try self.decoder.decode(T.self, from: data)
                     completion(.success(jsonDecode))
                 } catch {
-                    completion(.failure(MarketModelError.decoding(error)))
+                    completion(.failure(MarketModelError.decoding))
                 }
-            case .failure(let error):
-                completion(.failure(MarketModelError.network(error)))
+            case .failure(_):
+                completion(.failure(MarketModelError.network))
             }
         }
     }
     
-    /// 목록 조회 (Fetch) - page
+    /// GET - 목록 조회
     func createRequest(page: UInt) -> URLRequest? {
         guard let fetchURL = NetworkConstant.itemList(page: page).url else { return nil }
         let request = URLRequest(url: fetchURL)
@@ -43,7 +43,7 @@ final class NetworkManager {
         return request
     }
     
-    /// 상품 조회 - ID
+    /// GET - 상품 조회
     func createRequest(id: UInt) -> URLRequest? {
         guard let fetchURL = NetworkConstant.item(id: id).url else { return nil }
         let request = URLRequest(url: fetchURL)
@@ -51,14 +51,14 @@ final class NetworkManager {
         return request
     }
     
-    /// DELETE - JSONEncoder
+    /// DELETE - 상품 삭제 (JSONEncoder)
     func createRequest<T: Encodable>(data: T, itemID: UInt) throws -> URLRequest? {
         let encodeData: Data
         
         do {
             encodeData = try encoder.encode(data)
         } catch {
-            throw MarketModelError.encoding(error)
+            throw MarketModelError.encoding
         }
         
         guard let deleteURL = NetworkConstant.delete(id: itemID).url else { return nil }
@@ -69,9 +69,9 @@ final class NetworkManager {
         return request
     }
     
-    /// POST, PATCH - Mulit-part/Form-data
-    func createRequest<T: MultiPartForm>(url: URL?, encodeType: T, method: NetworkConstant.Method) throws -> URLRequest {
-        guard let url = url else { throw MarketModelError.url }
+    /// POST, PATCH - 상품 등록/수정 (mulitpart/form-data)
+    func createRequest<T: MultiPartForm>(url: URL?, encodeType: T, method: NetworkConstant.Method) -> URLRequest? {
+        guard let url = url else { return nil }
             
         switch method {
         case .post:
@@ -79,7 +79,7 @@ final class NetworkManager {
         case .patch:
             return createMultipartFormRequest(url: url, type: encodeType, method: .patch)
         default :
-            throw MarketModelError.createRequest
+            return nil
         }
     }
     

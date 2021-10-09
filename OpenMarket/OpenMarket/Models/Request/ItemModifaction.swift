@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ItemModifcation: MultiPartForm {
+struct ItemModification: MultiPartForm {
     let title: String?
     let descriptions: String?
     let price: UInt?

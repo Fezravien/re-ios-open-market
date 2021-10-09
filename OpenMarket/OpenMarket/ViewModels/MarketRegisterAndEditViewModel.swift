@@ -10,7 +10,7 @@ import UIKit
 final class MarketRegisterAndEditViewModel {
     var imageChanged: () -> () = { }
     var editItemChanged: () -> () = { }
-    private let networkManager = NetworkManager(loader: MarketNetwork(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
+    private let networkManager = NetworkManager(networkLoader: Network(session: URLSession.shared), decoder: JSONDecoder(), encoder: JSONEncoder())
     private var itemImages: [UIImage] = [] {
         didSet {
             self.imageChanged()
@@ -54,14 +54,9 @@ final class MarketRegisterAndEditViewModel {
         self.itemImages.remove(at: index)
     }
     
-    func createRequest<T: MultiPartForm>(url: URL?, type: T, method: NetworkConstant.Method) throws -> URLRequest? {
-        let request: URLRequest
-        do {
-            request = try self.networkManager.createRequest(url: url, encodeType: type, method: method)
-        } catch {
-            throw MarketModelError.createRequest
-        }
-        
+    func createRequest<T: MultiPartForm>(url: URL?, type: T, method: NetworkConstant.Method) -> URLRequest? {
+        let request = self.networkManager.createRequest(url: url, encodeType: type, method: method)
+
         return request
     }
     
@@ -82,7 +77,7 @@ final class MarketRegisterAndEditViewModel {
         for index in 0..<imageURL.count {
             guard let url = URL(string: imageURL[index]) else { return }
             
-            DispatchQueue.global(qos: .background).async {
+            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
                 if let image = try? Data(contentsOf: url) {
                     DispatchQueue.main.async {
                         images.append(UIImage(data: image) ?? UIImage())

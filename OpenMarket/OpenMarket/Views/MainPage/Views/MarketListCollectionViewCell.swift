@@ -10,6 +10,8 @@ import UIKit
 final class MarketListCollectionViewCell: UICollectionViewCell {
     static let identifier = "MarketListCell"
     
+    // MARK: - UI Constraint Style
+    
     private enum Style {
         enum ItemImageView {
             static let margin: UIEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
@@ -33,6 +35,8 @@ final class MarketListCollectionViewCell: UICollectionViewCell {
             static let margin: UIEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: -10)
         }
     }
+    
+    // MARK: - variable, constant and UI Initialization
     
     private let itemImageView: UIImageView = {
         let imageView = UIImageView()
@@ -70,21 +74,54 @@ final class MarketListCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
-    func configurateListCellText(data: Item) {
-        DispatchQueue.main.async {
-            self.setConstraints()
-            self.convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
-            self.convertStockFormat(stock: data.stock)
-            self.itemTitle.text = data.title
+    private let marketMainViewModel = MarketMainViewModel()
+    private var indexPath: IndexPath?
+    weak var mainSceneDelegate: MainSceneDelegate?
+    
+    // MARK: - Data binding with ViewModel (MainViewModel)
+    
+    func configuarationCell(item : Item, indexPath: IndexPath) {
+        self.indexPath = indexPath
+        bindData()
+        setConstraints()
+        self.marketMainViewModel.downloadThumbnail(item.thumbnails.first ?? "")
+        self.marketMainViewModel.itemForCell(item: item)
+    }
+    
+    private func bindData() {
+        self.marketMainViewModel.bindThumbnailHandler {
+            guard let thumbnail = self.marketMainViewModel.itemThumbnail,
+                  let item = self.marketMainViewModel.marketItem else {
+                      
+                      return
+                  }
+            let convertedPrice = self.marketMainViewModel.convertPriceFormat(currency: item.currency, price: item.price, discountPrice: item.discountPrice)
+            let convertedStock = self.marketMainViewModel.convertStockFormat(stock: item.stock)
+            
+            DispatchQueue.main.async {
+                self.itemImageView.image = UIImage(data: thumbnail)
+                self.itemTitle.text = item.title
+                self.itemStock.text = convertedStock
+                self.applyPriceFormat(priceFormat: convertedPrice)
+                self.mainSceneDelegate?.updataCell(indexPath: self.indexPath ?? IndexPath())
+            }
         }
     }
     
-    func configurateListCellImage(imageData: Data?) {
-        DispatchQueue.main.async {
-            self.itemImageView.image = UIImage(data: imageData ?? Data())
+    private func applyPriceFormat(priceFormat: (String, NSMutableAttributedString?)) {
+        let price = priceFormat.0
+        
+        if let attributedString = priceFormat.1 {
+            self.itemPrice.textColor = .systemRed
+            self.itemPrice.attributedText = attributedString
+            self.itemDiscountPrice.isHidden = false
+            self.itemDiscountPrice.text = price
+        } else {
+            self.itemPrice.text = price
         }
     }
+    
+    // MARK: - initialize UICollectionView Cell
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -112,39 +149,7 @@ final class MarketListCollectionViewCell: UICollectionViewCell {
         self.itemStock.textColor = .systemGray
     }
     
-//    private func downloadImage(_ imageURL: String) {
-//        guard let url = URL(string: imageURL) else { return }
-//        DispatchQueue.global(qos: .background).async {
-//            if let image = try? Data(contentsOf: url) {
-//                DispatchQueue.main.async {
-//                    self.itemImageView.image = UIImage(data: image)
-//                }
-//            }
-//        }
-//    }
-    
-    private func convertStockFormat(stock: UInt) {
-        if stock == 0 {
-            self.itemStock.textColor = .systemOrange
-            self.itemStock.text = "품절"
-        } else {
-            self.itemStock.textColor = .systemGray
-            self.itemStock.text = "잔여수량 : \(stock)"
-        }
-    }
-    
-    private func convertPriceFormat(currency: String, price: UInt, discountPrice: UInt?) {
-        if let discountPrice = discountPrice {
-            let attributeString = NSMutableAttributedString(string: "\(currency) \(price)")
-            attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSMakeRange(0, attributeString.length))
-            self.itemPrice.textColor = .systemRed
-            self.itemPrice.attributedText = attributeString
-            self.itemDiscountPrice.isHidden = false
-            self.itemDiscountPrice.text = "\(currency) " + String(discountPrice)
-        } else {
-            self.itemPrice.text = "\(currency) \(price)"
-        }
-    }
+    // MARK: - Set UICollectionView Cell Constraint
     
     private func setConstraints() {
         setItemImageViewConstraint()

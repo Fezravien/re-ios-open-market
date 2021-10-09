@@ -39,6 +39,17 @@ final class MarketRegisterAndEditViewController: UIViewController {
         static let itemStock = "Stock"
     }
     
+    private enum registerationConstraint: String {
+        case title = "제목을 입력해주세요."
+        case currency = "화폐 단위를 입력해주세요."
+        case price = "상품의 가격을 입력해주세요."
+        case priceType = "상품 가격은 숫자만 가능합니다."
+        case discountPriceType = "상품 할인가격은 숫자만 가능합니다."
+        case stock = "상품의 개수를 입력해주세요."
+        case stockType = "상품 수량은 숫자만 가능합니다."
+        case description = "상품 상세설명을 입력해주세요"
+    }
+    
     private enum Style {
         enum ImageCollectionView {
             static let margin: UIEdgeInsets = .init(top: 20, left: 0, bottom: 0, right: 0)
@@ -329,13 +340,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     private func createRequestForRegistration(_ password: String) -> URLRequest? {
         guard let registrationItem = createRegistrationItem(password: password) else { return nil }
+        let request = self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registrationItem, method: .post)
         
-        do {
-            let request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.registrate.url, type: registrationItem, method: .post)
-            return request
-        } catch {
-            return nil
-        }
+        return request
     }
     
     private func createRegistrationItem(password: String) -> ItemRegistration? {
@@ -366,47 +373,45 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     private func createRequestForEdit(_ password: String) -> URLRequest? {
-        let editData = ItemModifcation(title: self.itemTitle.text,
-                                       descriptions: self.itemDescription.text,
-                                       price: UInt(self.itemPrice.text!),
-                                       currency: self.itemCurrency.text,
-                                       stock: UInt(self.itemStock.text!),
-                                       discountedPrice: self.itemDiscountPrice.text == nil ? nil : UInt(self.itemDiscountPrice.text!),
-                                       images: self.marketRegisterAndEditViewModel.getItemImages(),
-                                       password: password)
+        let editData = ItemModification(title: self.itemTitle.text,
+                                        descriptions: self.itemDescription.text,
+                                        price: UInt(self.itemPrice.text!),
+                                        currency: self.itemCurrency.text,
+                                        stock: UInt(self.itemStock.text!),
+                                        discountedPrice: self.itemDiscountPrice.text == nil ? nil : UInt(self.itemDiscountPrice.text!),
+                                        images: self.marketRegisterAndEditViewModel.getItemImages(),
+                                        password: password)
         
-        do {
-            guard let item = self.marketRegisterAndEditViewModel.getEditItem() else { return nil }
-            let request = try self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.edit(id: item.id).url, type: editData, method: .patch)
-            return request
-        } catch {
-            return nil
-        }
+        
+        guard let item = self.marketRegisterAndEditViewModel.getEditItem() else { return nil }
+        let request = self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.edit(id: item.id).url, type: editData, method: .patch)
+        
+        return request
     }
     
     private func validItemInfomation() -> Bool {
         guard let title = self.itemTitle.text, title.count >= 1 else {
-            self.alert(title: MarketInputError.title.rawValue)
+            self.alert(title: registerationConstraint.title.rawValue)
             return false
         }
         
         guard let currency = self.itemCurrency.text, currency.count >= 1 else {
-            self.alert(title: MarketInputError.currency.rawValue)
+            self.alert(title: registerationConstraint.currency.rawValue)
             return false
         }
         
         guard let price = self.itemPrice.text, price.count >= 1 else {
-            self.alert(title: MarketInputError.price.rawValue)
+            self.alert(title: registerationConstraint.price.rawValue)
             return false
         }
         
         guard let stock = self.itemStock.text, stock.count >= 1 else {
-            self.alert(title: MarketInputError.stock.rawValue)
+            self.alert(title: registerationConstraint.stock.rawValue)
             return false
         }
         
         guard let descriptions = self.itemDescription.text, descriptions.count >= 1 else {
-            self.alert(title: MarketInputError.description.rawValue)
+            self.alert(title: registerationConstraint.description.rawValue)
             return false
         }
         
@@ -636,21 +641,21 @@ extension MarketRegisterAndEditViewController: UITextFieldDelegate {
             self.itemInfomation.title = textField.text
         case Identifier.itemPrice:
             guard let _ = Int(text) else {
-                self.alert(title: MarketInputError.priceType.rawValue)
+                self.alert(title: registerationConstraint.priceType.rawValue)
                 self.itemPrice.text = nil
                 return
             }
             self.itemInfomation.price = textField.text
         case Identifier.itemDiscountPrice:
             guard let _ = Int(text) else {
-                self.alert(title: MarketInputError.discountPriceType.rawValue)
+                self.alert(title: registerationConstraint.discountPriceType.rawValue)
                 self.itemDiscountPrice.text = nil
                 return
             }
             self.itemInfomation.discountPrice = textField.text
         case Identifier.itemStock:
             guard let _ = Int(text) else {
-                self.alert(title: MarketInputError.stockType.rawValue)
+                self.alert(title: registerationConstraint.stockType.rawValue)
                 self.itemStock.text = nil
                 return
             }

@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol OpenMarketNetwork {
+protocol MarketNetwork {
     func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data?, Error>) -> Void)
 }

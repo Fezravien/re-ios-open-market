@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MarketNetwork: OpenMarketNetwork {
+final class Network: MarketNetwork {
     private let session: MarketSession
     
     init(session: MarketSession) {
@@ -16,8 +16,8 @@ final class MarketNetwork: OpenMarketNetwork {
     
     func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data?, Error>) -> Void) {
         session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(MarketModelError.network(error)))
+            if let _ = error {
+                completion(.failure(MarketModelError.network))
                 return
             }
             
