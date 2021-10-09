@@ -25,21 +25,18 @@ final class MarketRegisterAndEditViewController: UIViewController {
         case registration = "상품등록"
         case edit = "상품수정"
     }
-    
     private enum CurrencyState: String, CaseIterable {
         case korea = "KRW"
         case usa = "USD"
         case japan = "JPY"
     }
-    
     private enum Identifier {
         static let itemTitle = "Title"
         static let itemPrice = "Price"
         static let itemDiscountPrice = "DiscountPrice"
         static let itemStock = "Stock"
     }
-    
-    private enum registerationConstraint: String {
+    private enum RegisterationError: String {
         case title = "제목을 입력해주세요."
         case currency = "화폐 단위를 입력해주세요."
         case price = "상품의 가격을 입력해주세요."
@@ -47,40 +44,32 @@ final class MarketRegisterAndEditViewController: UIViewController {
         case discountPriceType = "상품 할인가격은 숫자만 가능합니다."
         case stock = "상품의 개수를 입력해주세요."
         case stockType = "상품 수량은 숫자만 가능합니다."
-        case description = "상품 상세설명을 입력해주세요"
+        case description = "상품 상세설명을 입력해주세요."
     }
-    
     private enum Style {
         enum ImageCollectionView {
             static let margin: UIEdgeInsets = .init(top: 20, left: 0, bottom: 0, right: 0)
             static let height: CGFloat = 1/10
         }
-        
         enum ItemTitle {
             static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
         }
-        
         enum ItemCurrency {
             static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: 0)
             static let width: CGFloat = 3/20
         }
-        
         enum ItemPrice {
             static let margin: UIEdgeInsets = .init(top: 0, left: 15, bottom: 0, right: -15)
         }
-        
         enum ItemDiscountPrice {
             static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
         }
-        
         enum ItemStock {
             static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
         }
-        
         enum ItemDescription {
             static let margin: UIEdgeInsets = .init(top: 30, left: 15, bottom: 0, right: -15)
         }
-        
         enum CollectionHeader {
             static let margin: UIEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
         }
@@ -391,27 +380,27 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     private func validItemInfomation() -> Bool {
         guard let title = self.itemTitle.text, title.count >= 1 else {
-            self.alert(title: registerationConstraint.title.rawValue)
+            self.alert(title: RegisterationError.title.rawValue)
             return false
         }
         
         guard let currency = self.itemCurrency.text, currency.count >= 1 else {
-            self.alert(title: registerationConstraint.currency.rawValue)
+            self.alert(title: RegisterationError.currency.rawValue)
             return false
         }
         
         guard let price = self.itemPrice.text, price.count >= 1 else {
-            self.alert(title: registerationConstraint.price.rawValue)
+            self.alert(title: RegisterationError.price.rawValue)
             return false
         }
         
         guard let stock = self.itemStock.text, stock.count >= 1 else {
-            self.alert(title: registerationConstraint.stock.rawValue)
+            self.alert(title: RegisterationError.stock.rawValue)
             return false
         }
         
         guard let descriptions = self.itemDescription.text, descriptions.count >= 1 else {
-            self.alert(title: registerationConstraint.description.rawValue)
+            self.alert(title: RegisterationError.description.rawValue)
             return false
         }
         
@@ -628,7 +617,7 @@ extension MarketRegisterAndEditViewController: UIPickerViewDataSource {
 
 extension MarketRegisterAndEditViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        self.itemInfomation.currency = self.currencys[row]
+        self.itemCurrency.text = self.currencys[row]
     }
 }
 
@@ -641,21 +630,21 @@ extension MarketRegisterAndEditViewController: UITextFieldDelegate {
             self.itemInfomation.title = textField.text
         case Identifier.itemPrice:
             guard let _ = Int(text) else {
-                self.alert(title: registerationConstraint.priceType.rawValue)
+                self.alert(title: RegisterationError.priceType.rawValue)
                 self.itemPrice.text = nil
                 return
             }
             self.itemInfomation.price = textField.text
         case Identifier.itemDiscountPrice:
             guard let _ = Int(text) else {
-                self.alert(title: registerationConstraint.discountPriceType.rawValue)
+                self.alert(title: RegisterationError.discountPriceType.rawValue)
                 self.itemDiscountPrice.text = nil
                 return
             }
             self.itemInfomation.discountPrice = textField.text
         case Identifier.itemStock:
             guard let _ = Int(text) else {
-                self.alert(title: registerationConstraint.stockType.rawValue)
+                self.alert(title: RegisterationError.stockType.rawValue)
                 self.itemStock.text = nil
                 return
             }
