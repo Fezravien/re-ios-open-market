@@ -185,8 +185,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setBindData()
-        setBindEditData()
+        bindData()
         setDataSource()
         setDelegate()
         setConstraints()
@@ -200,11 +199,11 @@ final class MarketRegisterAndEditViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-    private func setBindData() {
-        self.marketRegisterAndEditViewModel.imageChanged = { [weak self] in
+    private func bindData() {
+        self.marketRegisterAndEditViewModel.bindItemImages { [weak self] in
             switch self?.state {
             case .registration:
-                if self?.itemImageCount == self?.marketRegisterAndEditViewModel.itemImageCount {
+                if self?.itemImageCount == self?.marketRegisterAndEditViewModel.itemImages.count {
                     self?.imageCollectionView.reloadData()
                 }
             case .edit:
@@ -213,11 +212,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
                 return
             }
         }
-    }
-    
-    private func setBindEditData() {
-        self.marketRegisterAndEditViewModel.editItemChanged = { [weak self] in
-            guard let item = self?.marketRegisterAndEditViewModel.getEditItem() else { return }
+        
+        self.marketRegisterAndEditViewModel.bindItemForEdit { [weak self] item in
+            guard let item = item else { return }
             DispatchQueue.main.async {
                 self?.navigationItem.title = item.title
                 self?.marketRegisterAndEditViewModel.downloadImage(imageURL: item.images ?? [])
@@ -227,6 +224,42 @@ final class MarketRegisterAndEditViewController: UIViewController {
                 self?.itemDiscountPrice.text = item.discountPrice == nil ? nil : String(item.discountPrice!)
                 self?.itemStock.text = String(item.stock)
                 self?.itemDescription.text = item.descriptions
+            }
+        }
+        
+        self.marketRegisterAndEditViewModel.bindItemTitle { [weak self] titles in
+            DispatchQueue.main.async {
+                self?.itemTitle.text = titles
+            }
+        }
+        
+        self.marketRegisterAndEditViewModel.bindItemCurrency { [weak self] currency in
+            DispatchQueue.main.async {
+                self?.itemCurrency.text = currency
+            }
+        }
+        
+        self.marketRegisterAndEditViewModel.bindItemPrice { [weak self] price in
+            DispatchQueue.main.async {
+                self?.itemPrice.text = price
+            }
+        }
+        
+        self.marketRegisterAndEditViewModel.bindItemDiscountPrice { [weak self] discountPrice in
+            DispatchQueue.main.async {
+                self?.itemDiscountPrice.text = discountPrice
+            }
+        }
+        
+        self.marketRegisterAndEditViewModel.bindItemStock { [weak self] stock in
+            DispatchQueue.main.async {
+                self?.itemStock.text = stock
+            }
+        }
+        
+        self.marketRegisterAndEditViewModel.bindItemDescription { [weak self] descriptions in
+            DispatchQueue.main.async {
+                self?.itemDescription.text = descriptions
             }
         }
     }
@@ -372,7 +405,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
                                         password: password)
         
         
-        guard let item = self.marketRegisterAndEditViewModel.getEditItem() else { return nil }
+        guard let item = self.marketRegisterAndEditViewModel.itemForEdit else { return nil }
         let request = self.marketRegisterAndEditViewModel.createRequest(url: NetworkConstant.edit(id: item.id).url, type: editData, method: .patch)
         
         return request
@@ -419,7 +452,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
     }
     
     @objc private func tappedDoneButton() {
-        self.itemCurrency.text = self.itemInfomation.currency ?? ""
+//        self.itemCurrency.text = self.itemInfomation.currency ?? ""
         self.itemCurrency.resignFirstResponder()
     }
     
@@ -537,7 +570,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
 
 extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.marketRegisterAndEditViewModel.itemImageCount
+        return self.marketRegisterAndEditViewModel.itemImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -545,7 +578,7 @@ extension MarketRegisterAndEditViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.configurateImageCell(image: self.marketRegisterAndEditViewModel.getItemImage(index: indexPath.row))
+        cell.configurateImageCell(image: self.marketRegisterAndEditViewModel.itemImages[indexPath.row])
         return cell
     }
     
@@ -617,7 +650,7 @@ extension MarketRegisterAndEditViewController: UIPickerViewDataSource {
 
 extension MarketRegisterAndEditViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        self.itemCurrency.text = self.currencys[row]
+        self.marketRegisterAndEditViewModel.setCurrency(currency: self.currencys[row])
     }
 }
 
@@ -627,28 +660,28 @@ extension MarketRegisterAndEditViewController: UITextFieldDelegate {
         
         switch textField.accessibilityIdentifier {
         case Identifier.itemTitle:
-            self.itemInfomation.title = textField.text
+            self.marketRegisterAndEditViewModel.setTitle(title: text)
         case Identifier.itemPrice:
             guard let _ = Int(text) else {
                 self.alert(title: RegisterationError.priceType.rawValue)
-                self.itemPrice.text = nil
+                self.marketRegisterAndEditViewModel.setPrice(price: nil)
                 return
             }
-            self.itemInfomation.price = textField.text
+            self.marketRegisterAndEditViewModel.setPrice(price: text)
         case Identifier.itemDiscountPrice:
             guard let _ = Int(text) else {
                 self.alert(title: RegisterationError.discountPriceType.rawValue)
-                self.itemDiscountPrice.text = nil
+                self.marketRegisterAndEditViewModel.setDiscountPrice(discountPrice: nil)
                 return
             }
-            self.itemInfomation.discountPrice = textField.text
+            self.marketRegisterAndEditViewModel.setDiscountPrice(discountPrice: text)
         case Identifier.itemStock:
             guard let _ = Int(text) else {
                 self.alert(title: RegisterationError.stockType.rawValue)
-                self.itemStock.text = nil
+                self.marketRegisterAndEditViewModel.setStock(stock: nil)
                 return
             }
-            self.itemInfomation.stock = text
+            self.marketRegisterAndEditViewModel.setStock(stock: text)
         default:
             return
         }
@@ -657,6 +690,6 @@ extension MarketRegisterAndEditViewController: UITextFieldDelegate {
 
 extension MarketRegisterAndEditViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
-        self.itemInfomation.itemDescription = textView.text
+        self.marketRegisterAndEditViewModel.setDescription(description: textView.text)
     }
 }
