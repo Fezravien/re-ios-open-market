@@ -397,7 +397,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
                                                  currency: currency,
                                                  stock: UInt(stock)!,
                                                  discountedPrice: self.itemDiscountPrice.text == "" ? nil : UInt(discountPriceText)!,
-                                                 images: self.marketRegisterAndEditViewModel.getItemImages(),
+                                                 images: self.marketRegisterAndEditViewModel.compressedImages(),
                                                  password: password)
         
         return registerationData
@@ -410,7 +410,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
                                         currency: self.itemCurrency.text,
                                         stock: UInt(self.itemStock.text!),
                                         discountedPrice: self.itemDiscountPrice.text == nil ? nil : UInt(self.itemDiscountPrice.text!),
-                                        images: self.marketRegisterAndEditViewModel.getItemImages(),
+                                        images: self.marketRegisterAndEditViewModel.compressedImages(),
                                         password: password)
         
         

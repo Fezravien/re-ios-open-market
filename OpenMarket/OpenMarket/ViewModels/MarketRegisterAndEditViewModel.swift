@@ -100,7 +100,7 @@ final class MarketRegisterAndEditViewModel {
     
     // MARK: - compress Image
     
-    func getItemImages() -> [Data] {
+    func compressedImages() -> [Data] {
         var imageData: [Data] = []
         for image in itemImages {
             imageData.append(image.compress() ?? Data())
