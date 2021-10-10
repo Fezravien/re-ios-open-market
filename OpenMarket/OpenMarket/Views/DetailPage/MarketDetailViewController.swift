@@ -96,36 +96,61 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     // MARK: - Data binding with ViewModel (DetailViewModel)
     
     private func bindData() {
-        self.marketDetailViewModel.detailItemObserver = { [weak self] in
-            guard let self = self else { return }
-            guard let data = self.marketDetailViewModel.getDetailItem() else { return }
+        self.marketDetailViewModel.bindDetailItem { [weak self] in
+            guard let item = self?.marketDetailViewModel.detailItem,
+                  let image = self?.marketDetailViewModel.itemImages else {
+                      
+                      return
+                  }
+            
             DispatchQueue.main.async {
-                self.navigationItem.title = data.title
-                self.convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
-                self.convertStockFormat(stock: data.stock)
-                self.itemDescription.text = data.descriptions
-                self.itemTitle.text = data.title
+                self?.updateItemText(item: item)
+                self?.updateImage(image: image)
+            }
+            
+        }
+    }
+    
+    private func updateItemText(item: Item) {
+        let convertedPrice = self.marketDetailViewModel.convertPriceFormat(currency: item.currency, price: item.price, discountPrice: item.discountPrice)
+        let convertedStock = self.marketDetailViewModel.convertStockFormat(stock: item.stock)
+        
+        self.navigationItem.title = item.title
+        self.applyPriceFormat(priceFormat: convertedPrice)
+        self.itemStock.text = convertedStock
+        self.itemDescription.text = item.descriptions
+        self.itemTitle.text = item.title
+    }
+    
+    private func updateImage(image: [Data]) {
+        for index in 0..<image.count {
+            DispatchQueue.main.async {
+                let imageView = UIImageView()
+                imageView.contentMode = .scaleAspectFit
+                let positionX = self.imageScrollView.frame.width * CGFloat(index)
+                let positionY = self.imageScrollView.frame.origin.y
+                imageView.frame = CGRect(x: positionX, y: positionY, width: self.imageScrollView.bounds.width, height: self.imageScrollView.bounds.height)
+                imageView.image = UIImage(data: image[index])
+                self.imageScrollView.addSubview(imageView)
+                self.imageScrollView.contentSize.width = imageView.frame.width * CGFloat(index + 1)
             }
         }
         
-        self.marketDetailViewModel.itemImagesObserver = { [weak self] in
-            guard let self = self else { return }
-            for index in 0..<self.marketDetailViewModel.getImageCount {
-                DispatchQueue.main.async {
-                    let imageView = UIImageView()
-                    imageView.contentMode = .scaleAspectFit
-                    let positionX = self.imageScrollView.frame.width * CGFloat(index)
-                    let positionY = self.imageScrollView.frame.origin.y
-                    imageView.frame = CGRect(x: positionX, y: positionY, width: self.imageScrollView.bounds.width, height: self.imageScrollView.bounds.height)
-                    imageView.image = UIImage(data: self.marketDetailViewModel.getImageData(index: index))
-                    self.imageScrollView.addSubview(imageView)
-                    self.imageScrollView.contentSize.width = imageView.frame.width * CGFloat(index + 1)
-                }
-            }
-            
-            DispatchQueue.main.async {
-                self.imageScrollViewPageControl.numberOfPages = self.marketDetailViewModel.getImageCount
-            }
+        DispatchQueue.main.async {
+            self.imageScrollViewPageControl.numberOfPages = image.count
+        }
+    }
+    
+    private func applyPriceFormat(priceFormat: (String, NSMutableAttributedString?)) {
+        let price = priceFormat.0
+        
+        if let attributedString = priceFormat.1 {
+            self.itemPrice.textColor = .systemRed
+            self.itemPrice.attributedText = attributedString
+            self.itemDiscountPrice.isHidden = false
+            self.itemDiscountPrice.text = price
+        } else {
+            self.itemPrice.text = price
         }
     }
     
@@ -149,7 +174,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             self.alertInputPassword { password in
                 self.indicater.startAnimating()
                 let password = ItemDelete(password: password)
-                guard let item = self.marketDetailViewModel.getDetailItem(),
+                guard let item = self.marketDetailViewModel.detailItem,
                       let request = self.marketDetailViewModel.createRequestForItemDelete(data: password, id: item.id) else {
                     
                     return
@@ -178,7 +203,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             self.alertInputPassword { password in
                 self.indicater.startAnimating()
                 guard let modifyItem = self.createModifyItemFormat(password: password),
-                      let request = try? self.marketDetailViewModel.createRequestForItemPatch(id: self.marketDetailViewModel.getDetailItem()!.id, item: modifyItem) else {
+                      let request = try? self.marketDetailViewModel.createRequestForItemPatch(id: self.marketDetailViewModel.detailItem!.id, item: modifyItem) else {
                     
                     return
                 }
@@ -219,14 +244,14 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     // MARK: - Create edit format
     
     private func createModifyItemFormat(password: String) -> ItemModification? {
-        guard let currentItem = self.marketDetailViewModel.getDetailItem() else { return nil }
+        guard let currentItem = self.marketDetailViewModel.detailItem else { return nil }
         let itemModifation = ItemModification(title: currentItem.title,
                                              descriptions: currentItem.descriptions,
                                              price: currentItem.price,
                                              currency: currentItem.currency,
                                              stock: currentItem.stock,
                                              discountedPrice: currentItem.discountPrice,
-                                             images: self.marketDetailViewModel.getImageDatas(),
+                                             images: self.marketDetailViewModel.itemImages,
                                              password: password)
         
         return itemModifation
@@ -242,34 +267,12 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         }
     }
     
-    // MARK: - Delegate Pattern
+    // MARK: - Delegate Pattern from other View or ViewController
     
     func refreshDetailItem(item: Item) {
         self.marketDetailViewModel.refreshItem(item: item)
     }
     
-    private func convertPriceFormat(currency: String, price: UInt, discountPrice: UInt?) {
-        if let discountPrice = discountPrice {
-            let attributeString = NSMutableAttributedString(string: "\(currency) \(price)")
-            attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSMakeRange(0, attributeString.length))
-            self.itemPrice.textColor = .systemRed
-            self.itemPrice.attributedText = attributeString
-            self.itemDiscountPrice.isHidden = false
-            self.itemDiscountPrice.text = "\(currency) " + String(discountPrice)
-        } else {
-            self.itemPrice.text = "\(currency) \(price)"
-        }
-    }
-    
-    private func convertStockFormat(stock: UInt) {
-        if stock == 0 {
-            self.itemStock.textColor = .systemOrange
-            self.itemStock.text = "품절"
-        } else {
-            self.itemStock.textColor = .systemGray
-            self.itemStock.text = "잔여수량 : \(stock)"
-        }
-    }
     
     // MARK: - Set constraint UI
     
