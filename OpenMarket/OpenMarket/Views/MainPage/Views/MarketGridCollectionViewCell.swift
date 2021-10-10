@@ -75,7 +75,6 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
         return label
     }()
     private let marketMainViewModel = MarketMainViewModel()
-    private var indexPath: IndexPath?
     weak var mainSceneDelegate: MainSceneDelegate?
     
     // MARK: - Data binding with ViewModel (MainViewModel)
@@ -104,7 +103,7 @@ class MarketGridCollectionViewCell: UICollectionViewCell {
                 self.itemTitle.text = item.title
                 self.itemStock.text = convertedStock
                 self.applyPriceFormat(priceFormat: convertedPrice)
-                self.mainSceneDelegate?.updataCell(indexPath: self.indexPath ?? IndexPath())
+                self.mainSceneDelegate?.stopIndicater()
             }
         }
     }

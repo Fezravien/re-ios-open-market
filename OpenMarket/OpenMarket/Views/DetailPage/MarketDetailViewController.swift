@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate, RegisterationToDetailDelegate {
+class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate, DetailSceneDelegate {
     
     // MARK: - variable, constant and UI Initialization
     
@@ -80,7 +80,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         return indicater
     }()
     private let marketDetailViewModel = MarketDetailViewModel()
-    weak var detailToMainDelegate: DetailToMainDelegate?
+    weak var updateDelegate: MainSceneDelegate?
     lazy var marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
     
     // MARK: - View life cycle
@@ -106,7 +106,6 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             DispatchQueue.main.async {
                 self?.updateItemText(item: item)
                 self?.updateImage(image: image)
-                self?.view.setNeedsDisplay()
             }
         }
     }
@@ -158,7 +157,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     
     private func setDelegate() {
         self.imageScrollView.delegate = self
-        self.marketRegisterAndEditViewController.registrationToDetailDelegate = self
+        self.marketRegisterAndEditViewController.modificationDelegate = self
     }
     
     // MARK: - Set self Navigation
@@ -192,7 +191,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
                     DispatchQueue.main.async {
                         self.indicater.stopAnimating()
                         self.alert(title: "상품이 삭제되었습니다.") {
-                            self.detailToMainDelegate?.refreshMainItemList()
+                            self.updateDelegate?.refreshMainItemList()
                             self.navigationController?.popViewController(animated: true)
                         }
                     }
@@ -271,6 +270,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     
     func refreshDetailItem(item: Item) {
         self.marketDetailViewModel.refreshItem(item: item)
+        self.updateDelegate?.refreshMainItemList()
     }
     
     

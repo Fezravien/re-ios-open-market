@@ -173,8 +173,8 @@ final class MarketRegisterAndEditViewController: UIViewController {
     private var state: State?
     private var itemImageCount = 0
     private var currencys = CurrencyState.allCases.map { $0.rawValue }
-    weak var registrationToDetailDelegate: RegisterationToDetailDelegate?
-    weak var registrationToMainDelegate: RegisterationToMainDelegate?
+    weak var modificationDelegate: DetailSceneDelegate?
+    weak var registrationDelegate: MainSceneDelegate?
     
     // MARK: - View life cycle
     
@@ -322,30 +322,30 @@ final class MarketRegisterAndEditViewController: UIViewController {
                         DispatchQueue.main.async {
                             self?.indicater.stopAnimating()
                             self?.alert(title: "등록이 완료되었습니다") {
+                                self?.registrationDelegate?.displayRegisteratedItem(item: item)
                                 self?.navigationController?.popViewController(animated: true)
-                                self?.registrationToMainDelegate?.displayRegisteratedItem(item: item)
                             }
                         }
                     })
                 }
             case .edit:
-                self.alertInputPassword { [weak self] password in
-                    self?.indicater.startAnimating()
-                    guard let request = self?.createRequestForEdit(password) else { return }
-                    self?.marketRegisterAndEditViewModel.post(request: request, completion: { item in
+                self.alertInputPassword { password in
+                    self.indicater.startAnimating()
+                    guard let request = self.createRequestForEdit(password) else { return }
+                    self.marketRegisterAndEditViewModel.post(request: request, completion: { item in
                         guard let item = item else {
                             DispatchQueue.main.async {
-                                self?.indicater.stopAnimating()
-                                self?.alert(title: "비밀번호를 확인해주세요")
+                                self.indicater.stopAnimating()
+                                self.alert(title: "비밀번호를 확인해주세요")
                             }
                             return
                         }
                         
                         DispatchQueue.main.async {
-                            self?.indicater.stopAnimating()
-                            self?.alert(title: "수정이 완료되었습니다") {
-                                self?.registrationToDetailDelegate?.refreshDetailItem(item: item)
-                                self?.navigationController?.popViewController(animated: true)
+                            self.indicater.stopAnimating()
+                            self.alert(title: "수정이 완료되었습니다") {
+                                self.modificationDelegate?.refreshDetailItem(item: item)
+                                self.navigationController?.popViewController(animated: true)
                             }
                         }
                     })
