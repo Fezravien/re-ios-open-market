@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Item: Decodable, Equatable {
-    let id: UInt32
+struct Item: Decodable {
+    let id: UInt
     let title: String
     let descriptions: String?
     let price: UInt

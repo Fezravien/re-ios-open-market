@@ -7,12 +7,20 @@
 
 import Foundation
 
-struct MarketNetwork: OpenMarketNetwork {
-    private let session: URLSession = .shared
+final class Network: MarketNetwork {
+    private let session: MarketSession
     
-    func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) {
+    init(session: MarketSession) {
+        self.session = session
+    }
+    
+    func excuteNetwork(request: URLRequest, completion: @escaping (Result<Data?, Error>) -> Void) {
         session.dataTask(with: request) { data, response, error in
-            if let error = error { completion(.failure(MarketModelError.network(error))) }
+            if let _ = error {
+                completion(.failure(MarketModelError.network))
+                return
+            }
+            
             guard let response = response as? HTTPURLResponse else {
                 completion(.failure(MarketModelError.casting("HTTPURLResponse")))
                 return
@@ -20,11 +28,6 @@ struct MarketNetwork: OpenMarketNetwork {
             
             guard (200...299) ~= response.statusCode else {
                 completion(.failure(MarketModelError.response(response.statusCode)))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(MarketModelError.data))
                 return
             }
             
