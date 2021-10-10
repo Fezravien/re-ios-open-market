@@ -8,6 +8,9 @@
 import UIKit
 
 class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate, RegisterationToDetailDelegate {
+    
+    // MARK: - variable, constant and UI Initialization
+    
     private let detailPageScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.backgroundColor = .white
@@ -80,14 +83,60 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     weak var detailToMainDelegate: DetailToMainDelegate?
     lazy var marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
     
+    // MARK: - View life cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setConstraints()
         addNavigationItem()
         setDelegate()
-        bindDataDetailItem()
-        bindDataImage()
+        bindData()
     }
+    
+    // MARK: - Data binding with ViewModel (DetailViewModel)
+    
+    private func bindData() {
+        self.marketDetailViewModel.detailItemObserver = { [weak self] in
+            guard let self = self else { return }
+            guard let data = self.marketDetailViewModel.getDetailItem() else { return }
+            DispatchQueue.main.async {
+                self.navigationItem.title = data.title
+                self.convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
+                self.convertStockFormat(stock: data.stock)
+                self.itemDescription.text = data.descriptions
+                self.itemTitle.text = data.title
+            }
+        }
+        
+        self.marketDetailViewModel.itemImagesObserver = { [weak self] in
+            guard let self = self else { return }
+            for index in 0..<self.marketDetailViewModel.getImageCount {
+                DispatchQueue.main.async {
+                    let imageView = UIImageView()
+                    imageView.contentMode = .scaleAspectFit
+                    let positionX = self.imageScrollView.frame.width * CGFloat(index)
+                    let positionY = self.imageScrollView.frame.origin.y
+                    imageView.frame = CGRect(x: positionX, y: positionY, width: self.imageScrollView.bounds.width, height: self.imageScrollView.bounds.height)
+                    imageView.image = UIImage(data: self.marketDetailViewModel.getImageData(index: index))
+                    self.imageScrollView.addSubview(imageView)
+                    self.imageScrollView.contentSize.width = imageView.frame.width * CGFloat(index + 1)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.imageScrollViewPageControl.numberOfPages = self.marketDetailViewModel.getImageCount
+            }
+        }
+    }
+    
+    // MARK: - Set Delegate
+    
+    private func setDelegate() {
+        self.imageScrollView.delegate = self
+        self.marketRegisterAndEditViewController.registrationToDetailDelegate = self
+    }
+    
+    // MARK: - Set self Navigation
     
     private func addNavigationItem() {
         let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(tappedEditButton))
@@ -167,6 +216,8 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         self.dismiss(animated: true, completion: nil)
     }
     
+    // MARK: - Create edit format
+    
     private func createModifyItemFormat(password: String) -> ItemModification? {
         guard let currentItem = self.marketDetailViewModel.getDetailItem() else { return nil }
         let itemModifation = ItemModification(title: currentItem.title,
@@ -181,50 +232,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         return itemModifation
     }
     
-    private func setDelegate() {
-        self.imageScrollView.delegate = self
-        self.marketRegisterAndEditViewController.registrationToDetailDelegate = self
-    }
-    
-    private func setPageControlSelectedPage(currentPage: Int) {
-        self.imageScrollViewPageControl.currentPage = currentPage
-    }
-    
-    private func bindDataDetailItem() {
-        self.marketDetailViewModel.detailItemObserver = { [weak self] in
-            guard let self = self else { return }
-            guard let data = self.marketDetailViewModel.getDetailItem() else { return }
-            DispatchQueue.main.async {
-                self.navigationItem.title = data.title
-                self.convertPriceFormat(currency: data.currency, price: data.price, discountPrice: data.discountPrice)
-                self.convertStockFormat(stock: data.stock)
-                self.itemDescription.text = data.descriptions
-                self.itemTitle.text = data.title
-            }
-        }
-    }
-
-    private func bindDataImage() {
-        self.marketDetailViewModel.itemImagesObserver = { [weak self] in
-            guard let self = self else { return }
-            for index in 0..<self.marketDetailViewModel.getImageCount {
-                DispatchQueue.main.async {
-                    let imageView = UIImageView()
-                    imageView.contentMode = .scaleAspectFit
-                    let positionX = self.imageScrollView.frame.width * CGFloat(index)
-                    let positionY = self.imageScrollView.frame.origin.y
-                    imageView.frame = CGRect(x: positionX, y: positionY, width: self.imageScrollView.bounds.width, height: self.imageScrollView.bounds.height)
-                    imageView.image = UIImage(data: self.marketDetailViewModel.getImageData(index: index))
-                    self.imageScrollView.addSubview(imageView)
-                    self.imageScrollView.contentSize.width = imageView.frame.width * CGFloat(index + 1)
-                }
-            }
-            
-            DispatchQueue.main.async {
-                self.imageScrollViewPageControl.numberOfPages = self.marketDetailViewModel.getImageCount
-            }
-        }
-    }
+    // MARK: - Receive data from MainViewController
     
     func setDetailViewController(item: Item) {
         guard let request = self.marketDetailViewModel.createRequestForItemFetch(item.id) else { return }
@@ -233,6 +241,8 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             self.marketDetailViewModel.refreshItem(item: item)
         }
     }
+    
+    // MARK: - Delegate Pattern
     
     func refreshDetailItem(item: Item) {
         self.marketDetailViewModel.refreshItem(item: item)
@@ -260,6 +270,8 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             self.itemStock.text = "잔여수량 : \(stock)"
         }
     }
+    
+    // MARK: - Set constraint UI
     
     private func setConstraints() {
         setDetailPageScrollViewConstraint()
@@ -371,9 +383,15 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     }
 }
 
+// MARK: - Scroll View Delegate
+
 extension MarketDetailViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let value = scrollView.contentOffset.x / scrollView.frame.size.width
         setPageControlSelectedPage(currentPage: Int(round(value)))
+    }
+    
+    private func setPageControlSelectedPage(currentPage: Int) {
+        self.imageScrollViewPageControl.currentPage = currentPage
     }
 }
