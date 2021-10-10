@@ -8,5 +8,7 @@
 import Foundation
 
 protocol MainSceneDelegate: AnyObject {
-    func updataCell(indexPath: IndexPath)
+    func stopIndicater()
+    func displayRegisteratedItem(item: Item)
+    func refreshMainItemList()
 }

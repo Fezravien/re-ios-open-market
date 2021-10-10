@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MarketMainViewController: UIViewController, RegisterationToMainDelegate, DetailToMainDelegate, MainSceneDelegate {
+final class MarketMainViewController: UIViewController, MainSceneDelegate {
     
     // MARK: - Name Space
     
@@ -48,6 +48,7 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
     }()
     private let marketMainViewModel = MarketMainViewModel()
     private var marketDetailViewController: MarketDetailViewController?
+    private var selectedIndexPath: IndexPath?
     private var page: UInt = 1
     private var mode: Mode = .normal
     
@@ -104,7 +105,7 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
     
     @objc private func tappedRegisterAndEditItemButton() {
         let marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
-        marketRegisterAndEditViewController.registrationToMainDelegate = self
+        marketRegisterAndEditViewController.registrationDelegate = self
         marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .registration)
         self.navigationController?.pushViewController(marketRegisterAndEditViewController, animated: true)
     }
@@ -179,12 +180,13 @@ final class MarketMainViewController: UIViewController, RegisterationToMainDeleg
     func displayRegisteratedItem(item: Item) {
         self.marketDetailViewController = MarketDetailViewController()
         self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [unowned self] in
+            self.itemListCollectionView.reloadData()
             self.marketDetailViewController?.refreshDetailItem(item: item)
         }
     }
     
-    func updataCell(indexPath: IndexPath) {
+    func stopIndicater() {
         if self.itemListLoadingindicater.isAnimating {
             self.itemListLoadingindicater.stopAnimating()
         }
@@ -230,8 +232,9 @@ extension MarketMainViewController: UICollectionViewDataSource {
 extension MarketMainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let items = self.marketMainViewModel.marketItems else { return }
+        self.selectedIndexPath = indexPath
         self.marketDetailViewController = MarketDetailViewController()
-        self.marketDetailViewController?.detailToMainDelegate = self
+        self.marketDetailViewController?.updateDelegate = self
         self.marketDetailViewController?.setDetailViewController(item: items[indexPath.row])
         self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
     }
