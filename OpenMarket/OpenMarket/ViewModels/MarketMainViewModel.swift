@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 final class MarketMainViewModel {
     private var itemListFetchHandler: (() -> Void)?
