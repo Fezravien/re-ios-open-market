@@ -688,7 +688,7 @@ func refreshDetailItem(item: Item) {
 - JSONEncoder
 - Network(Session을 가지고 있는 네트워크 메소드)
 
-[URLSessionDataTask init](https://developer.apple.com/documentation/foundation/urlsessiondatatask/32406 18-init) 이 부분이 `Deprecated` 되어 Session의 의존성 분리로 MockSession으로 테스트 하지 못했다.
+[URLSessionDataTask init](https://developer.apple.com/documentation/foundation/urlsessiondatatask/3240618-init) 이 부분이 `Deprecated` 되어 Session의 의존성 분리로 MockSession으로 테스트 하지 못했다.
 
 그래서 사용해본 방법이 URLProtocol을 사용한 가짜 네트워킹 방식이다.
 
