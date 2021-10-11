@@ -106,6 +106,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             DispatchQueue.main.async {
                 self?.updateItemText(item: item)
                 self?.updateImage(image: image)
+                self?.view.layoutIfNeeded()
             }
         }
     }
