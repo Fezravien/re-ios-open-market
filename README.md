@@ -2,10 +2,7 @@
 
 [REST API](https://docs.google.com/spreadsheets/d/1_l6aPfEUchSF_ymIp0DjyH8Ic00GIoqvd8dO9f7_sx4/edit#gid=1153044612)를 이용한 상품 `목록 조회`, `상세 조회`, `등록`, `수정`, `삭제` 기능을 할 수 있는 앱이다. 
 
-
-![Simulator Screen Recording - iPhone 12 Pro Max - 2021-10-11 at 02 32 18](https://user-images.githubusercontent.com/44525561/136771549-10d4b706-f10a-4aad-bf55-90f305051286.gif)
-![Simulator Screen Recording - iPhone 12 Pro Max - 2021-10-11 at 03 33 12](https://user-images.githubusercontent.com/44525561/136771745-6a012d4d-c1b9-4261-af35-83770e4c14f7.gif)
-![Simulator Screen Recording - iPhone 12 Pro Max - 2021-10-11 at 04 01 37](https://user-images.githubusercontent.com/44525561/136771649-1759ce47-a9a0-4868-8d15-b97b87a363d3.gif)
+<img src="https://user-images.githubusercontent.com/44525561/136771549-10d4b706-f10a-4aad-bf55-90f305051286.gif" width="30%"> <img src="https://user-images.githubusercontent.com/44525561/136771745-6a012d4d-c1b9-4261-af35-83770e4c14f7.gif" width="30%"> <img src="https://user-images.githubusercontent.com/44525561/136771649-1759ce47-a9a0-4868-8d15-b97b87a363d3.gif" width="30%">
 
 
 ## 목차.
