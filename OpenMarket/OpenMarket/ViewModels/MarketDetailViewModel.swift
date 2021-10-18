@@ -31,8 +31,8 @@ final class MarketDetailViewModel {
     // MARK: - Detial View: Model change due to the user's event.
     
     func refreshItem(item: Item) {
-        downloadImage(imageURL: item.images ?? [])
         self.detailItem = item
+        downloadImage(imageURL: item.images ?? [])
     }
     
     // MARK: - Convert Format
@@ -94,19 +94,19 @@ final class MarketDetailViewModel {
     }
     
     private func downloadImage(imageURL: [String]) {
+        //        let imageDispatchGroup = DispatchGroup()
+        let imageDispatchQueue = DispatchQueue(label: "시리얼 이미지 다운로드 큐")
         var images: [Data] = []
         if imageURL.isEmpty { return }
         for index in 0..<imageURL.count {
             guard let url = URL(string: imageURL[index]) else { return }
-            
-            DispatchQueue.global(qos: .background).async {
+            imageDispatchQueue.sync {
                 if let image = try? Data(contentsOf: url) {
                     images.append(image)
-                    if images.count == imageURL.count {
-                        self.itemImages = images
-                    }
                 }
             }
         }
+     
+        self.itemImages = images
     }
 }

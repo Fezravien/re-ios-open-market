@@ -9,6 +9,11 @@ import UIKit
 
 class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate, DetailSceneDelegate {
     
+    private enum DetailPageMode {
+        case editAndDelete
+        case registered
+    }
+    
     // MARK: - variable, constant and UI Initialization
     
     private let detailPageScrollView: UIScrollView = {
@@ -80,6 +85,8 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         return indicater
     }()
     private let marketDetailViewModel = MarketDetailViewModel()
+    private var displayMode: DetailPageMode = .editAndDelete
+    private var registeredItem: Item?
     weak var updateDelegate: MainSceneDelegate?
     lazy var marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
     
@@ -91,6 +98,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         addNavigationItem()
         setDelegate()
         bindData()
+        setRegisteredItem()
     }
     
     // MARK: - Data binding with ViewModel (DetailViewModel)
@@ -106,6 +114,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
             DispatchQueue.main.async {
                 self?.updateItemText(item: item)
                 self?.updateImage(image: image)
+                self?.view.layoutIfNeeded()
             }
         }
     }
@@ -256,7 +265,7 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         return itemModifation
     }
     
-    // MARK: - Receive data from MainViewController
+    // MARK: - Receive data from otherViewController
     
     func setDetailViewController(item: Item) {
         guard let request = self.marketDetailViewModel.createRequestForItemFetch(item.id) else { return }
@@ -266,6 +275,22 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
         }
     }
     
+    func displayRegisteredItem(item: Item) {
+        self.displayMode = .registered
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(tappedCloseButton))
+        self.registeredItem = item
+    }
+    
+    private func setRegisteredItem() {
+        guard let item = self.registeredItem else { return }
+        refreshDetailItem(item: item)
+    }
+    
+    @objc private func tappedCloseButton() {
+        self.navigationController?.popToRootViewController(animated: true)
+        self.updateDelegate?.refreshMainItemList()
+    }
+
     // MARK: - Delegate Pattern from other View or ViewController
     
     func refreshDetailItem(item: Item) {

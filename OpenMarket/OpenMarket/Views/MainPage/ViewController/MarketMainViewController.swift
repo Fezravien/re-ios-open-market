@@ -177,15 +177,6 @@ final class MarketMainViewController: UIViewController, MainSceneDelegate {
         self.marketMainViewModel.removeAllItems()
     }
     
-    func displayRegisteratedItem(item: Item) {
-        self.marketDetailViewController = MarketDetailViewController()
-        self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [unowned self] in
-            self.itemListCollectionView.reloadData()
-            self.marketDetailViewController?.refreshDetailItem(item: item)
-        }
-    }
-    
     func stopIndicater() {
         if self.itemListLoadingindicater.isAnimating {
             self.itemListLoadingindicater.stopAnimating()

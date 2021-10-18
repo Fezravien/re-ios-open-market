@@ -322,8 +322,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
                         DispatchQueue.main.async {
                             self?.indicater.stopAnimating()
                             self?.alert(title: "등록이 완료되었습니다") {
-                                self?.registrationDelegate?.displayRegisteratedItem(item: item)
-                                self?.navigationController?.popViewController(animated: true)
+                                let detailViewController = MarketDetailViewController()
+                                self?.navigationController?.pushViewController(detailViewController, animated: true)
+                                detailViewController.displayRegisteredItem(item: item)
                             }
                         }
                     })
