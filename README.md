@@ -880,34 +880,102 @@ Cell이 CollectionView에서 재사용될 때 초기화 할 수 있는 `prepareF
 
 ### 상품 등록 후 상품 목록 페이지를 통해 상품 상세 페이지로 등록된 상품 보여주기 문제
 
-<img src="https://user-images.githubusercontent.com/44525561/135712413-477fa0a2-4818-487a-a70f-935d719e07a2.gif" width="30%"> <img src="https://user-images.githubusercontent.com/44525561/135712416-a545ee66-2644-4a0d-b93a-9dd1a634a9c8.gif" width="30%"> <img src="https://user-images.githubusercontent.com/44525561/135713506-a0eabf02-ee9f-49eb-8380-81457790bb52.gif" width="30%"> 
+#### 트러블
 
-< **좌** : 딜레이 0, **중앙** : 딜레이 0.5, **우** : 딜레이 1 >
+상품 등록 후 등록된 상품을 사용자가 확인할 수 있는 기능을 구현하려고 했다. 상품 등록 후 `상품 목록`을 거쳐 `상품 상세` 페이지에서 등록된 상품을 보여주는 기능을 구현하는데 `상품 상세`에 아무것도 보여지지 않는 현상이 발견되었다.
 
-상품 등록 후 델리게이트 패턴을 활용해 `상품 등록/수정 페이지`에서 `상품 목록 페이지`로 데이터를 전달 받도록 구현했다. 
+<img src="https://user-images.githubusercontent.com/44525561/135712413-477fa0a2-4818-487a-a70f-935d719e07a2.gif" width="30%"> 
 
-그리고 받은 데이터를 상품 상세 페이지에 업데이트 시켜줘야 했지만, 상품 상세 페이지에는 백지만 있었다.
+<br>
 
-각 지점마다 `BreakPoint` 를 걸어 디버깅 해보니 `ViewModel` 과 `View`가 데이터 바인딩 되어있는 구조인데, 상품 상세 페이지가 뜨기 전에 Model을 변경시키는 현상이 발견되었다. 그래서 UI는 업데이트 되지 않고 백지만 보여주고 있는 것으로 추정했다.
+#### 문제 인식
+
+##### 추측
+
+1. 서버에 데이터를 보내고(POST) 응답으로 데이터를 받지만, 이미지는 AWS에 저장되는데 시간이 걸려서 이미지를 재때 다운받지 못한 오류 
+2. 네비게이션 컨트롤러의 pop, push하는 시점과 데이터를 상세 페이지에 ViewModel에 Model를 업데이트 하는 시점의 뒤바뀜 
+
+화면이 전환되는 부분, 데이터가 델리게이트 패턴으로 전달되는 부분, 데이터가 업데이트 되는 부분 등 동작이 일어나는 부분에 **브레이크 포인트를 걸어 LLDB를 통해 디버깅**을 진행해보았다.
+
+그 결과 추측 2번과 같이 네이게이션 컨트롤러를 pop, push (상품 등록 -> 상품 목록 -> 상품 상세) UI의 전환하는 시점보다 등록된 상품의 정보를 상품 상세에 전달하는 시점이 빨라서 백지가 띄는 현상이 되었다. 
+
+<br>
+
+#### 해결 방안
+
+pop, push이 된 후에 상품 상세 페이지에 데이터를 전달하여 업데이트 시점을 맞춰주자. 
 
 ```swift
-    func displayRegisteratedItem(item: Item) {
-        self.marketDetailViewController = MarketDetailViewController()
-        self.navigationController?.pushViewController(self.marketDetailViewController ?? MarketDetailViewController(), animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.marketDetailViewController?.refreshDetailItem(item: item)
-        }
+func displayRegisteratedItem(item: Item) {
+    self.marketDetailViewController = MarketDetailViewController()
+    self.navigationController?.pushViewController(self.marketDetailViewController, animated: true)
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        self.marketDetailViewController?.refreshDetailItem(item: item)
     }
+}
 ```
 
-`DispatchQueue.main.asyncAfter` 0.5 초의 딜레이를 추가 했지만, `오른쪽 gif`  처럼 이번에는 이미지만 화면에 보이는 것을 볼 수 있었다.
+ `DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)` 를 통해 0.5초 딜레이를 시킨 후 데이터를 전달했다.
 
-딜레이를 1초로 증가시키게 되니 정상적으로 이미지, 텍스트가 출력되었다.
+<img src="https://user-images.githubusercontent.com/44525561/135713506-a0eabf02-ee9f-49eb-8380-81457790bb52.gif" width="30%"> 
+
+이 방법도 문제점이 존재하는데 0.5초 딜레이로 데이터가 잘 나타날 때도 안나타날 때도 존재했다. 그리고 다른 실행 환경에서도 딜레이 시간이 다른것을 확인했다. 그러므로 이 해결 방법은 임시방편일 뿐 오류가 날 수 있음을 내포하고 있다.
+
+디버깅을 좀 더 촘촘하게 브레이크 포인트를 걸어서 진행해보았다.
+
+pop, push에 따라 시점 차이가 존재하는 좀 더 근본적인 원인은 ViewController를 초기화하는 부분에서 **viewDidLoad(메모리에 올라오는 시점) 보다 ViewModel의 Model을 변화시키는 작업이 더 빠르게** 된다는 것이다. 그래서 Model 변화에 따른 프로퍼티 옵저버의 클로저는 nil 상태로 아무것도 업데이트 해주지 않는 것이다. 바인딩으로써 클로저는 viewDidLoad에서 바인딩되기 때문이다.
 
 ```swift
-DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.marketDetailViewController?.refreshDetailItem(item: item)
-        }
+// viewDidLoad이 실행되기 전이라 바인딩되지 않아 detailItemHandler = nil
+// 그래서 상품의 정보가 업데이트 되지 않는 상황
+private(set) var itemImages: [Data]? {
+    didSet {
+        self.detailItemHandler?()
+    }
+}
+```
+
+
+
+<br>
+
+#### 개선
+
+기존의 등록된 후 사용자에게 등록한 상품을 보여주는 방식은 **상품 등록 -> 상품 목록 -> 상품 상세** 이렇게 왔다갔다 하는 방식이었다.
+
+현재 앱스토어에 앱을 참고하여 생각해봤을때 왔다갔다 하는 방식으로 인해 사용자 경험이 떨어질 수 있음을 느꼈다. 그래서 `상품 목록`에서 `상품 상세`로 보여주는 방식에서 바로 `상품 상세`로 바로 넘어가도록 수정했고, 뒤로 버튼을 `.popToRootViewController` 활용하여 바로 상품 목록으로 이동하도록 했다.
+
+<img src="https://user-images.githubusercontent.com/44525561/137657437-4dc7a942-06f1-4fbe-a9be-6503b9a78207.gif" width="30%">  
+
+ `DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)`를 통한 해결방안에 잠재적인 오류 또한 해결하기 위해서 딜레이를 통한 viewDidLoad 호출을 기다리는 것이 아닌, viewDidLoad가 호출 될때 업데이트 시켜주도록 하여 실행 환경에 따라 발생될 수 있는 오류를 제거했다.
+
+상품 상세에 프로퍼티에 등록된 데이터를 저장하고 viewDidLoad가 호출될 때 프로퍼티를 확인하여 ViewModel의 Model을 변경시켜줌으로써 정상적인 바인딩을 통해 업데이트 시켜주도록 했다.
+
+```swift
+private var registeredItem: Item?
+
+override func viewDidLoad() {
+    ...
+    setRegisteredItem()
+}
+
+func displayRegisteredItem(item: Item) {
+    self.displayMode = .registered
+    self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, 
+                                                            target: self, 
+                                                            action: #selector(tappedCloseButton))
+    self.registeredItem = item
+}
+
+private func setRegisteredItem() {
+    guard let item = self.registeredItem else { return }
+    refreshDetailItem(item: item)
+}
+
+func refreshDetailItem(item: Item) {
+    self.marketDetailViewModel.refreshItem(item: item)
+    self.updateDelegate?.refreshMainItemList()
+}
 ```
 
 <br>
@@ -917,10 +985,29 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
 
 ### 상품 등록, 수정 페이지에 상품 수정으로 진입했을 때 이미지가 보이지 않는 문제
 
- <img src="https://user-images.githubusercontent.com/44525561/135721499-98994538-6d9b-4585-bc50-2dc62256061d.gif" width="30%"> <img src="https://user-images.githubusercontent.com/44525561/135721490-99f01f6a-311d-4b76-85c4-77e8b8a7a295.gif" width="30%">
+#### 트러블
 
-< **좌** : 딜레이 0, **우** : 딜레이 2 >
-이미지 다운로드의 비동기 작업에서 `DispatchQueue.main.asyncAfter`로 딜레이를 줬다.
+사용자가 등록한 상품을 수정하기 위해 `상품 상세 페이지`의 `Action Sheet`를 통해 `상품 수정 페이지`로 이동하게 된다.
+`상품 수정 페이지`에는 이미지, 제목, 화폐, 가격, 할인 가격(옵셔널), 수량, 상세 정보가 기존의 정보로 채워져 있어야 하지만, 
+처음 앱을 구동했을 때 최초의 등록화면에 진입하면 이미지가 보여지는 것을 볼 수 있지만, 그 이후에 동일한 작업을 하게되면 이미지가 없는 현상이 생겼다.
+
+<img src="https://raw.githubusercontent.com/Fezravien/UploadForMarkdown/forUpload/img/Simulator%20Screen%20Recording%20-%20iPhone%2012%20Pro%20Max%20-%202021-10-19%20at%2013.08.41.gif" alt="Simulator Screen Recording - iPhone 12 Pro Max - 2021-10-19 at 13.08.41" width="30%" /> <img src="https://images.velog.io/images/fezravien/post/01e27727-7162-4aa0-8aca-130fb2801d83/Simulator%20Screen%20Recording%20-%20iPhone%2012%20Pro%20Max%20-%202021-10-19%20at%2011.55.47-46(%EB%93%9C%EB%9E%98%EA%B7%B8%ED%95%A8).tiff" width="30%;" />
+
+<br>
+
+#### 문제 인식
+
+##### 추측
+
+1. 서버에 등록된 이미지를 가져오는 것(네트워크)에 딜레이로 인해 이미지가 업데이트 되지 못했다.
+2. 서버에 이미지가 AWS 서버에 등록되는 시점과 이미지를 화면에 띄워주는 시점이 맞지 않았다.
+3. ViewController가 생성되어 메모리에 올라오기 전에 데이터를 업데이트 시켜줬다. (MVVM 이키텍처 - Model의 변화로 ViewModel과 View간의 바인딩을 통해 업데이트를 한다.)
+
+<br>
+
+#### 해결
+
+상품 수정 페이지에서 이미지를 다운로드 할 때 `DispatchQueue.main.asyncAfter`를 통해 딜레이를 시켜서 해결할 수 있었다.
 
 ```swift
     func downloadImage(imageURL: [String]) {
@@ -940,26 +1027,97 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 }
             }
         }
-
 ```
 
-하지만 이미지의 갯수에 따라 동작하지 않는 상황이 존재했다. 
-딜레이를 1초로 주고 이미지가 5개가 존재한다면, 똑같이 이미지가 반영되지 않는 모습이 보였다.
+하지만 이미지의 갯수에 따라 동작하지 않는 상황이 존재했다. 딜레이를 1초로 주고 이미지가 5개가 존재한다면, 똑같이 이미지가 반영되지 않는 모습이 보였다. 다만 2초에 딜레이를 둔다면 5개도 동작이 정상정으로 수행됨을 알 수 있었다,
 
-다만 2초에 딜레이를 둔다면 5개도 동작이 정상정으로 수행됨을 알 수 있었다,
+딜레이를 넉넉하게 줌으로써 기능이 동작하도록 했지만, 왜 딜레이를 줘야 기능이 정상적으로 작동하는 것인지 조금 더 디버깅을 구체적으로 해보면서 생각해보았다.
 
+![스크린샷 2021-10-19 오후 10.11.38](https://raw.githubusercontent.com/Fezravien/UploadForMarkdown/forUpload/img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202021-10-19%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%2010.11.38.png)
 
+위의 그림처럼 서버에 비밀번호를 확인하기 위해 `PATCH` 요청을 보내게 되면 동일한 이미지를 가지고 있지만 AWS 서버에는 다른 URL로 저장되게 되는데, 이때 딜레이를 주지 않고 이미지를 다운로드하게되면 기존의 이미지 URL로 요청하게 되서 처음에는 이미지가 보여지겠지만, 두 번째 동일한 동작을 하게되면 이미지 URL이 바뀌었기 때문에 서버로부터 이미지를 불러올 수 없게된다. 
 
-#### 예상 이유
+그래서 딜레이를 주게되면 서버에 비밀번호 요청과 함께 (이미지는 동일하지만) 수정되는 사항을 동기화 시킬 시간을 주게되어 이미지가 동일한 동작에도 보여질 수 있게된다.
 
-이미지 URL을 가지고 비동기로 이미지를 다운로드 받는 작업에서 문제가 발생되고 있다고 예상된다.
+<br>
+
+#### 개선
+
+비빌번호 검증으로 인한 `PATCH` 요청은 어쩔 수 없는 부분인 것 같다. 이 부분은 서버와 협업을 통해 비밀번호만 검증할 수 있도록 API를 구현해달라고 요청해야 원활하게 처리할 수 있을 것 같다. 
+
+이 부분에서 개선해보고 싶은 부분은 딜레이를 효율적으로 사용하는 것이다.
+
+기존의 해결방식인 `동시큐`, `비동기 작업`이다. 이미지의 순서를 고려하지 않는다.
 
 ```swift
-if let image = try? Data(contentsOf: url) { ... }
+DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
+    if let image = try? Data(contentsOf: url) {
+        DispatchQueue.main.async {
+            images.append(UIImage(data: image) ?? UIImage())
+            if images.count == imageURL.count {
+                self.itemImages = images
+            }
+        }
+    }
+}
 ```
 
-이부분에서 Data 작업이 실패하여 try? 를 통해 밖으로 나가지는 것으로 디버깅을 하며 찾을 수 있었다.
-만약 2개 이상의 이미지가 있을때 반복문을 통해 비동기 작업을 계속 호출하기 때문에 하나하나 작업에 걸리는 시간이 존재함에도 
-반복문이 동작하기 때문에 발생했다고 예상한다. 
+![스크린샷 2021-10-20 오전 12.49.24](https://raw.githubusercontent.com/Fezravien/UploadForMarkdown/forUpload/img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202021-10-20%20%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB%2012.49.24.png)
 
-딜레이를 주는 이 방법 외에도 `세마포어`를 활용하여 비동기 작업이 있는 반복문을 제어할 수 있을 것 같다.
+<br>
+
+기존의 방식에서 이미지의 순서를 고려하고, 불필요할 수도 있는 딜레이를 하지 않기 위해 개선했다.
+`CustomQueue`를 사용하여 **시리얼 큐를 통한 동기적 작업**으로 이미지의 순서를 보장했고, 딜레이를 이미지 전체에 한번만 줘서 **기존에 불필요 할 수 있었던 딜레이를 줄였다.**
+
+작업을 보장하게 할 수 있는 방법은 여러가지가 존재한다.
+
+1. `Custom Queue` 
+
+   커스텀 큐는 **디폴트는 시리얼 큐**이며 동시큐로 만들 수도 있다.
+
+   현재 이슈에서 이미지의 순서를 보장하기 위해 사용했다.
+
+2. `Dispatch Semaphore` 
+
+   동일한 자원에 접근하는 것을 막기위한 세마포어
+   현재 이슈에서도 세마포어 1개로 지정하고 wait, signal를 통해 순서를 보장할 수 있다.
+
+   하지만 동일한 자원 접근이 아니므로 Custom Queue의 시리얼이 더 적합하다고 판단했다.
+
+3. `Dispatch Group`
+
+   연관된 작업을 그룹으로 묶어서 전체가 끝남을 알리거나 최대 얼마나 기다리게 데드라인을 정할 수 있다.
+   현재 이슈에서 이미지 순서보장에서 적합하지 않다고 생각했다. 
+
+   
+
+```swift
+let dispatchSerialQueue = DispatchQueue(label: "이미지 다운로드 시리얼 큐")
+var images: [UIImage] = []
+if imageURL.isEmpty { return }
+DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2) {
+    for index in 0..<imageURL.count {
+        guard let url = URL(string: imageURL[index]) else { return }
+        dispatchSerialQueue.sync {
+            if let image = try? Data(contentsOf: url) {
+                DispatchQueue.main.async {
+                    images.append(UIImage(data: image) ?? UIImage())
+                        if images.count == imageURL.count {
+                            self.itemImages = images
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+![스크린샷 2021-10-20 오전 1.01.28](https://raw.githubusercontent.com/Fezravien/UploadForMarkdown/forUpload/img/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202021-10-20%20%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB%201.01.28.png)
+
+<br>
+
+이제 여러번 동일한 동작을 해도 이미지가 올라오는 것을 확인할 수 있다.
+
+<img src="https://user-images.githubusercontent.com/44525561/137949992-0b5c03f5-94f6-48f8-8c8e-6b23fd277ca4.gif" width="30%"> 
+
