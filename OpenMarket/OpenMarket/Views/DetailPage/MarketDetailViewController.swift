@@ -88,7 +88,6 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     private var displayMode: DetailPageMode = .editAndDelete
     private var registeredItem: Item?
     weak var updateDelegate: MainSceneDelegate?
-    lazy var marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
     
     // MARK: - View life cycle
     
@@ -166,7 +165,6 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
     
     private func setDelegate() {
         self.imageScrollView.delegate = self
-        self.marketRegisterAndEditViewController.modificationDelegate = self
     }
     
     // MARK: - Set self Navigation
@@ -227,8 +225,11 @@ class MarketDetailViewController: UIViewController, UIGestureRecognizerDelegate,
                     
                     DispatchQueue.main.async {
                         self.indicater.stopAnimating()
-                        self.marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .edit, item: item)
-                        self.navigationController?.pushViewController(self.marketRegisterAndEditViewController, animated: true)
+                        let marketRegisterAndEditViewController = MarketRegisterAndEditViewController()
+                        self.navigationController?.pushViewController(marketRegisterAndEditViewController, animated: true)
+                        marketRegisterAndEditViewController.setRegisterAndEditViewController(state: .edit, item: item)
+                        marketRegisterAndEditViewController.modificationDelegate = self
+                        
                     }
                 }
             }

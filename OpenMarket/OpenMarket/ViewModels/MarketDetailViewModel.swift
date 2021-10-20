@@ -94,12 +94,12 @@ final class MarketDetailViewModel {
     }
     
     private func downloadImage(imageURL: [String]) {
-        //        let imageDispatchGroup = DispatchGroup()
         let imageDispatchQueue = DispatchQueue(label: "시리얼 이미지 다운로드 큐")
         var images: [Data] = []
         if imageURL.isEmpty { return }
         for index in 0..<imageURL.count {
             guard let url = URL(string: imageURL[index]) else { return }
+            
             imageDispatchQueue.sync {
                 if let image = try? Data(contentsOf: url) {
                     images.append(image)
