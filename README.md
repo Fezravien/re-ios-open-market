@@ -101,6 +101,7 @@
 
 기능 단위로 나눠 개발하는 과정의 커밋 메시지는 `깃 이모지`를 활용해서 가시성과 일관성을 높혔다. 
 
+
 | Type     | Emoji | Description                                                  |
 | :------- | :---: | :----------------------------------------------------------- |
 | Feat     |   ✨   | 기능 (새로운 기능)                                           |
@@ -113,6 +114,7 @@
 | Chore    |   🔧   | 기타 (빌드, 시스템 파일 및 설정 변경)                        |
 | Comment  |   💡   | 필요한 주석 추가 및 변경                                     |
 | Remove   |   🔥   | 파일, 폴더 삭제 작업                                         |
+
 
 
 <br>
@@ -1120,4 +1122,3 @@ DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2) {
 이제 여러번 동일한 동작을 해도 이미지가 올라오는 것을 확인할 수 있다.
 
 <img src="https://user-images.githubusercontent.com/44525561/137949992-0b5c03f5-94f6-48f8-8c8e-6b23fd277ca4.gif" width="30%"> 
-
