@@ -14,6 +14,7 @@ final class MarketImageCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.backgroundColor = .darkGray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()

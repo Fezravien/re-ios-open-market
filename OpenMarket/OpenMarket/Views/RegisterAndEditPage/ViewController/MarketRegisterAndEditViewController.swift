@@ -214,9 +214,10 @@ final class MarketRegisterAndEditViewController: UIViewController {
         
         self.marketRegisterAndEditViewModel.bindItemForEdit { [weak self] item in
             guard let item = item else { return }
+            self?.marketRegisterAndEditViewModel.downloadImage(imageURL: item.images ?? [])
+            
             DispatchQueue.main.async {
                 self?.navigationItem.title = item.title
-                self?.marketRegisterAndEditViewModel.downloadImage(imageURL: item.images ?? [])
                 self?.itemTitle.text = item.title
                 self?.itemCurrency.text = item.currency
                 self?.itemPrice.text = String(item.price)
@@ -288,7 +289,7 @@ final class MarketRegisterAndEditViewController: UIViewController {
         itemDescription.scrollRangeToVisible(selectedRange)
     }
     
-    // MARK: - Receive data from MainViewController
+    // MARK: - Receive data from MainViewController or DetailViewController
     
     func setRegisterAndEditViewController(state: State, item: Item? = nil) {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(tappedFinishDoneButton))
@@ -322,8 +323,9 @@ final class MarketRegisterAndEditViewController: UIViewController {
                         DispatchQueue.main.async {
                             self?.indicater.stopAnimating()
                             self?.alert(title: "등록이 완료되었습니다") {
-                                self?.registrationDelegate?.displayRegisteratedItem(item: item)
-                                self?.navigationController?.popViewController(animated: true)
+                                let detailViewController = MarketDetailViewController()
+                                self?.navigationController?.pushViewController(detailViewController, animated: true)
+                                detailViewController.displayRegisteredItem(item: item)
                             }
                         }
                     })

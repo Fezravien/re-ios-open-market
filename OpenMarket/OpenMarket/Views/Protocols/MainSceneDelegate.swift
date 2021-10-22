@@ -9,6 +9,5 @@ import Foundation
 
 protocol MainSceneDelegate: AnyObject {
     func stopIndicater()
-    func displayRegisteratedItem(item: Item)
     func refreshMainItemList()
 }

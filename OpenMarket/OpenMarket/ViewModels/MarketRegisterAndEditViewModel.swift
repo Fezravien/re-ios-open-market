@@ -167,19 +167,21 @@ final class MarketRegisterAndEditViewModel {
             }
         }
     }
-
+    
     func downloadImage(imageURL: [String]) {
+        let dispatchSerialQueue = DispatchQueue(label: "이미지 다운로드 시리얼 큐")
         var images: [UIImage] = []
         if imageURL.isEmpty { return }
-        for index in 0..<imageURL.count {
-            guard let url = URL(string: imageURL[index]) else { return }
-            
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
-                if let image = try? Data(contentsOf: url) {
-                    DispatchQueue.main.async {
-                        images.append(UIImage(data: image) ?? UIImage())
-                        if images.count == imageURL.count {
-                            self.itemImages = images
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2) {
+            for index in 0..<imageURL.count {
+                guard let url = URL(string: imageURL[index]) else { return }
+                dispatchSerialQueue.sync {
+                    if let image = try? Data(contentsOf: url) {
+                        DispatchQueue.main.async {
+                            images.append(UIImage(data: image) ?? UIImage())
+                            if images.count == imageURL.count {
+                                self.itemImages = images
+                            }
                         }
                     }
                 }
